@@ -41,7 +41,44 @@ function Authentication() {
                 </div>
               </div>
             </div>
-            <div className="w-[20rem] h-[20rem] bg-[#F4EDE7] absolute left-[50%] translate-x-[75%] translate-y-[-50%] top-[40%] rounded-xl"></div>
+            <div className="w-[20rem] bg-[#F4EDE7] absolute left-[50%] translate-x-[75%] translate-y-[-50%] top-[40%] rounded-xl p-8 grid place-items-center">
+              <h2 className="text-base text-[#6E431D] mb-4">WELCOME TO</h2>
+              <div className=" logo-box mb-8 flex justify-center items-center gap-2">
+                <img className="w-[50px] h-auto " src={logo} alt="logo" />
+                <div className="line w-[2px] h-[30px] bg-[#6E431D]"></div>
+                <h4 className="">
+                  <span className="block text-[16px] text-[#6E431D] font-semibold">
+                    Ghana Cocoa Board
+                  </span>
+                  <span className="block text-[8px] text-[#6E431D]">
+                    Poised to Maintain Premium Quality Cocoa
+                  </span>
+                </h4>
+              </div>
+              <h5 className="text-[#B67F4E] text-[14px] mb-4">
+                Login to proceed to the homepage
+              </h5>
+              <input
+                type="text"
+                name="email"
+                placeholder="Enter Email"
+                className="w-full h-[35px] pl-2 bg-transparent border-b-[1px] border-solid border-[#6E431D] focus:outline-none focus:border-b-[2px] mb-4"
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter Password"
+                className="w-full h-[35px] pl-2 bg-transparent border-b-[1px] border-solid border-[#6E431D] focus:outline-none focus:border-b-[2px] mb-4"
+              />
+              <button className="w-full h-[35px] outline-none bg-[#6E431D] text-white rounded mb-2">
+                Login
+              </button>
+              <div className="w-full">
+                <span className="text-xs font-thin text-[#B67F4E] cursor-pointer">
+                  Forgot password? reset
+                </span>
+              </div>
+            </div>
           </div>
         </div>
         <div className="w-[20%] h-screen bg-[#6E431D]"></div>
