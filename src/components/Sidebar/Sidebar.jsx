@@ -1,13 +1,12 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { AiFillHome } from "react-icons/ai";
-import { BiTimeFive } from "react-icons/bi";
-import { GiAutoRepair } from "react-icons/gi";
-import { MdOutlineReceipt } from "react-icons/md";
-import { IoMdMap } from "react-icons/io";
-import { GiHouseKeys } from "react-icons/gi";
-import logo from "../../assets/logo-cocobod.png";
-import { ReactComponent as SidebarImage } from "../../assets/sidebarImg.svg";
+import { NavLink } from 'react-router-dom';
+import { AiFillHome } from 'react-icons/ai';
+import { BiTimeFive } from 'react-icons/bi';
+import { GiAutoRepair } from 'react-icons/gi';
+import { MdOutlineReceipt } from 'react-icons/md';
+import { IoMdMap } from 'react-icons/io';
+import { GiHouseKeys } from 'react-icons/gi';
+import logo from '../../assets/logo-cocobod.png';
+import { ReactComponent as SidebarImage } from '../../assets/sidebarImg.svg';
 
 function Sidebar({ closeToggle }) {
   const handleCloseSidebar = () => {
@@ -15,18 +14,18 @@ function Sidebar({ closeToggle }) {
   };
 
   const isNotActiveStyle =
-    "px-5 py-2 flex items-center text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize";
+    'px-5 py-2 flex items-center text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize';
   const isActiveStyle =
-    "px-5 py-2 flex items-center text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize";
+    'px-5 py-2 flex items-center text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize';
 
   const isNotActiveStyleSpanText =
-    "px-5 py-2 flex items-start text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize";
+    'px-5 py-2 flex items-start text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize';
   const isActiveStyleSpanText =
-    "px-5 py-2 flex items-start text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize";
+    'px-5 py-2 flex items-start text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize';
 
   return (
     <div
-      style={{ minWidth: "210px" }}
+      style={{ minWidth: '210px' }}
       className="flex flex-col justify-between bg-[#6E431D] h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
     >
       <div className="flex flex-col">
@@ -49,7 +48,7 @@ function Sidebar({ closeToggle }) {
             }
             onClick={handleCloseSidebar}
           >
-            <AiFillHome />
+            <AiFillHome size={20} />
             Home
           </NavLink>
           <NavLink
@@ -59,11 +58,12 @@ function Sidebar({ closeToggle }) {
             }
             onClick={handleCloseSidebar}
           >
-            <BiTimeFive />
-            <p>
+            <BiTimeFive size={20} />
+            <span>Tenancy</span>
+            {/* <p>
               <span className="block">Tenant Rate</span>
               <span className="block">Schedule</span>
-            </p>
+            </p> */}
           </NavLink>
           <NavLink
             to="/maintenance"
@@ -73,10 +73,11 @@ function Sidebar({ closeToggle }) {
             onClick={handleCloseSidebar}
           >
             <GiAutoRepair />
-            <p>
+            <span>Maintenance</span>
+            {/* <p>
               <span className="block">Maintenance</span>
               <span className="block">Scheme</span>
-            </p>
+            </p> */}
           </NavLink>
           <NavLink
             to="/recommendation"
@@ -86,10 +87,7 @@ function Sidebar({ closeToggle }) {
             onClick={handleCloseSidebar}
           >
             <MdOutlineReceipt />
-            <p>
-              <span className="block">Summary of</span>
-              <span className="block">Recommendation</span>
-            </p>
+            <span>Reports</span>
           </NavLink>
           <NavLink
             to="/map"
