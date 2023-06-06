@@ -1,0 +1,797 @@
+{
+  "users": [
+    {
+      "id": 6,
+      "first_name": "Snow",
+      "last_name": "White",
+      "email": "snow@gmail.com",
+      "password": "snowwhite"
+    }
+  ],
+  "properties": [
+    {
+      "id": "1",
+      "name": "Cocoa House",
+      "property_no": "p1254",
+      "property_type": {
+        "id": "1",
+        "name": "office"
+      },
+      "property_unit": {
+        "id": "1",
+        "name": "floor1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "floor"
+        }
+      },
+      "location": {
+        "id": "1",
+        "name": "Accra Central",
+        "log": "5.5516",
+        "lat": "0.2111",
+        "town": "Accra",
+        "digital_address": "AG251678",
+        "municipal": {
+          "id": "1",
+          "name": "Latabiokoshie",
+          "region": {
+            "id": "1",
+            "name": "Greater Accra"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://cocobod.websites.co.in/files/418820/pages/91858/building-o_1607293435TwWEP4.jpeg"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "name": "Cocoa House",
+      "property_no": "p1256",
+      "property_type": {
+        "id": "1",
+        "name": "office"
+      },
+      "property_unit": {
+        "id": "1",
+        "name": "floor1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "floor"
+        }
+      },
+      "location": {
+        "id": "2",
+        "name": "Sunyani",
+        "log": "5.1245",
+        "lat": "0.3111",
+        "town": "Sunyani",
+        "digital_address": "SU251678",
+        "municipal": {
+          "id": "2",
+          "name": "Sunyani",
+          "region": {
+            "id": "2",
+            "name": "Sunyani"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Sunyani_Cocoa_House.jpg?20110825072627"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Cocoa House",
+      "property_no": "p1257",
+      "property_type": {
+        "id": "1",
+        "name": "office"
+      },
+      "property_unit": {
+        "id": "1",
+        "name": "floor1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "floor"
+        }
+      },
+      "location": {
+        "id": "3",
+        "name": "Cape Coast",
+        "log": "2.5516",
+        "lat": "1.2111",
+        "town": "Cape Coast",
+        "digital_address": "CR251678",
+        "municipal": {
+          "id": "3",
+          "name": "Cape Coast",
+          "region": {
+            "id": "3",
+            "name": "Central Region"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://radionigeriaibadan.gov.ng/wp-content/uploads/2021/01/Cocoa-House.jpg"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Cocoa House",
+      "property_no": "p1258",
+      "property_type": {
+        "id": "1",
+        "name": "office"
+      },
+      "property_unit": {
+        "id": "1",
+        "name": "floor1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "floor"
+        }
+      },
+      "location": {
+        "id": "4",
+        "name": "Eastern Region",
+        "log": "3.5516",
+        "lat": "2.2111",
+        "town": "Koforidua",
+        "digital_address": "KD251678",
+        "municipal": {
+          "id": "4",
+          "name": "Latabiokoshie",
+          "region": {
+            "id": "4",
+            "name": "Eastern Region"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://images.yen.com.gh/images/425a8a191db4c59f.jpg?imwidth=900"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Cocoa House",
+      "property_no": "p1259",
+      "property_type": {
+        "id": "1",
+        "name": "office"
+      },
+      "property_unit": {
+        "id": "1",
+        "name": "floor1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "floor"
+        }
+      },
+      "location": {
+        "id": "5",
+        "name": "Wiawso",
+        "log": "8.5516",
+        "lat": "3.2111",
+        "town": "Sefwi Wiawso",
+        "digital_address": "AG251678",
+        "municipal": {
+          "id": "5",
+          "name": "Sefwi Wiawso",
+          "region": {
+            "id": "5",
+            "name": "Western North"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://greenopalproperties.com/wp-content/uploads/2020/06/exterior_5-Photo-scaled.jpg"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Cocoa House",
+      "property_no": "p1240",
+      "property_type": {
+        "id": "1",
+        "name": "office"
+      },
+      "property_unit": {
+        "id": "1",
+        "name": "floor1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "floor"
+        }
+      },
+      "location": {
+        "id": "6",
+        "name": "Anagye",
+        "log": "2.5516",
+        "lat": "2.2111",
+        "town": "Sekondi",
+        "digital_address": "ST251678",
+        "municipal": {
+          "id": "6",
+          "name": "Sekondi",
+          "region": {
+            "id": "6",
+            "name": "Western South"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://ena360.files.wordpress.com/2016/06/106.jpg"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Cocoa House",
+      "property_no": "p1250",
+      "property_type": {
+        "id": "1",
+        "name": "office"
+      },
+      "property_unit": {
+        "id": "1",
+        "name": "floor1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "floor"
+        }
+      },
+      "location": {
+        "id": "7",
+        "name": "Kpando",
+        "log": "1.5516",
+        "lat": "1.2111",
+        "town": "Kpando",
+        "digital_address": "VR251678",
+        "municipal": {
+          "id": "7",
+          "name": "Kpando",
+          "region": {
+            "id": "7",
+            "name": "Volta Region"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://images.yen.com.gh/images/3o3bpd15lepb4tnt5g.jpg?imwidth=900"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "name": "Cocoa House",
+      "property_no": "p1252",
+      "property_type": {
+        "id": "1",
+        "name": "office"
+      },
+      "property_unit": {
+        "id": "1",
+        "name": "floor1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "floor"
+        }
+      },
+      "location": {
+        "id": "8",
+        "name": "Nyakpala",
+        "log": "9.5516",
+        "lat": "1.2111",
+        "town": "Tamale",
+        "digital_address": "NR251678",
+        "municipal": {
+          "id": "8",
+          "name": "Nyakpala",
+          "region": {
+            "id": "8",
+            "name": "Northern Region"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://buzzghana.com/wp-content/uploads/2015/04/Foreign-Affairs-Ministry.jpg"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "name": "Cocoa Village",
+      "property_no": "c1254",
+      "property_type": {
+        "id": "2",
+        "name": "accomodation"
+      },
+      "property_unit": {
+        "id": "2",
+        "name": "block1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "2",
+          "name": "block"
+        }
+      },
+      "location": {
+        "id": "10",
+        "name": "Tema",
+        "log": "6.5316",
+        "lat": "2.2311",
+        "town": "Tema",
+        "digital_address": "TM251678",
+        "municipal": {
+          "id": "10",
+          "name": "Tema",
+          "region": {
+            "id": "10",
+            "name": "Greater Accra"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://images.unsplash.com/photo-1615651885088-3ff35a7e0b5a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=420&q=80"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "name": "Cocoa Village",
+      "property_no": "c1254",
+      "property_type": {
+        "id": "2",
+        "name": "accomodation"
+      },
+      "property_unit": {
+        "id": "2",
+        "name": "block1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "block"
+        }
+      },
+      "location": {
+        "id": "9",
+        "name": "Koforidua",
+        "log": "5.5316",
+        "lat": "0.2311",
+        "town": "Koforidua",
+        "digital_address": "ER251678",
+        "municipal": {
+          "id": "9",
+          "name": "Koforidua",
+          "region": {
+            "id": "9",
+            "name": "Eastern Region"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGJ1aWxkaW5nc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "11",
+      "name": "Cocoa Village",
+      "property_no": "c1256",
+      "property_type": {
+        "id": "2",
+        "name": "accomodation"
+      },
+      "property_unit": {
+        "id": "2",
+        "name": "block1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "block"
+        }
+      },
+      "location": {
+        "id": "11",
+        "name": "Kumasi",
+        "log": "1.5316",
+        "lat": "0.2311",
+        "town": "Kumasi",
+        "digital_address": "KS251678",
+        "municipal": {
+          "id": "11",
+          "name": "Kumasi",
+          "region": {
+            "id": "11",
+            "name": "Ashanti Region"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "name": "Cocoa Village",
+      "property_no": "c1254",
+      "property_type": {
+        "id": "2",
+        "name": "accomodation"
+      },
+      "property_unit": {
+        "id": "2",
+        "name": "block1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "block"
+        }
+      },
+      "location": {
+        "id": "10",
+        "name": "Koforidua",
+        "log": "5.5316",
+        "lat": "0.2311",
+        "town": "Koforidua",
+        "digital_address": "ER251678",
+        "municipal": {
+          "id": "10",
+          "name": "Koforidua",
+          "region": {
+            "id": "10",
+            "name": "Eastern Region"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://images.unsplash.com/photo-1606046604972-77cc76aee944?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8aG90ZWxzfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "13",
+      "name": "Cocoa Village",
+      "property_no": "c1254",
+      "property_type": {
+        "id": "2",
+        "name": "accomodation"
+      },
+      "property_unit": {
+        "id": "2",
+        "name": "block1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "block"
+        }
+      },
+      "location": {
+        "id": "13",
+        "name": "Koforidua",
+        "log": "5.5316",
+        "lat": "0.2311",
+        "town": "Koforidua",
+        "digital_address": "ER251678",
+        "municipal": {
+          "id": "13",
+          "name": "Koforidua",
+          "region": {
+            "id": "13",
+            "name": "Eastern Region"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://images.unsplash.com/photo-1535827841776-24afc1e255ac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8aG90ZWxzfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "name": "Cocoa Village",
+      "property_no": "c1254",
+      "property_type": {
+        "id": "2",
+        "name": "accomodation"
+      },
+      "property_unit": {
+        "id": "2",
+        "name": "block1",
+        "parent_id": "",
+        "property_unit_type": {
+          "id": "1",
+          "name": "block"
+        }
+      },
+      "location": {
+        "id": "14",
+        "name": "Koforidua",
+        "log": "5.5316",
+        "lat": "0.2311",
+        "town": "Koforidua",
+        "digital_address": "ER251678",
+        "municipal": {
+          "id": "14",
+          "name": "Koforidua",
+          "region": {
+            "id": "14",
+            "name": "Eastern Region"
+          }
+        }
+      },
+      "gallery": [
+        {
+          "id": "1",
+          "name": "img101",
+          "url": "https://images.unsplash.com/photo-1570213489059-0aac6626cade?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzZ8fGhvdGVsc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+        },
+        {
+          "id": "2",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "3",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        },
+        {
+          "id": "4",
+          "name": "img101",
+          "url": "https://media.gettyimages.com/id/1247581685/photo/street-vendors-wait-for-customers-in-front-of-cocoa-house-the-headquarters-of-the-ghana-cocoa.jpg?s=612x612&w=gi&k=20&c=crQGkHOIBRBFYnKqTXUrC30LE8mczRdUJN0gyQaOnZE="
+        }
+      ]
+    }
+  ]
+}
