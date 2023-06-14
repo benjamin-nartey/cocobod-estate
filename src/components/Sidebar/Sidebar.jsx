@@ -25,22 +25,22 @@ function Sidebar({ closeToggle }) {
 
   return (
     <div
-      style={{ minWidth: '210px' }}
+      style={{ minWidth: '220px' }}
       className="flex flex-col justify-between bg-[#6E431D] h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
     >
-      <div className="flex flex-col">
-        <div className="w-full h-[120px] bg-[#F4EDE7] grid place-items-center px-5">
-          <div className=" logo-box flex justify-center items-center gap-2 ">
-            <img className="w-[45px] h-auto " src={logo} alt="logo" />
-            <div className="line w-[1.2px] h-[25px] bg-[#6E431D] "></div>
-            <h4 className="">
-              <span className="block text-[12px] text-[#6E431D] font-semibold">
-                Ghana Cocoa Board
-              </span>
-            </h4>
-          </div>
+      <div className="w-full h-[18%] bg-[#F4EDE7] grid place-items-center px-5">
+        <div className=" logo-box flex justify-center items-center gap-2 ">
+          <img className="w-[45px] h-auto " src={logo} alt="logo" />
+          <div className="line w-[1.2px] h-[25px] bg-[#6E431D] "></div>
+          <h4 className="">
+            <span className="block text-[12px] text-[#6E431D] font-semibold">
+              Ghana Cocoa Board
+            </span>
+          </h4>
         </div>
-        <div className="pt-4 flex flex-col gap-4 text-[15px]">
+      </div>
+      <div className="flex flex-col h-[82%] justify-between gap-8 py-3">
+        <div className="flex flex-col gap-4 text-[15px] ">
           <NavLink
             to="/home"
             className={({ isActive }) =>
@@ -48,17 +48,17 @@ function Sidebar({ closeToggle }) {
             }
             onClick={handleCloseSidebar}
           >
-            <AiFillHome size={20} />
+            <AiFillHome size={18} />
             Home
           </NavLink>
           <NavLink
-            to="/tenantRate"
+            to="/tenancy"
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
             }
             onClick={handleCloseSidebar}
           >
-            <BiTimeFive />
+            <BiTimeFive size={18} />
             Tenancy
           </NavLink>
           <NavLink
@@ -68,17 +68,17 @@ function Sidebar({ closeToggle }) {
             }
             onClick={handleCloseSidebar}
           >
-            <GiAutoRepair />
+            <GiAutoRepair size={18} />
             Maintenance
           </NavLink>
           <NavLink
-            to="/recommendation"
+            to="/reports"
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
             }
             onClick={handleCloseSidebar}
           >
-            <MdOutlineReceipt />
+            <MdOutlineReceipt size={18} />
             Reports
           </NavLink>
           <NavLink
@@ -88,21 +88,11 @@ function Sidebar({ closeToggle }) {
             }
             onClick={handleCloseSidebar}
           >
-            <IoMdMap />
+            <IoMdMap size={18} />
             Map
           </NavLink>
-          <NavLink
-            to="/Accomodation"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={handleCloseSidebar}
-          >
-            <GiHouseKeys />
-            Accomodation
-          </NavLink>
         </div>
-        <div className="w-full px-4 my-8 grid place-items-center">
+        <div className="w-full px-4 mt-8 grid place-items-center">
           <SidebarImage className="w-[150px] h-auto" />
         </div>
       </div>

@@ -4,6 +4,7 @@ import axiosFetch from "../../axios/axios";
 import { useParams } from "react-router-dom/dist";
 import MasonryLayout from "../MasonryLayout/MasonryLayout";
 import { useLocation } from "react-router-dom/dist";
+import GridLayout from "../GridLayout/GridLayout";
 
 function Properties() {
   const [properties, setProperties] = useState([]);
@@ -34,7 +35,7 @@ function Properties() {
 
   return (
     <div className="">
-      {properties && <MasonryLayout properties={properties} />}
+      {properties && <GridLayout properties={properties} />}
     </div>
   );
 }
