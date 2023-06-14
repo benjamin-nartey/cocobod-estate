@@ -18,10 +18,10 @@ function Sidebar({ closeToggle }) {
   const isActiveStyle =
     'px-5 py-2 flex items-center text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize';
 
-  const isNotActiveStyleSpanText =
-    'px-5 py-2 flex items-start text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize';
-  const isActiveStyleSpanText =
-    'px-5 py-2 flex items-start text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize';
+  // const isNotActiveStyle =
+  //   "px-5 py-2 flex items-start text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize";
+  // const isActiveStyle =
+  //   "px-5 py-2 flex items-start text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize";
 
   return (
     <div
@@ -54,40 +54,32 @@ function Sidebar({ closeToggle }) {
           <NavLink
             to="/tenantRate"
             className={({ isActive }) =>
-              isActive ? isActiveStyleSpanText : isNotActiveStyleSpanText
+              isActive ? isActiveStyle : isNotActiveStyle
             }
             onClick={handleCloseSidebar}
           >
-            <BiTimeFive size={20} />
-            <span>Tenancy</span>
-            {/* <p>
-              <span className="block">Tenant Rate</span>
-              <span className="block">Schedule</span>
-            </p> */}
+            <BiTimeFive />
+            Tenancy
           </NavLink>
           <NavLink
             to="/maintenance"
             className={({ isActive }) =>
-              isActive ? isActiveStyleSpanText : isNotActiveStyleSpanText
+              isActive ? isActiveStyle : isNotActiveStyle
             }
             onClick={handleCloseSidebar}
           >
             <GiAutoRepair />
-            <span>Maintenance</span>
-            {/* <p>
-              <span className="block">Maintenance</span>
-              <span className="block">Scheme</span>
-            </p> */}
+            Maintenance
           </NavLink>
           <NavLink
             to="/recommendation"
             className={({ isActive }) =>
-              isActive ? isActiveStyleSpanText : isNotActiveStyleSpanText
+              isActive ? isActiveStyle : isNotActiveStyle
             }
             onClick={handleCloseSidebar}
           >
             <MdOutlineReceipt />
-            <span>Reports</span>
+            Reports
           </NavLink>
           <NavLink
             to="/map"
