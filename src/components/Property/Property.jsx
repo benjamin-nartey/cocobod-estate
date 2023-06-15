@@ -1,14 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useContext } from "react";
+import { PropertyDataContext } from "../../context/PropertyDataContext/PropertyDataContext";
+import { NavLink } from "react-router-dom/dist";
 
-function Property({
-  property: { id, name, property_type, location, gallery },
-}) {
+function Property({ property }) {
+  const { fxnSetProperttData, propertyData } = useContext(PropertyDataContext);
+
+  console.log("propps", propertyData);
+
   return (
-    <div className="m-2 bg-transparent rounded-md shadow-md w-auto max-[3000px]:h-[12rem] max-[2000px]:h-[12rem] max-[1200px]:h-[12rem] max-[1000px]:h-[12rem] max-[500px]:h-[18rem]">
+    <NavLink
+      to={`/property-detail/${property.name}`}
+      onClick={() => fxnSetProperttData(property)}
+      className="m-2 bg-transparent rounded-md shadow-md w-auto max-[3000px]:h-[12rem] max-[2000px]:h-[12rem] max-[1200px]:h-[12rem] max-[1000px]:h-[12rem] max-[500px]:h-[18rem]"
+    >
       <div className="relative cursor-pointer w-full overflow-hidden transition-all duration-500 ease-in-out h-full">
         <img
           className="rounded-md w-full h-full object-cover"
-          src={gallery[0].url}
+          src={property.gallery[0].url}
           alt=""
         />
         <div
@@ -17,15 +26,19 @@ function Property({
         >
           <div className="w-full h-full p-[1px] flex flex-col items-start justify-center">
             <h5 className="text-[15px] font-semibold text-[#6E431D] capitalize">
-              {name}
+              {property.name.length > 15
+                ? `${property.name.slice(0, 15)}...`
+                : property.name}
             </h5>
             <span className="text-[12px] text-[#B67F4E] font-normal">
-              {location.name}
+              {property.location.name.length > 15
+                ? `${property.location.name.slice(0, 15)}...`
+                : property.location.name}
             </span>
           </div>
         </div>
       </div>
-    </div>
+    </NavLink>
   );
 }
 
