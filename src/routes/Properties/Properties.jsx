@@ -2,9 +2,9 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axiosFetch from "../../axios/axios";
 import { useParams } from "react-router-dom/dist";
-import MasonryLayout from "../MasonryLayout/MasonryLayout";
+import MasonryLayout from "../../components/MasonryLayout/MasonryLayout";
 import { useLocation } from "react-router-dom/dist";
-import GridLayout from "../GridLayout/GridLayout";
+import GridLayout from "../../components/GridLayout/GridLayout";
 
 function Properties() {
   const [properties, setProperties] = useState([]);

@@ -9,6 +9,6 @@ export const categories = [
     name: "warehouse",
   },
   {
-    name: "restaurant",
+    name: "guest houses",
   },
 ];

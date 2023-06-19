@@ -17,7 +17,8 @@
         "id": "1",
         "name": "office"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "1",
         "name": "floor1",
         "parent_id": "",
@@ -25,7 +26,8 @@
           "id": "1",
           "name": "floor"
         }
-      },
+      }
+    ],
       "location": {
         "id": "1",
         "name": "Accra Central",
@@ -73,7 +75,8 @@
         "id": "1",
         "name": "office"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "1",
         "name": "floor1",
         "parent_id": "",
@@ -81,7 +84,8 @@
           "id": "1",
           "name": "floor"
         }
-      },
+      }
+    ],
       "location": {
         "id": "2",
         "name": "Sunyani",
@@ -129,7 +133,8 @@
         "id": "1",
         "name": "office"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "1",
         "name": "floor1",
         "parent_id": "",
@@ -137,7 +142,8 @@
           "id": "1",
           "name": "floor"
         }
-      },
+      }
+    ],
       "location": {
         "id": "3",
         "name": "Cape Coast",
@@ -185,7 +191,8 @@
         "id": "1",
         "name": "office"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "1",
         "name": "floor1",
         "parent_id": "",
@@ -193,7 +200,8 @@
           "id": "1",
           "name": "floor"
         }
-      },
+      }
+    ],
       "location": {
         "id": "4",
         "name": "Eastern Region",
@@ -241,7 +249,8 @@
         "id": "1",
         "name": "office"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "1",
         "name": "floor1",
         "parent_id": "",
@@ -249,7 +258,8 @@
           "id": "1",
           "name": "floor"
         }
-      },
+      }
+    ],
       "location": {
         "id": "5",
         "name": "Wiawso",
@@ -297,7 +307,8 @@
         "id": "1",
         "name": "office"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "1",
         "name": "floor1",
         "parent_id": "",
@@ -305,7 +316,8 @@
           "id": "1",
           "name": "floor"
         }
-      },
+      }
+    ],
       "location": {
         "id": "6",
         "name": "Anagye",
@@ -353,7 +365,8 @@
         "id": "1",
         "name": "office"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "1",
         "name": "floor1",
         "parent_id": "",
@@ -361,7 +374,8 @@
           "id": "1",
           "name": "floor"
         }
-      },
+      }
+    ],
       "location": {
         "id": "7",
         "name": "Kpando",
@@ -409,7 +423,8 @@
         "id": "1",
         "name": "office"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "1",
         "name": "floor1",
         "parent_id": "",
@@ -417,7 +432,8 @@
           "id": "1",
           "name": "floor"
         }
-      },
+      }
+    ],
       "location": {
         "id": "8",
         "name": "Nyakpala",
@@ -465,7 +481,8 @@
         "id": "2",
         "name": "accomodation"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "2",
         "name": "block1",
         "parent_id": "",
@@ -473,7 +490,8 @@
           "id": "2",
           "name": "block"
         }
-      },
+      }
+    ],
       "location": {
         "id": "10",
         "name": "Tema",
@@ -521,7 +539,8 @@
         "id": "2",
         "name": "accomodation"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "2",
         "name": "block1",
         "parent_id": "",
@@ -529,7 +548,8 @@
           "id": "1",
           "name": "block"
         }
-      },
+      }
+    ],
       "location": {
         "id": "9",
         "name": "Koforidua",
@@ -577,7 +597,8 @@
         "id": "2",
         "name": "accomodation"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "2",
         "name": "block1",
         "parent_id": "",
@@ -585,7 +606,8 @@
           "id": "1",
           "name": "block"
         }
-      },
+      }
+    ],
       "location": {
         "id": "11",
         "name": "Kumasi",
@@ -633,7 +655,8 @@
         "id": "2",
         "name": "accomodation"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "2",
         "name": "block1",
         "parent_id": "",
@@ -641,7 +664,8 @@
           "id": "1",
           "name": "block"
         }
-      },
+      }
+    ],
       "location": {
         "id": "10",
         "name": "Koforidua",
@@ -689,7 +713,8 @@
         "id": "2",
         "name": "accomodation"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "2",
         "name": "block1",
         "parent_id": "",
@@ -697,7 +722,8 @@
           "id": "1",
           "name": "block"
         }
-      },
+      }
+    ],
       "location": {
         "id": "13",
         "name": "Koforidua",
@@ -745,7 +771,8 @@
         "id": "2",
         "name": "accomodation"
       },
-      "property_unit": {
+      "property_unit": [
+        {
         "id": "2",
         "name": "block1",
         "parent_id": "",
@@ -753,7 +780,8 @@
           "id": "1",
           "name": "block"
         }
-      },
+      }
+    ],
       "location": {
         "id": "14",
         "name": "Koforidua",
