@@ -1,17 +1,16 @@
 import React, { useEffect } from "react";
-import { useContext } from "react";
-import { PropertyDataContext } from "../../context/PropertyDataContext/PropertyDataContext";
 import { NavLink } from "react-router-dom/dist";
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
 
 function Property({ property }) {
-  const { fxnSetProperttData, propertyData } = useContext(PropertyDataContext);
+  const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
 
   console.log("propps", propertyData);
 
   return (
     <NavLink
       to={`/property-detail/${property.name}`}
-      onClick={() => fxnSetProperttData(property)}
+      onClick={() => setPropertyData(property)}
       className="m-2 bg-transparent rounded-md shadow-md w-auto max-[3000px]:h-[12rem] max-[2000px]:h-[12rem] max-[1200px]:h-[12rem] max-[1000px]:h-[12rem] max-[500px]:h-[18rem]"
     >
       <div className="relative cursor-pointer w-full overflow-hidden transition-all duration-500 ease-in-out h-full">
