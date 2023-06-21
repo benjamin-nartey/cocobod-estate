@@ -10,17 +10,19 @@ import { Outlet } from "react-router-dom/dist";
 function Home() {
   return (
     <div className="w-full p-5">
-      <h4 className="text-lg text-[#6E431D] font-semibold">Properties</h4>
-      <div className="flex gap-8 my-5 capitalize text-gray-400 justify-start items-center">
-        {categories.map((category, id) => (
-          <NavLink
-            key={id}
-            className="hover:text-[#6e431d] focus:text-[#6e431d] focus:font-semibold transition-all"
-            to={`/home/category/${category.name}`}
-          >
-            {category.name}
-          </NavLink>
-        ))}
+      <div className="sticky top-[7.5rem] z-10 bg-[#F4EDE7] py-3 w-full">
+        <h4 className="text-lg text-[#6E431D] font-semibold">Properties</h4>
+        <div className="flex flex-wrap gap-8 my-5 capitalize text-gray-400 justify-start items-center">
+          {categories.map((category, id) => (
+            <NavLink
+              key={id}
+              className="hover:text-[#6e431d] focus:text-[#6e431d] focus:font-semibold transition-all"
+              to={`/home/category/${category.name}`}
+            >
+              {category.name}
+            </NavLink>
+          ))}
+        </div>
       </div>
       <div className="w-full ">
         <Outlet />
