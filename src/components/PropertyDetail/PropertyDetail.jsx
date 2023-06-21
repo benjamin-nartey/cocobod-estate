@@ -1,10 +1,33 @@
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 function PropertyDetail() {
   const sliderRef = useRef();
   const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
+  const [endOfScroll, setEndOfScroll] = useState(false);
+
+  const onScroll = () => {
+    if (sliderRef.current) {
+      const { scrollLeft, scrollWidth, offsetWidth } = sliderRef.current;
+      if (
+        Number(scrollLeft) === Number(scrollWidth - offsetWidth) ||
+        Number(scrollLeft + 1) === Number(scrollWidth - offsetWidth) ||
+        Number(scrollLeft - 1) === Number(scrollWidth - offsetWidth)
+      ) {
+        setEndOfScroll(true);
+        console.log("You have reached the end of line");
+      }else{
+        setEndOfScroll(false)
+      }
+    }
+  };
+
+  useEffect(()=>{
+    console.log(endOfScroll)
+  },[endOfScroll])
 
   const slideLeft = () => {
     let slider = sliderRef.current;
@@ -112,15 +135,33 @@ function PropertyDetail() {
                 className="w-full overflow-x-scroll scroll-smooth whitespace-nowrap overflow-y-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
                 ref={sliderRef}
                 id="slider"
+                onScroll={onScroll}
               >
-                {propertyData.gallery.map((photo, id) => (
-                  <img
-                    className="w-[100px] h-[90px] inline-block p-1 rounded-2xl cursor-pointer hover:scale-105 ease-in-out duration-300"
-                    src={photo.url}
-                    alt="image"
-                    key={id}
-                  />
-                ))}
+                {propertyData.gallery.length > 15
+                  ? propertyData.gallery
+                      .slice(0, 15)
+                      .map((photo, id) => (
+                        <LazyLoadImage
+                          effect="blur"
+                          className="w-[100px] h-[90px] inline-block p-1 rounded-2xl cursor-pointer hover:scale-105 ease-in-out duration-300"
+                          src={photo.url}
+                          alt="image"
+                          key={id}
+                          height="90px"
+                          width="100px"
+                        />
+                      ))
+                  : propertyData.gallery.map((photo, id) => (
+                      <LazyLoadImage
+                        effect="blur"
+                        className="w-[100px] h-[90px] inline-block p-1 rounded-2xl cursor-pointer hover:scale-105 ease-in-out duration-300"
+                        src={photo.url}
+                        alt="image"
+                        key={id}
+                        height="90px"
+                        width="100px"
+                      />
+                    ))}
               </div>
               <MdChevronRight
                 onClick={slideRight}
@@ -132,10 +173,13 @@ function PropertyDetail() {
         </div>
         <div className="image-column w-full h-full grid place-items-center max-md:p-0">
           <div className="relative w-[28rem] h-[25rem] max-md:w-full">
-            <img
-              className="rounded-2xl w-full h-full object-cover"
+            <LazyLoadImage
+              effect="blur"
+              className="rounded-2xl h-full w-full object-cover"
               src={propertyData?.gallery[0].url}
-              alt=""
+              alt="property-image"
+              height="100%"
+              width="100%"
             />
             <div
               style={{ backgroundColor: "rgba(244,237,231,0.85)" }}
@@ -163,8 +207,7 @@ function PropertyDetail() {
             Cocoa House, 41 Kwame Nkrumah Avenue. P.O. Box 933, Accra Telephone:
             0302661877 . 0302667416 Email Us: civilworks@cocobod.gh
           </p>
-          <div className="w-[18rem] h-[6rem] bg-blue-300 border-solid border-2 border-white rounded-2xl" >
-          </div>
+          <div className="w-[18rem] h-[6rem] bg-blue-300 border-solid border-2 border-white rounded-2xl"></div>
         </div>
       </div>
     </div>

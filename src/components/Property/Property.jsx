@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom/dist";
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 function Property({ property }) {
   const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
-
-  console.log("propps", propertyData);
 
   return (
     <NavLink
@@ -14,10 +14,13 @@ function Property({ property }) {
       className="m-2 bg-transparent rounded-md shadow-md w-auto max-[3000px]:h-[12rem] max-[2000px]:h-[12rem] max-[1200px]:h-[12rem] max-[1000px]:h-[12rem] max-[500px]:h-[18rem]"
     >
       <div className="relative cursor-pointer w-full overflow-hidden transition-all duration-500 ease-in-out h-full">
-        <img
+        <LazyLoadImage
+          effect="blur"
           className="rounded-md w-full h-full object-cover"
           src={property.gallery[0].url}
-          alt=""
+          alt="property-image"
+          height="100%"
+          width="100%"
         />
         <div
           style={{ backgroundColor: "rgba(244,237,231,0.85)" }}
