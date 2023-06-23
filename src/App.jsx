@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Navigation from "./routes/Navigation/Navigation";
 import Authentication from "./routes/Authentication/Authentication";
-import Home from "./routes/home/Home";
+import Home from "./routes/Home/Home";
 import Properties from "./routes/Properties/Properties";
 import PropertyDetailsPage from "./routes/PropertyDetailsPage/PropertyDetailsPage";
 import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
