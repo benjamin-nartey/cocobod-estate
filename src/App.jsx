@@ -5,6 +5,7 @@ import Home from "./routes/Home/Home";
 import Properties from "./routes/Properties/Properties";
 import PropertyDetailsPage from "./routes/PropertyDetailsPage/PropertyDetailsPage";
 import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
+import Gallery from "./routes/Gallery/Gallery";
 function App() {
   return (
     <Routes>
@@ -17,6 +18,7 @@ function App() {
         <Route element={<PropertyDetailsPage />}>
           <Route path="property-detail/:propId" element={<PropertyDetail />} />
         </Route>
+        <Route path="gallery" element={<Gallery />} />
       </Route>
     </Routes>
   );
