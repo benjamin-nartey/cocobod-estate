@@ -29,7 +29,7 @@ function Sidebar({ closeToggle }) {
       style={{ minWidth: "220px" }}
       className="flex flex-col justify-between bg-[#6E431D] h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
     >
-      <div className="w-full h-[18%] bg-[#F4EDE7] grid place-items-center px-5">
+      <div className="w-full h-[18vh] bg-[#F4EDE7] grid place-items-center px-5">
         <div className=" logo-box flex justify-center items-center gap-2 ">
           <img className="w-[45px] h-auto " src={logo} alt="logo" />
           <div className="line w-[1.2px] h-[25px] bg-[#6E431D] "></div>

@@ -20,7 +20,7 @@ function Navigation() {
           style={{
             backgroundImage: `url(${navBg})`,
           }}
-          className="bg-cover navigation flex h-[7.5rem] w-full justify-between items-center shadow-md sticky top-0 z-10"
+          className="bg-cover navigation flex h-[18vh] w-full justify-between items-center shadow-md sticky top-0 z-10"
         >
           <div
             style={{ backgroundColor: "rgba(0,0,0,0.4)" }}

@@ -6,6 +6,7 @@ import Properties from "./routes/Properties/Properties";
 import PropertyDetailsPage from "./routes/PropertyDetailsPage/PropertyDetailsPage";
 import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
 import Gallery from "./routes/Gallery/Gallery";
+import PropertyMap from "./routes/PropertyMap/PropertyMap";
 function App() {
   return (
     <Routes>
@@ -19,6 +20,7 @@ function App() {
           <Route path="property-detail/:propId" element={<PropertyDetail />} />
         </Route>
         <Route path="gallery" element={<Gallery />} />
+        <Route path="map" element={<PropertyMap />} />
       </Route>
     </Routes>
   );
