@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { NavLink } from "react-router-dom";
 
 function PropertyDetail() {
   const sliderRef = useRef();
   const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
   const [endOfScroll, setEndOfScroll] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
   const onScroll = () => {
     if (sliderRef.current) {
@@ -19,15 +21,23 @@ function PropertyDetail() {
       ) {
         setEndOfScroll(true);
         console.log("You have reached the end of line");
-      }else{
-        setEndOfScroll(false)
+      } else {
+        setEndOfScroll(false);
       }
     }
   };
 
-  useEffect(()=>{
-    console.log(endOfScroll)
-  },[endOfScroll])
+  const showAllGallery = () => {
+    if (propertyData.gallery.length > 15 && endOfScroll === true) {
+      setShowAll(true);
+    } else {
+      setShowAll(false);
+    }
+  };
+
+  useEffect(() => {
+    showAllGallery();
+  }, [endOfScroll]);
 
   const slideLeft = () => {
     let slider = sliderRef.current;
@@ -163,11 +173,33 @@ function PropertyDetail() {
                       />
                     ))}
               </div>
-              <MdChevronRight
-                onClick={slideRight}
-                className="text-[#6E431D] opacity-50 cursor-pointer hover:opacity-100"
-                size={30}
-              />
+              {showAll ? (
+                <div
+                  style={{
+                    backgroundImage: `url(${
+                      propertyData.gallery[
+                        Math.floor(Math.random() * propertyData.gallery.length)
+                      ].url
+                    })`,
+                  }}
+                  className="w-[100px] h-[90px] rounded-2xl cursor-pointer absolute bg-cover right-0 hover:scale-105 ease-in-out duration-300 z-10"
+                >
+                  <NavLink to="/gallery">
+                    <div
+                      style={{ backgroundColor: "rgba(0,0,0,0.05)" }}
+                      className="w-full h-full rounded-2xl grid place-items-center backdrop-blur font-semibold"
+                    >
+                      Show All
+                    </div>
+                  </NavLink>
+                </div>
+              ) : (
+                <MdChevronRight
+                  onClick={slideRight}
+                  className="text-[#6E431D] opacity-50 cursor-pointer hover:opacity-100"
+                  size={30}
+                />
+              )}
             </div>
           </div>
         </div>

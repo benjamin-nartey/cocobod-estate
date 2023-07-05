@@ -1,6 +1,5 @@
 import React from "react";
-import Masonry from "react-masonry-css"
-import Property from "../Property/Property";
+import Masonry from "react-masonry-css";
 
 const breakpointObj = {
   default: 4,
@@ -11,16 +10,14 @@ const breakpointObj = {
   500: 1,
 };
 
-const MasonryLayout = ({ properties }) => {
+const MasonryLayout = ({ children }) => {
   return (
     <div>
       <Masonry
         className="flex animate-slide-fwd"
         breakpointCols={breakpointObj}
       >
-        {properties?.map((property) => (
-          <Property key={property._id} property={property} className="w-max" />
-        ))}
+        {children}
       </Masonry>
     </div>
   );
