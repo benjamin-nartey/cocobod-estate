@@ -9,11 +9,6 @@ import { getCenter } from "geolib";
 import { useEffect } from "react";
 import { MdLocationPin } from "react-icons/md";
 
-const defaultViewState = {
-  latitude: 0,
-  longitude: 0,
-  zoom: 6,
-};
 
 function MapBox({ searchResult }) {
   // const { searchResult, fxnSetResult } = useContext(SearchResultContext);
@@ -101,8 +96,23 @@ function MapBox({ searchResult }) {
                 latitude={parseFloat(selectedLocation?.location?.lat) || 0}
                 longitude={parseFloat(selectedLocation?.location?.long) || 0}
               >
-                <div>
-                  <h4 className="capitalize font-semibold text-base">{selectedLocation?.name}</h4>
+                <div className="min-w-[200px]">
+                  <div className="flex justify-between items-center">
+                    <div className="inline-block">
+                      <span className="font-semibold">Long:</span>
+                      {` ${selectedLocation?.location?.long.toFixed(4)}`}
+                    </div>
+                    <div className="inline-block">
+                      <span className="font-semibold">Lat:</span>
+                      {` ${selectedLocation?.location?.lat.toFixed(4)}`}
+                    </div>
+                  </div>
+                  <h4 className="capitalize font-semibold text-base">
+                    {selectedLocation?.name}
+                  </h4>
+                  <div className="flex justify-between">
+                    <h5 className="capitalize text-sm">{`(${selectedLocation.location.name})`}</h5>
+                  </div>
                 </div>
               </Popup>
             ) : (
