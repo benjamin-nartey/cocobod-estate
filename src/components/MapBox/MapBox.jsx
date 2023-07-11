@@ -19,13 +19,15 @@ function MapBox({ searchResult }) {
   // const [centerLatitude, setCenterLatitude] = useState(null);
   // const [centerLongitude, setCenterLongitude] = useState(null);
   const [center, setCenter] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState({});
+  const [sl, setSl] = useState(false);
 
   // console.log('init', searchResult);
 
   useEffect(() => {
     const coordinates = searchResult?.map((result) => ({
-      latitude: Number(result?.location?.lat),
-      longitude: Number(result?.location?.long),
+      latitude: parseFloat(result?.location?.lat),
+      longitude: parseFloat(result?.location?.long),
     }));
 
     setCenter(getCenter(coordinates));
@@ -47,6 +49,13 @@ function MapBox({ searchResult }) {
     });
   }, [center]);
 
+  useEffect(() => {
+    if (Object.keys(selectedLocation).length > 0) {
+      setSl(true);
+    }
+    console.log("ssss", selectedLocation);
+  }, [selectedLocation]);
+
   console.log({ viewState });
 
   return (
@@ -62,15 +71,39 @@ function MapBox({ searchResult }) {
     >
       {searchResult &&
         searchResult.map((result) => (
-          <div>
+          <div key={result.location.long}>
             <Marker
-              longitude={parseFloat(result.location.long)}
-              latitude={parseFloat(result.location.lat)}
+              longitude={parseFloat(result?.location?.long)}
+              latitude={parseFloat(result?.location?.lat)}
               offsetLeft={-20}
               offsetRight={-10}
             >
-              <p className="animate-bounce delay-300"> 📌</p>
+              <p
+                onClick={() => {
+                  setSelectedLocation(result);
+                  console.log({ selectedLocation });
+                }}
+                className="animate-bounce text-xl cursor-pointer"
+              >
+                📌
+              </p>
             </Marker>
+
+            {sl ? (
+              <Popup
+                onClose={() => {
+                  setSelectedLocation({});
+                  setSl(false);
+                }}
+                closeOnClick={true}
+                latitude={parseFloat(selectedLocation?.location?.lat) || 0}
+                longitude={parseFloat(selectedLocation?.location?.long) || 0}
+              >
+                {selectedLocation?.name}
+              </Popup>
+            ) : (
+              false
+            )}
           </div>
         ))}
     </Map>
