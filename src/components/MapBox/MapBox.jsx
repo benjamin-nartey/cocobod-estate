@@ -7,6 +7,7 @@ import axiosFetch from "../../axios/axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { getCenter } from "geolib";
 import { useEffect } from "react";
+import { MdLocationPin } from "react-icons/md";
 
 const defaultViewState = {
   latitude: 0,
@@ -79,13 +80,14 @@ function MapBox({ searchResult }) {
               offsetRight={-10}
             >
               <p
+                role="image"
                 onClick={() => {
                   setSelectedLocation(result);
                   console.log({ selectedLocation });
                 }}
                 className="animate-bounce text-xl cursor-pointer"
               >
-                📌
+                <MdLocationPin color="red" size={25} />
               </p>
             </Marker>
 
@@ -99,7 +101,9 @@ function MapBox({ searchResult }) {
                 latitude={parseFloat(selectedLocation?.location?.lat) || 0}
                 longitude={parseFloat(selectedLocation?.location?.long) || 0}
               >
-                {selectedLocation?.name}
+                <div>
+                  <h4 className="capitalize font-semibold text-base">{selectedLocation?.name}</h4>
+                </div>
               </Popup>
             ) : (
               false
