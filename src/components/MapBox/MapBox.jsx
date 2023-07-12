@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Map, { Marker, Popup } from "react-map-gl";
 import { useState } from "react";
 import { useContext } from "react";
@@ -20,8 +20,19 @@ function MapBox({ searchResult }) {
   const [selectedLocation, setSelectedLocation] = useState({});
   const [animateBounce, setAnimateBounce] = useState(-1);
   const [sl, setSl] = useState(false);
+  const markerRef = useRef();
 
   // console.log('init', searchResult);
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutsideMarker, true);
+  }, []);
+
+  const handleClickOutsideMarker = (e) => {
+    if (!markerRef?.current?.contains(e.target)) {
+      setAnimateBounce(-1);
+    }
+  };
 
   useEffect(() => {
     const coordinates = searchResult?.map((result) => ({
@@ -79,6 +90,7 @@ function MapBox({ searchResult }) {
               offsetLeft={-20}
               offsetRight={-10}
               onClick={() => setAnimateBounce(idx)}
+              ref={markerRef}
             >
               <p
                 role="image"
@@ -96,7 +108,7 @@ function MapBox({ searchResult }) {
 
             {sl ? (
               <Popup
-               offset={20}
+                offset={20}
                 onClose={() => {
                   setSelectedLocation({});
                   setSl(false);
