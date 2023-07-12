@@ -9,11 +9,13 @@ import ShimmerGrid from "../../components/ShimmerGrid/ShimmerGrid";
 
 function Properties() {
   const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { categoryId } = useParams();
   const location = useLocation();
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const response = await axiosFetch("/properties");
       const filter = await response.data.filter((value) => {
         return value.property_type.name
@@ -25,7 +27,9 @@ function Properties() {
       } else {
         setProperties(response.data);
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -40,7 +44,11 @@ function Properties() {
 
   return (
     <div className="">
-      {properties.length !== 0 ? <GridLayout properties={properties} /> : <ShimmerGrid />}
+      {!loading ? (
+        <GridLayout properties={properties} />
+      ) : (
+        <ShimmerGrid />
+      )}
     </div>
   );
 }

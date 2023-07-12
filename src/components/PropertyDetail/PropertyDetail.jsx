@@ -49,6 +49,8 @@ function PropertyDetail() {
     slider.scrollLeft = slider.scrollLeft + 200;
   };
 
+  // console.log(first)
+
   return (
     <div className="w-full h-auto ">
       <div className="flex py-3 items-center mb-10 gap-8 text-[#6E431D] text-lg font-semibold w-full bg-[#F4EDE7] sticky top-[18vh] z-10">
@@ -239,7 +241,17 @@ function PropertyDetail() {
             Cocoa House, 41 Kwame Nkrumah Avenue. P.O. Box 933, Accra Telephone:
             0302661877 . 0302667416 Email Us: civilworks@cocobod.gh
           </p>
-          <div className="w-[18rem] h-[6rem] bg-blue-300 border-solid border-2 border-white rounded-2xl"></div>
+          <div className="w-[18rem] h-[6rem] bg-blue-300 border-solid border-2 border-white rounded-2xl cursor-pointer">
+            <img
+              className="inline-block w-full h-full object-cover rounded-2xl"
+              src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${
+                propertyData.location.long
+              },${propertyData.location.lat},6,0/300x200@2x?access_token=${
+                import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN
+              }`}
+              alt=""
+            />
+          </div>
         </div>
       </div>
     </div>

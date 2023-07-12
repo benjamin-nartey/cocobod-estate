@@ -18,6 +18,7 @@ function MapBox({ searchResult }) {
   const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
   const [center, setCenter] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState({});
+  const [animateBounce, setAnimateBounce] = useState(-1);
   const [sl, setSl] = useState(false);
 
   // console.log('init', searchResult);
@@ -56,6 +57,8 @@ function MapBox({ searchResult }) {
 
   console.log({ viewState });
 
+  const handleBounce = (idx, status) => {};
+
   return (
     <Map
       {...viewState}
@@ -65,16 +68,17 @@ function MapBox({ searchResult }) {
       onMove={(evt) => setViewState(evt.viewState)}
       className="w-full h-full"
       mapStyle="mapbox://styles/brightarhin/clje8v5tp005d01qsaa1ya2u8"
-      mapboxAccessToken="pk.eyJ1IjoiYnJpZ2h0YXJoaW4iLCJhIjoiY2w4OHM3Z3dlMDA0YTNubjFjcWZoYjNnOSJ9.mYzqF1JVp18gZ9-ZUqMXZw"
+      mapboxAccessToken={import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN}
     >
       {searchResult &&
-        searchResult.map((result) => (
+        searchResult.map((result, idx) => (
           <div key={result.location.long}>
             <Marker
               longitude={parseFloat(result?.location?.long)}
               latitude={parseFloat(result?.location?.lat)}
               offsetLeft={-20}
               offsetRight={-10}
+              onClick={() => setAnimateBounce(idx)}
             >
               <p
                 role="image"
@@ -82,7 +86,9 @@ function MapBox({ searchResult }) {
                   setSelectedLocation(result);
                   console.log({ selectedLocation });
                 }}
-                className="animate-bounce text-xl cursor-pointer"
+                className={`${
+                  animateBounce === idx && "animate-bounce"
+                } text-xl cursor-pointer`}
               >
                 <MdLocationPin color="red" size={25} />
               </p>
@@ -90,6 +96,7 @@ function MapBox({ searchResult }) {
 
             {sl ? (
               <Popup
+               offset={20}
                 onClose={() => {
                   setSelectedLocation({});
                   setSl(false);
