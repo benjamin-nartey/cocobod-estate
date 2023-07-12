@@ -51,10 +51,10 @@ function PropertyDetail() {
 
   return (
     <div className="w-full h-auto ">
-      <div className="flex py-3 items-center mb-10 gap-8 text-[#6E431D] text-lg font-semibold w-full bg-[#F4EDE7] sticky top-[7.5rem] z-10">
+      <div className="flex py-3 items-center mb-10 gap-8 text-[#6E431D] text-lg font-semibold w-full bg-[#F4EDE7] sticky top-[18vh] z-10">
         <h3>Property Details</h3>
         <div className="line h-6 w-[1px] bg-[#6E431D]"></div>
-        <h3>Cocoa Village</h3>
+        <h3>{propertyData?.name}</h3>
       </div>
       <div className="w-full grid grid-cols-2 gap-4 max-md:flex max-md:flex-col ">
         <div className="description-column">
@@ -184,7 +184,7 @@ function PropertyDetail() {
                   }}
                   className="w-[100px] h-[90px] rounded-2xl cursor-pointer absolute bg-cover right-0 hover:scale-105 ease-in-out duration-300 z-10"
                 >
-                  <NavLink to="/gallery">
+                  <NavLink className="outline-none" to="/gallery">
                     <div
                       style={{ backgroundColor: "rgba(0,0,0,0.05)" }}
                       className="w-full h-full rounded-2xl grid place-items-center backdrop-blur font-semibold"

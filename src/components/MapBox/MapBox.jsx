@@ -8,12 +8,14 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { getCenter } from "geolib";
 import { useEffect } from "react";
 import { MdLocationPin } from "react-icons/md";
-
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { NavLink } from "react-router-dom";
 
 function MapBox({ searchResult }) {
   // const { searchResult, fxnSetResult } = useContext(SearchResultContext);
   // const [centerLatitude, setCenterLatitude] = useState(null);
   // const [centerLongitude, setCenterLongitude] = useState(null);
+  const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
   const [center, setCenter] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState({});
   const [sl, setSl] = useState(false);
@@ -110,8 +112,15 @@ function MapBox({ searchResult }) {
                   <h4 className="capitalize font-semibold text-base">
                     {selectedLocation?.name}
                   </h4>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <h5 className="capitalize text-sm">{`(${selectedLocation.location.name})`}</h5>
+                    <NavLink
+                      className="outline-none text-blue-400 hover:underline"
+                      to={`/property-detail/${selectedLocation.name}`}
+                      onClick={() => setPropertyData(selectedLocation)}
+                    >
+                      View Property
+                    </NavLink>
                   </div>
                 </div>
               </Popup>
