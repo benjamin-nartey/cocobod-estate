@@ -24,31 +24,24 @@ function Properties() {
       });
       if (location.pathname !== "/home") {
         setProperties(filter);
+        setLoading(false);
       } else {
         setProperties(response.data);
+        setLoading(false);
       }
-      setLoading(false);
     } catch (error) {
       setLoading(false);
       console.log(error);
     }
   };
 
-  // console.log(properties);
-
   useEffect(() => {
     fetchData();
   }, [categoryId]);
 
-  // if (!properties?.length) return <h2>No properties available</h2>;
-
   return (
     <div className="">
-      {!loading ? (
-        <GridLayout properties={properties} />
-      ) : (
-        <ShimmerGrid />
-      )}
+      {!loading ? <GridLayout properties={properties} /> : <ShimmerGrid />}
     </div>
   );
 }
