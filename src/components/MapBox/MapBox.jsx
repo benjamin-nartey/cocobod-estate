@@ -22,17 +22,15 @@ function MapBox({ searchResult }) {
   const [sl, setSl] = useState(false);
   const markerRef = useRef();
 
-  // console.log('init', searchResult);
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutsideMarker, true);
-  }, []);
-
   const handleClickOutsideMarker = (e) => {
     if (!markerRef?.current?.contains(e.target)) {
       setAnimateBounce(-1);
     }
   };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutsideMarker, true);
+  }, []);
 
   useEffect(() => {
     const coordinates = searchResult?.map((result) => ({
@@ -42,8 +40,6 @@ function MapBox({ searchResult }) {
 
     setCenter(getCenter(coordinates));
   }, [searchResult]);
-
-  console.log("center", center);
 
   const [viewState, setViewState] = useState({
     latitude: center && center?.latitude,
@@ -63,12 +59,7 @@ function MapBox({ searchResult }) {
     if (Object.keys(selectedLocation).length > 0) {
       setSl(true);
     }
-    console.log("ssss", selectedLocation);
   }, [selectedLocation]);
-
-  console.log({ viewState });
-
-  const handleBounce = (idx, status) => {};
 
   return (
     <Map
@@ -90,13 +81,12 @@ function MapBox({ searchResult }) {
               offsetLeft={-20}
               offsetRight={-10}
               onClick={() => setAnimateBounce(idx)}
-              ref={markerRef}
             >
               <p
+                ref={markerRef}
                 role="image"
                 onClick={() => {
                   setSelectedLocation(result);
-                  console.log({ selectedLocation });
                 }}
                 className={`${
                   animateBounce === idx && "animate-bounce"
