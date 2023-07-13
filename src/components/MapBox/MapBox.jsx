@@ -3,7 +3,6 @@ import Map, { Marker, Popup } from "react-map-gl";
 import { useState } from "react";
 import { useContext } from "react";
 import { SearchResultContext } from "../../context/searchResult.context";
-import axiosFetch from "../../axios/axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { getCenter } from "geolib";
 import { useEffect } from "react";
@@ -11,10 +10,8 @@ import { MdLocationPin } from "react-icons/md";
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
 import { NavLink } from "react-router-dom";
 
-function MapBox({ searchResult }) {
-  // const { searchResult, fxnSetResult } = useContext(SearchResultContext);
-  // const [centerLatitude, setCenterLatitude] = useState(null);
-  // const [centerLongitude, setCenterLongitude] = useState(null);
+function MapBox({}) {
+  const { searchResult } = useContext(SearchResultContext);
   const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
   const [center, setCenter] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState({});
@@ -65,8 +62,6 @@ function MapBox({ searchResult }) {
     <Map
       {...viewState}
       mapLib={import("mapbox-gl")}
-      // initialViewState={viewState}
-      // viewState={viewState}
       onMove={(evt) => setViewState(evt.viewState)}
       className="w-full h-full"
       mapStyle="mapbox://styles/brightarhin/clje8v5tp005d01qsaa1ya2u8"

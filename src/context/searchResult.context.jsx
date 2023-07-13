@@ -1,3 +1,4 @@
+import axiosFetch from "../axios/axios";
 import { createContext, useState, useEffect } from "react";
 
 export const SearchResultContext = createContext({
@@ -6,17 +7,23 @@ export const SearchResultContext = createContext({
 });
 
 export const SearchResultProvider = ({ children }) => {
-  const [searchResult, setSearchResult] = useState(null);
+  const [searchResult, setSearchResult] = useState([]);
 
-  const fxnSetResult = (data) => {
-    setSearchResult(data);
+  const fetchData = async () => {
+    try {
+      const response = await axiosFetch("/properties");
+      const results = await response.data;
+      if (results) setSearchResult(results);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    fxnSetResult();
-  }, [searchResult]);
+    fetchData();
+  }, []);
 
-  const value = { searchResult, setSearchResult ,fxnSetResult };
+  const value = { searchResult, setSearchResult };
 
   return (
     <SearchResultContext.Provider value={value}>

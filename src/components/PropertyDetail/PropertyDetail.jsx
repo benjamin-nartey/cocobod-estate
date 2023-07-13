@@ -1,4 +1,6 @@
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { SearchResultContext } from "../../context/searchResult.context";
+import { useContext } from "react";
 import { useEffect, useRef, useState } from "react";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -10,6 +12,7 @@ function PropertyDetail() {
   const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
   const [endOfScroll, setEndOfScroll] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const { setSearchResult } = useContext(SearchResultContext);
 
   const onScroll = () => {
     if (sliderRef.current) {
@@ -241,16 +244,18 @@ function PropertyDetail() {
             Cocoa House, 41 Kwame Nkrumah Avenue. P.O. Box 933, Accra Telephone:
             0302661877 . 0302667416 Email Us: civilworks@cocobod.gh
           </p>
-          <div className="w-[18rem] h-[6rem] bg-blue-300 border-solid border-2 border-white rounded-2xl cursor-pointer">
-            <img
-              className="inline-block w-full h-full object-cover rounded-2xl"
-              src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${
-                propertyData.location.long
-              },${propertyData.location.lat},6,0/300x200@2x?access_token=${
-                import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN
-              }`}
-              alt=""
-            />
+          <div className="w-[18rem] h-[6rem] bg-blue-300 border-solid border-2 border-white rounded-2xl">
+            <NavLink onClick={()=>setSearchResult([propertyData])} to="/map">
+              <img
+                className="inline-block w-full h-full object-cover rounded-2xl"
+                src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${
+                  propertyData.location.long
+                },${propertyData.location.lat},6,0/300x200@2x?access_token=${
+                  import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN
+                }`}
+                alt=""
+              />
+            </NavLink>
           </div>
         </div>
       </div>
