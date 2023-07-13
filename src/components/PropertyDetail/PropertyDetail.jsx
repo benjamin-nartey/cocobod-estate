@@ -244,8 +244,8 @@ function PropertyDetail() {
             Cocoa House, 41 Kwame Nkrumah Avenue. P.O. Box 933, Accra Telephone:
             0302661877 . 0302667416 Email Us: civilworks@cocobod.gh
           </p>
-          <div className="w-[18rem] h-[6rem] bg-blue-300 border-solid border-2 border-white rounded-2xl">
-            <NavLink onClick={()=>setSearchResult([propertyData])} to="/map">
+          <div className="w-[18rem] h-[6rem] hover:shadow-lg border-solid border-2 border-white rounded-2xl">
+            <NavLink onClick={() => setSearchResult([propertyData])} to="/map">
               <img
                 className="inline-block w-full h-full object-cover rounded-2xl"
                 src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${
