@@ -1,7 +1,10 @@
 import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import api from "../../axios/axios";
+import axios from "axios";
+import useAuth from "../../Hooks/useAuth";
+import { privateAxios } from "../../axios/axios";
 
 const defaultFormFields = {
   email: "",
@@ -12,7 +15,21 @@ function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);
   const { email, password } = formFields;
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [ipAddress, setIPAddress] = useState("");
+
+  const { setAuthState } = useAuth();
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/home";
+
+  useEffect(() => {
+    axios
+      .get("https://ipapi.co/json")
+      .then((response) => response.data)
+      .then((data) => setIPAddress(data.ip))
+      .catch((error) => console.log(error));
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -21,22 +38,57 @@ function LoginForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
-      const response = await api.get("/users", { params: { email, password } });
-      if (response.data.length === 1) {
-        setIsAuthenticated(true);
-      } else {
-        alert("Invalid credentials!");
-      }
-      console.log(response.data);
+      const response = await axios.post(
+        "https://cocobod-estates-api.onrender.com/api/v1/auth",
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-IP-Address": ipAddress,
+          },
+        }
+      );
+
+      const userResponse = await axios.get(
+        "https://cocobod-estates-api.onrender.com/api/v1/auth/user",
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${response?.data?.accessToken}`,
+          },
+        }
+      );
+
+      console.log(userResponse);
+
+      const currentUser = userResponse?.data;
+
+      const accessToken = response?.data?.accessToken;
+      const refreshToken = response?.data?.refreshToken;
+
+      setAuthState({ email, accessToken, refreshToken, currentUser });
+
+      console.log("response", response.data);
+      // if (response.status === 201) {
+      //   setIsAuthenticated(true);
+      // }
+
+      navigate(from, { replace: true });
     } catch (error) {
       console.log(error);
     }
   };
 
-  if (isAuthenticated) {
-    navigate("/home");
-  }
+  // useEffect(() => {
+  //   console.log({ isAuthenticated });
+  //   console.log({ ipAddress });
+  //   if (isAuthenticated) {
+  //     navigate("/home");
+  //   }
+  // }, [isAuthenticated, ipAddress]);
 
   console.log(formFields);
 

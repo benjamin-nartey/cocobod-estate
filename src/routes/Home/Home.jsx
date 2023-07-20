@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom/dist";
+import useRefresh from "../../Hooks/useRefresh";
 
 import { categories } from "../../utils/categories";
 import { Outlet } from "react-router-dom/dist";
@@ -8,6 +9,7 @@ import { Outlet } from "react-router-dom/dist";
 // const isActiveStyle = "text-[#6e431d] font-semibold";
 
 function Home() {
+    const refresh = useRefresh() 
   return (
     <div className="w-full p-5">
       <div className="sticky top-[18vh] z-10 bg-[#F4EDE7] py-3 w-full">
@@ -24,6 +26,7 @@ function Home() {
           ))}
         </div>
       </div>
+      <button onClick={()=>refresh()}>Refresh</button>
       <div className="w-full ">
         <Outlet />
       </div>
