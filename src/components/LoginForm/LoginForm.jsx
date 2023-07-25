@@ -1,10 +1,10 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../axios/axios";
 import axios from "axios";
 import useAuth from "../../Hooks/useAuth";
-import { privateAxios } from "../../axios/axios";
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
 
 const defaultFormFields = {
   email: "",
@@ -17,11 +17,26 @@ function LoginForm() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [ipAddress, setIPAddress] = useState("");
 
-  const { setAuthState } = useAuth();
+  const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
+    "accessToken",
+    null
+  );
+  const [refreshTokenAuth, setRefreshTokenAuth] = useLocalStorage(
+    "refreshToken",
+    null
+  );
+
+  const { setTokens, setAuthState } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/home";
+
+  // useEffect(() => {
+  //   if (userAccess) {
+  //     navigate(location.state?.from?.pathname, { replace: true });
+  //   }
+  // }, []);
 
   useEffect(() => {
     axios
@@ -62,33 +77,23 @@ function LoginForm() {
         }
       );
 
-      console.log(userResponse);
-
       const currentUser = userResponse?.data;
 
-      const accessToken = response?.data?.accessToken;
-      const refreshToken = response?.data?.refreshToken;
+      setAuthState({ currentUser });
 
-      setAuthState({ email, accessToken, refreshToken, currentUser });
+      console.log(userResponse);
+
+      setAccessTokenAuth(response?.data?.accessToken);
+      setRefreshTokenAuth(response?.data?.refreshToken);
+      setTokens(response?.data?.accessToken);
 
       console.log("response", response.data);
-      // if (response.status === 201) {
-      //   setIsAuthenticated(true);
-      // }
 
       navigate(from, { replace: true });
     } catch (error) {
       console.log(error);
     }
   };
-
-  // useEffect(() => {
-  //   console.log({ isAuthenticated });
-  //   console.log({ ipAddress });
-  //   if (isAuthenticated) {
-  //     navigate("/home");
-  //   }
-  // }, [isAuthenticated, ipAddress]);
 
   console.log(formFields);
 

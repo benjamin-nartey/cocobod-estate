@@ -22,11 +22,11 @@ function Properties() {
           .toLowerCase()
           .includes(categoryId?.toLowerCase());
       });
-      if (location.pathname !== "/home") {
-        setProperties(filter);
+      if (location.pathname === "/home") {
+        setProperties(response.data);
         setLoading(false);
       } else {
-        setProperties(response.data);
+        setProperties(filter);
         setLoading(false);
       }
     } catch (error) {
