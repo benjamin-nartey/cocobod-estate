@@ -6,9 +6,11 @@ import MasonryLayout from "../../components/MasonryLayout/MasonryLayout";
 import { useLocation } from "react-router-dom/dist";
 import GridLayout from "../../components/GridLayout/GridLayout";
 import ShimmerGrid from "../../components/ShimmerGrid/ShimmerGrid";
+import { useQuery } from "@tanstack/react-query";
 
 function Properties() {
   const [properties, setProperties] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
   const [loading, setLoading] = useState(false);
   const { categoryId } = useParams();
   const location = useLocation();
@@ -22,11 +24,11 @@ function Properties() {
           .toLowerCase()
           .includes(categoryId?.toLowerCase());
       });
-      if (location.pathname !== "/home") {
-        setProperties(filter);
+      if (location.pathname === "/home") {
+        setProperties(response.data);
         setLoading(false);
       } else {
-        setProperties(response.data);
+        setProperties(filter);
         setLoading(false);
       }
     } catch (error) {
@@ -35,14 +37,36 @@ function Properties() {
     }
   };
 
+  // const fetchProperties = async () => {
+  //   const response = await axiosFetch("/properties");
+  //   return response.data;
+  // };
+
+  // const { status, error, data } = useQuery({
+  //   queryKey: ["properties"],
+  //   queryFn: fetchProperties,
+  // });
+
+  // if (data) {
+  //   const filter = data.filter((value) => {
+  //     return value.property_type.name
+  //       .toLowerCase()
+  //       .includes(categoryId?.toLocaleLowerCase());
+  //   });
+  //   setFilteredList(filter);
+  //   if (location.pathname === "/home") {
+  //     setProperties(data);
+  //   } else {
+  //     setProperties(filteredList);
+  //   }
+  // }
+
   useEffect(() => {
     fetchData();
   }, [categoryId]);
 
   return (
-    <div className="">
-      {!loading ? <GridLayout properties={properties} /> : <ShimmerGrid />}
-    </div>
+    <>{!loading ? <GridLayout properties={properties} /> : <ShimmerGrid />}</>
   );
 }
 

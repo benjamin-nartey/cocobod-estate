@@ -7,20 +7,38 @@ import PropertyDetailsPage from "./routes/PropertyDetailsPage/PropertyDetailsPag
 import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
 import Gallery from "./routes/Gallery/Gallery";
 import PropertyMap from "./routes/PropertyMap/PropertyMap";
+import RequireAuth from "./components/RequireAuth/RequireAuth";
+import Dashboard from "./routes/Dashboard/Dashboard";
+
 function App() {
   return (
     <Routes>
       <Route index element={<Authentication />} />
+      <Route path="login" element={<Authentication />} />
+
       <Route element={<Navigation />}>
-        <Route element={<Home />}>
-          <Route path="/home" element={<Properties />} />
-          <Route path="home/category/:categoryId" element={<Properties />} />
+        {/*********  Public Routes **********/}
+
+        <Route element={<RequireAuth allowedRoles={["view"]} />}>
+          <Route element={<Home />}>
+            <Route path="/home" element={<Properties />} />
+            <Route path="home/category/:categoryId" element={<Properties />} />
+          </Route>
+          <Route element={<PropertyDetailsPage />}>
+            <Route
+              path="property-detail/:propId"
+              element={<PropertyDetail />}
+            />
+          </Route>
+          <Route path="gallery" element={<Gallery />} />
+          <Route path="map" element={<PropertyMap />} />
         </Route>
-        <Route element={<PropertyDetailsPage />}>
-          <Route path="property-detail/:propId" element={<PropertyDetail />} />
+
+        {/******* Private Routes ********/}
+
+        <Route element={<RequireAuth allowedRoles={["create-user"]} />}>
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
-        <Route path="gallery" element={<Gallery />} />
-        <Route path="map" element={<PropertyMap />} />
       </Route>
     </Routes>
   );

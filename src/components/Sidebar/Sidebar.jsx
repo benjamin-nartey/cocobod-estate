@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { AiFillHome } from "react-icons/ai";
 import { BiTimeFive } from "react-icons/bi";
 import { GiAutoRepair } from "react-icons/gi";
-import { MdOutlineReceipt } from "react-icons/md";
+import { MdDashboard, MdOutlineReceipt } from "react-icons/md";
 import { IoMdMap } from "react-icons/io";
 import { GiHouseKeys } from "react-icons/gi";
 import logo from "../../assets/logo-cocobod.png";
@@ -51,6 +51,16 @@ function Sidebar({ closeToggle }) {
           >
             <AiFillHome size={18} />
             Home
+          </NavLink>
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              isActive ? isActiveStyle : isNotActiveStyle
+            }
+            onClick={handleCloseSidebar}
+          >
+            <MdDashboard size={18} />
+            Dasboard
           </NavLink>
           <NavLink
             to="/tenancy"

@@ -31,7 +31,7 @@ function PropertyDetail() {
   };
 
   const showAllGallery = () => {
-    if (propertyData.gallery.length > 15 && endOfScroll === true) {
+    if (propertyData?.gallery.length > 15 && endOfScroll === true) {
       setShowAll(true);
     } else {
       setShowAll(false);
@@ -152,8 +152,8 @@ function PropertyDetail() {
                 id="slider"
                 onScroll={onScroll}
               >
-                {propertyData.gallery.length > 15
-                  ? propertyData.gallery
+                {propertyData?.gallery.length > 15
+                  ? propertyData?.gallery
                       .slice(0, 15)
                       .map((photo, id) => (
                         <LazyLoadImage
@@ -166,7 +166,7 @@ function PropertyDetail() {
                           width="100px"
                         />
                       ))
-                  : propertyData.gallery.map((photo, id) => (
+                  : propertyData?.gallery.map((photo, id) => (
                       <LazyLoadImage
                         effect="blur"
                         className="w-[100px] h-[90px] inline-block p-1 rounded-2xl cursor-pointer hover:scale-105 ease-in-out duration-300"
@@ -182,8 +182,8 @@ function PropertyDetail() {
                 <div
                   style={{
                     backgroundImage: `url(${
-                      propertyData.gallery[
-                        Math.floor(Math.random() * propertyData.gallery.length)
+                      propertyData?.gallery[
+                        Math.floor(Math.random() * propertyData?.gallery.length)
                       ].url
                     })`,
                   }}
@@ -244,13 +244,13 @@ function PropertyDetail() {
             Cocoa House, 41 Kwame Nkrumah Avenue. P.O. Box 933, Accra Telephone:
             0302661877 . 0302667416 Email Us: civilworks@cocobod.gh
           </p>
-          <div className="w-[18rem] h-[6rem] bg-blue-300 border-solid border-2 border-white rounded-2xl">
-            <NavLink onClick={()=>setSearchResult([propertyData])} to="/map">
+          <div className="w-[18rem] h-[6rem] hover:shadow-lg border-solid border-2 border-white rounded-2xl">
+            <NavLink onClick={() => setSearchResult([propertyData])} to="/map">
               <img
                 className="inline-block w-full h-full object-cover rounded-2xl"
                 src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${
-                  propertyData.location.long
-                },${propertyData.location.lat},6,0/300x200@2x?access_token=${
+                  propertyData?.location.long
+                },${propertyData?.location.lat},6,0/300x200@2x?access_token=${
                   import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN
                 }`}
                 alt=""

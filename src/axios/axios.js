@@ -6,3 +6,9 @@ export default axios.create({
     "Content-Type": "application/json",
   },
 });
+export const privateAxios = axios.create({
+  baseURL: "https://cocobod-estates-api.onrender.com/api/v1/",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
