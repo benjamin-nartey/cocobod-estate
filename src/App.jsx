@@ -8,6 +8,7 @@ import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
 import Gallery from "./routes/Gallery/Gallery";
 import PropertyMap from "./routes/PropertyMap/PropertyMap";
 import RequireAuth from "./components/RequireAuth/RequireAuth";
+import Dashboard from "./routes/Dashboard/Dashboard";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
       <Route path="login" element={<Authentication />} />
 
       <Route element={<Navigation />}>
-        {/* Public Routes */}
+        {/*********  Public Routes **********/}
 
         <Route element={<RequireAuth allowedRoles={["view"]} />}>
           <Route element={<Home />}>
@@ -31,6 +32,12 @@ function App() {
           </Route>
           <Route path="gallery" element={<Gallery />} />
           <Route path="map" element={<PropertyMap />} />
+        </Route>
+
+        {/******* Private Routes ********/}
+
+        <Route element={<RequireAuth allowedRoles={["create-user"]} />}>
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Route>
     </Routes>
