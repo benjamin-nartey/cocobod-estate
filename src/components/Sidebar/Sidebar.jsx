@@ -39,7 +39,6 @@ function Sidebar({ closeToggle }) {
           },
         }
       );
-      console.log({ response });
 
       state.currentUser = {};
       setRefreshToken(null);

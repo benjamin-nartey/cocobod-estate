@@ -51,7 +51,6 @@ function Navigation() {
           },
         }
       );
-      console.log({ response });
 
       state.currentUser = {};
       setRefreshToken(null);
