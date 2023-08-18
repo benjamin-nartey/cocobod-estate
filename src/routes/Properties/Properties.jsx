@@ -24,6 +24,7 @@ function Properties() {
           .toLowerCase()
           .includes(categoryId?.toLowerCase());
       });
+
       if (location.pathname === "/home") {
         setProperties(response.data);
         setLoading(false);
@@ -32,8 +33,9 @@ function Properties() {
         setLoading(false);
       }
     } catch (error) {
-      setLoading(false);
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 

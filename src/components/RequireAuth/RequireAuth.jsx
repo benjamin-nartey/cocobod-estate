@@ -1,16 +1,24 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import useAuth from "../../Hooks/useAuth";
+
+import { useSnapshot } from "valtio";
+
+import state from "../../store/store";
 
 function RequireAuth({ allowedRoles }) {
-  const [authState, setAuthState] = useLocalStorage("authState", null);
+  // const [authState, setAuthState] = useLocalStorage("authState", null);
+
+  const snap = useSnapshot(state);
+
+  const auth = snap.currentUser;
+
+  console.log({ auth });
+  
 
   //   const { authState } = useAuth();
   const location = useLocation();
 
   const areRolesAllowed = () => {
-    const result = authState?.currentUser?.roles?.[0].permissions.find(
+    const result = auth?.currentUser?.roles?.[0].permissions.find(
       (permission) => allowedRoles.includes(permission.name)
     )
       ? true
@@ -19,18 +27,23 @@ function RequireAuth({ allowedRoles }) {
     return result;
   };
 
-  console.log({ authState });
+  // console.log({ authState });
 
   console.log("areAllowedRoles", areRolesAllowed());
 
   console.log(
-    authState?.currentUser?.roles?.[0].permissions.find((permission) =>
+    auth?.currentUser?.roles?.[0].permissions.find((permission) =>
       allowedRoles.includes(permission.name)
     )
   );
 
+  // if (auth.loadingState)
+  //   return <Navigate to="/loadingPage" state={{ from: location }} replace />;
+
   return areRolesAllowed() ? (
     <Outlet />
+  ) : snap.loadingState ? (
+    <Navigate to="/loadingPage" state={{ from: location }} replace />
   ) : (
     <Navigate to="/login" state={{ from: location }} replace />
   );

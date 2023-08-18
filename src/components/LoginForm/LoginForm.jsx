@@ -3,8 +3,13 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../axios/axios";
 import axios from "axios";
-import useAuth from "../../Hooks/useAuth";
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
+
+import { useSnapshot } from "valtio";
+
+import state from "../../store/store";
+
+import Loader from "../Loader/Loader";
 
 const defaultFormFields = {
   email: "",
@@ -16,6 +21,9 @@ function LoginForm() {
   const { email, password } = formFields;
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [ipAddress, setIPAddress] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const snap = useSnapshot(state);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
     "accessToken",
@@ -26,17 +34,9 @@ function LoginForm() {
     null
   );
 
-  const { setTokens, setAuthState } = useAuth();
-
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/home";
-
-  // useEffect(() => {
-  //   if (userAccess) {
-  //     navigate(location.state?.from?.pathname, { replace: true });
-  //   }
-  // }, []);
 
   useEffect(() => {
     axios
@@ -51,10 +51,17 @@ function LoginForm() {
     setFormfields({ ...formFields, [name]: value });
   };
 
+  // useEffect(() => {
+  //   if (snap.currentUser) {
+  //     navigate(from, { replace: true });
+  //   }
+  // }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
+      setLoading(true);
       const response = await axios.post(
         "https://cocobod-estates-api.onrender.com/api/v1/auth",
         { email, password },
@@ -79,23 +86,20 @@ function LoginForm() {
 
       const currentUser = userResponse?.data;
 
-      setAuthState({ currentUser });
-
-      console.log(userResponse);
+      state.currentUser = { currentUser };
 
       setAccessTokenAuth(response?.data?.accessToken);
       setRefreshTokenAuth(response?.data?.refreshToken);
-      setTokens(response?.data?.accessToken);
-
-      console.log("response", response.data);
 
       navigate(from, { replace: true });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  console.log(formFields);
+  // console.log(formFields);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -116,8 +120,17 @@ function LoginForm() {
         onChange={handleChange}
       />
       <button className="max-md:bg-white max-md:text-[#6E431D] max-md:hover:bg-white w-full h-[35px] outline-none bg-[#6E431D] text-white rounded mb-2 hover:bg-[#B67F4E] hover:font-black hover:translate-y-[-2px] active:translate-y-[3px] transition-all hover:shadow-md active:shadow-sm">
-        Login
+        {loading ? (
+          <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
+        ) : (
+          "Login"
+        )}
       </button>
+      <div className="w-full">
+        <span className=" max-md:text-white text-xs font-thin text-[#B67F4E] cursor-pointer hover:underline">
+          Forgot password? Reset
+        </span>
+      </div>
     </form>
   );
 }
