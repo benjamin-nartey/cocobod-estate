@@ -24,10 +24,10 @@ function Navigation() {
   const [avatarText, setAvatarText] = useState(
     getContrastingColor(avatarBackground)
   );
-  const location = useLocation();
 
   const snap = useSnapshot(state);
 
+  const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/login";
 
@@ -107,21 +107,21 @@ function Navigation() {
                 onClick={() => setToggleSidebar(true)}
                 className="text-[25px] text-white cursor-pointer hidden max-md:block"
               />
-              <div className=" fixed top-5 right-10 block max-md:right-3 max-md:top-3">
+              <div className=" fixed top-5 right-10 block max-md:hidden">
                 {/* <Logout /> */}
-                <div className="flex items-center gap-4 max-md:gap-1">
+                <div className="flex items-center gap-4 max-md:gap-2">
                   <div
                     style={{
                       backgroundColor: `${avatarBackground}`,
                       color: `${avatarText}`,
                     }}
-                    className={`w-10 h-10 text-center  text-white rounded-full grid place-items-center font-bold uppercase`}
+                    className={`w-10 h-10 text-center  text-white max-md:text-sm rounded-full grid place-items-center font-bold uppercase`}
                   >
-                  {snap?.currentUser?.currentUser?.staff?.name[0]}
+                    {snap?.currentUser?.currentUser?.staff?.name[0]}
                   </div>
-                  <div className="flex flex-col max-md:hidden">
+                  <div className="flex flex-col ">
                     <div className="text-[14px] text-gray-200">
-                    {snap?.currentUser?.currentUser?.staff?.name}
+                      {snap?.currentUser?.currentUser?.staff?.name}
                     </div>
                     <div className="text-xs text-gray-300">
                       {snap?.currentUser?.currentUser?.email}
