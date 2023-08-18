@@ -3,12 +3,11 @@ import Typography from "antd/es/typography/Typography";
 import DashboardCard from "../../components/DashboardCard/DashboardCard";
 import { AiFillPropertySafety } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
-import { FaShoppingBag } from "react-icons/fa";
 import { BiShoppingBag } from "react-icons/bi";
 
 function Dashboard() {
   return (
-    <div className="w-full p-6">
+    <section className="w-full p-6">
       <Typography.Title level={4}>Dashboard</Typography.Title>
       <div className="w-full flex gap-4">
         <NavLink to="/properties-table">
@@ -65,7 +64,7 @@ function Dashboard() {
           />
         </NavLink>
       </div>
-    </div>
+    </section>
   );
 }
 

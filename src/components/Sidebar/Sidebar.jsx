@@ -8,10 +8,48 @@ import { IoMdMap } from "react-icons/io";
 import { GiHouseKeys } from "react-icons/gi";
 import logo from "../../assets/logo-cocobod.png";
 import { ReactComponent as SidebarImage } from "../../assets/sidebarImg.svg";
+import { PoweroffOutlined } from "@ant-design/icons";
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import state from "../../store/store";
 
 function Sidebar({ closeToggle }) {
+  const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", null);
+  const [accessToken, setAccessToken] = useLocalStorage("accessToken", null);
+  const [loading, setLoading] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/login";
+
   const handleCloseSidebar = () => {
     if (closeToggle) closeToggle(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.delete(
+        "https://cocobod-estates-api.onrender.com/api/v1/auth",
+        {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        }
+      );
+      console.log({ response });
+
+      state.currentUser = {};
+      setRefreshToken(null);
+      setAccessToken(null);
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isNotActiveStyle =
@@ -41,7 +79,7 @@ function Sidebar({ closeToggle }) {
         </div>
       </div>
       <div className="flex flex-col h-[82%] justify-between gap-8 py-3">
-        <div className="flex flex-col gap-4 text-[15px] ">
+        <nav className="flex flex-col gap-4 text-[15px] ">
           <NavLink
             to="/home"
             className={({ isActive }) =>
@@ -102,7 +140,20 @@ function Sidebar({ closeToggle }) {
             <IoMdMap size={18} />
             Map
           </NavLink>
-        </div>
+          <NavLink
+            role="button"
+            to="/loadingPage"
+            className={({ isActive }) =>
+              isActive
+                ? `${isActiveStyle} hidden max-md:flex`
+                : `${isNotActiveStyle} hidden max-md:flex`
+            }
+            onClick={handleLogout}
+          >
+            <PoweroffOutlined size={18} />
+            Logout
+          </NavLink>
+        </nav>
         <div className="w-full px-4 mt-8 grid place-items-center">
           <SidebarImage className="w-[150px] h-auto" />
         </div>

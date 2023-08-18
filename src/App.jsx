@@ -1,21 +1,33 @@
 import { Routes, Route } from "react-router-dom";
-import Navigation from "./routes/Navigation/Navigation";
-import Authentication from "./routes/Authentication/Authentication";
-import Home from "./routes/Home/Home";
-import Properties from "./routes/Properties/Properties";
-import PropertyDetailsPage from "./routes/PropertyDetailsPage/PropertyDetailsPage";
-import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
-import Gallery from "./routes/Gallery/Gallery";
-import PropertyMap from "./routes/PropertyMap/PropertyMap";
-import RequireAuth from "./components/RequireAuth/RequireAuth";
-import Dashboard from "./routes/Dashboard/Dashboard";
+import { useEffect } from "react";
 import axiosInstance from "./axios/axiosInstance";
 import { useNavigate, useLocation } from "react-router-dom";
-import LoadingPage from "./routes/LoadingPage/LoadingPage";
-import Unauthorized from "./routes/Unauthorized/Unauthorized";
 import state from "./store/store";
+import { lazy, Suspense } from "react";
 
-import { useEffect } from "react";
+import Navigation from "./routes/Navigation/Navigation";
+import LoadingPage from "./routes/LoadingPage/LoadingPage";
+
+// const Navigation = lazy(() => import("./routes/Navigation/Navigation"));
+const Authentication = lazy(() =>
+  import("./routes/Authentication/Authentication")
+);
+const Home = lazy(() => import("./routes/Home/Home"));
+const Properties = lazy(() => import("./routes/Properties/Properties"));
+const PropertyDetailsPage = lazy(() =>
+  import("./routes/PropertyDetailsPage/PropertyDetailsPage")
+);
+const PropertyDetail = lazy(() =>
+  import("./components/PropertyDetail/PropertyDetail")
+);
+const Gallery = lazy(() => import("./routes/Gallery/Gallery"));
+const PropertyMap = lazy(() => import("./routes/PropertyMap/PropertyMap"));
+const RequireAuth = lazy(() => import("./components/RequireAuth/RequireAuth"));
+const Dashboard = lazy(() => import("./routes/Dashboard/Dashboard"));
+// const LoadingPage = lazy(() => import("./routes/LoadingPage/LoadingPage"));
+const Unauthorized = lazy(() => import("./routes/Unauthorized/Unauthorized"));
+
+const renderLoader = () => <LoadingPage />;
 
 function App() {
   const navigate = useNavigate();
@@ -28,8 +40,6 @@ function App() {
       const response = await axiosInstance.get("/auth/user");
 
       if (response.status === 200) {
-        console.log("fetched", response.data);
-
         const currentUser = response?.data;
 
         state.currentUser = { currentUser };
@@ -48,9 +58,30 @@ function App() {
 
   return (
     <Routes>
-      <Route index element={<Authentication />} />
-      <Route path="login" element={<Authentication />} />
-      <Route path="unauthorized" element={<Unauthorized />} />
+      <Route
+        index
+        element={
+          <Suspense fallback={renderLoader()}>
+            <Authentication />
+          </Suspense>
+        }
+      />
+      <Route
+        path="login"
+        element={
+          <Suspense fallback={renderLoader()}>
+            <Authentication />
+          </Suspense>
+        }
+      />
+      <Route
+        path="unauthorized"
+        element={
+          <Suspense fallback={renderLoader()}>
+            <Unauthorized />
+          </Suspense>
+        }
+      />
 
       <Route path="loadingPage" element={<LoadingPage />} />
 
@@ -58,24 +89,81 @@ function App() {
         {/*********  Public Routes **********/}
 
         <Route element={<RequireAuth allowedRoles={["view"]} />}>
-          <Route element={<Home />}>
-            <Route path="/home" element={<Properties />} />
-            <Route path="home/category/:categoryId" element={<Properties />} />
-          </Route>
-          <Route element={<PropertyDetailsPage />}>
+          <Route
+            element={
+              <Suspense fallback={renderLoader()}>
+                <Home />
+              </Suspense>
+            }
+          >
             <Route
-              path="property-detail/:propId"
-              element={<PropertyDetail />}
+              path="/home"
+              element={
+                <Suspense fallback={renderLoader()}>
+                  <Properties />
+                </Suspense>
+              }
+            />
+            <Route
+              path="home/category/:categoryId"
+              element={
+                <Suspense fallback={renderLoader()}>
+                  <Properties />
+                </Suspense>
+              }
             />
           </Route>
-          <Route path="gallery" element={<Gallery />} />
-          <Route path="map" element={<PropertyMap />} />
+          <Route
+            element={
+              <Suspense fallback={renderLoader()}>
+                <PropertyDetailsPage />
+              </Suspense>
+            }
+          >
+            <Route
+              path="property-detail/:propId"
+              element={
+                <Suspense fallback={renderLoader()}>
+                  <PropertyDetail />
+                </Suspense>
+              }
+            />
+          </Route>
+          <Route
+            path="gallery"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <Gallery />
+              </Suspense>
+            }
+          />
+          <Route
+            path="map"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <PropertyMap />
+              </Suspense>
+            }
+          />
         </Route>
 
         {/******* Private Routes ********/}
 
-        <Route element={<RequireAuth allowedRoles={["create-user"]} />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          element={
+            <Suspense fallback={renderLoader()}>
+              <RequireAuth allowedRoles={["create-user"]} />
+            </Suspense>
+          }
+        >
+          <Route
+            path="/dashboard"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
         </Route>
       </Route>
     </Routes>
