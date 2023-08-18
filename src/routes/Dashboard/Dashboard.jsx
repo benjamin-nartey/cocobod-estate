@@ -1,4 +1,3 @@
-import { Space } from "antd";
 import Typography from "antd/es/typography/Typography";
 import DashboardCard from "../../components/DashboardCard/DashboardCard";
 import { AiFillPropertySafety } from "react-icons/ai";
