@@ -27,6 +27,8 @@ const Dashboard = lazy(() => import("./routes/Dashboard/Dashboard"));
 // const LoadingPage = lazy(() => import("./routes/LoadingPage/LoadingPage"));
 const Unauthorized = lazy(() => import("./routes/Unauthorized/Unauthorized"));
 
+const NotExistPage = lazy(() => import("./routes/NotExistPage/NotExistPage"));
+
 const renderLoader = () => <LoadingPage />;
 
 function App() {
@@ -85,6 +87,15 @@ function App() {
 
       <Route path="loadingPage" element={<LoadingPage />} />
 
+      <Route
+        path="*"
+        element={
+          <Suspense fallback={renderLoader()}>
+            <NotExistPage />
+          </Suspense>
+        }
+      />
+
       <Route element={<Navigation />}>
         {/*********  Public Routes **********/}
 
@@ -105,10 +116,26 @@ function App() {
               }
             />
             <Route
+              path="/home/*"
+              element={
+                <Suspense fallback={renderLoader()}>
+                  <NotExistPage />
+                </Suspense>
+              }
+            />
+            <Route
               path="home/category/:categoryId"
               element={
                 <Suspense fallback={renderLoader()}>
                   <Properties />
+                </Suspense>
+              }
+            />
+            <Route
+              path="home/category/*"
+              element={
+                <Suspense fallback={renderLoader()}>
+                  <NotExistPage />
                 </Suspense>
               }
             />
@@ -149,13 +176,7 @@ function App() {
 
         {/******* Private Routes ********/}
 
-        <Route
-          element={
-            <Suspense fallback={renderLoader()}>
-              <RequireAuth allowedRoles={["create-user"]} />
-            </Suspense>
-          }
-        >
+        <Route element={<RequireAuth allowedRoles={["create-user"]} />}>
           <Route
             path="/dashboard"
             element={

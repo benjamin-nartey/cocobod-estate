@@ -6,10 +6,10 @@ import Shimmer from "./Shimmer";
 function ImageThumbnailSkeleton() {
   return (
     <div className="skeleton-wrapper">
-        <Shimmer/>
-     <div className="w-[11rem] max-sm:w-[300px]">
-     <SkeletonElement type= 'image'/>
-     </div>
+      <Shimmer />
+      <div className="w-[11rem] max-sm:w-[300px]">
+        <SkeletonElement type="image" />
+      </div>
     </div>
   );
 }
