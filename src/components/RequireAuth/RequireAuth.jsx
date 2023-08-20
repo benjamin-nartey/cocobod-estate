@@ -25,6 +25,8 @@ function RequireAuth({ allowedRoles }) {
     <Outlet />
   ) : snap.loadingState ? (
     <Navigate to="/loadingPage" state={{ from: location }} replace />
+  ) : auth?.currentUser?.staff?.name ? (
+    <Navigate to="/unauthorized" state={{ from: location }} replace />
   ) : (
     <Navigate to="/login" state={{ from: location }} replace />
   );
