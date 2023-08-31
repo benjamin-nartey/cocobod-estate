@@ -13,12 +13,28 @@ import { useLocalStorage } from "../../Hooks/useLocalStorage";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+
+import { useSnapshot } from "valtio";
+
 import state from "../../store/store";
+import { HiUsers } from "react-icons/hi";
 
 function Sidebar({ closeToggle }) {
+  const allowedRoles = ["Super Administrator", "Divisional Administrator"];
+
   const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", null);
   const [accessToken, setAccessToken] = useLocalStorage("accessToken", null);
   const [loading, setLoading] = useState(false);
+
+  const snap = useSnapshot(state);
+
+  // console.log(snap.currentUser.currentUser);
+
+  // console.log(
+  //   snap?.currentUser?.currentUser?.roles.find((role) =>
+  //     allowedRoles.includes(role.name)
+  //   )
+  // );
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -89,20 +105,37 @@ function Sidebar({ closeToggle }) {
             <AiFillHome size={18} />
             Home
           </NavLink>
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={handleCloseSidebar}
-          >
-            <MdDashboard size={18} />
-            Dasboard
-          </NavLink>
+          {snap?.currentUser?.currentUser?.roles.find(
+            (role) => allowedRoles.includes(role.name)
+          ) && (
+            <>
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdDashboard size={18} />
+                Dasboard
+              </NavLink>
+
+              <NavLink
+                to="/users"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <HiUsers size={18} />
+                Users
+              </NavLink>
+            </>
+          )}
           <NavLink
             to="/tenancy"
             className={({ isActive }) =>
-              isActive ? isActiveStyleSpanText : isNotActiveStyle
+              isActive ? isActiveStyle : isNotActiveStyle
             }
             onClick={handleCloseSidebar}
           >
@@ -139,19 +172,14 @@ function Sidebar({ closeToggle }) {
             <IoMdMap size={18} />
             Map
           </NavLink>
-          <NavLink
-            role="button"
+          <button
             to="/loadingPage"
-            className={({ isActive }) =>
-              isActive
-                ? `${isActiveStyle} hidden max-md:flex`
-                : `${isNotActiveStyle} hidden max-md:flex`
-            }
+            className={`${isNotActiveStyle} hidden max-md:flex`}
             onClick={handleLogout}
           >
             <PoweroffOutlined size={18} />
             Logout
-          </NavLink>
+          </button>
         </nav>
         <div className="w-full px-4 mt-8 grid place-items-center">
           <SidebarImage className="w-[150px] h-auto" />
