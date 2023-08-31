@@ -13,6 +13,7 @@ const Authentication = lazy(() =>
   import("./routes/Authentication/Authentication")
 );
 const Home = lazy(() => import("./routes/Home/Home"));
+const Users = lazy(() => import("./routes/Users/Users"));
 const Properties = lazy(() => import("./routes/Properties/Properties"));
 const PropertyDetailsPage = lazy(() =>
   import("./routes/PropertyDetailsPage/PropertyDetailsPage")
@@ -99,7 +100,13 @@ function App() {
       <Route element={<Navigation />}>
         {/*********  Public Routes **********/}
 
-        <Route element={<RequireAuth allowedRoles={["view"]} />}>
+        <Route
+          element={
+            <RequireAuth
+              allowedRoles={["Super Administrator", "Divisional Administrator"]}
+            />
+          }
+        >
           <Route
             element={
               <Suspense fallback={renderLoader()}>
@@ -176,12 +183,27 @@ function App() {
 
         {/******* Private Routes ********/}
 
-        <Route element={<RequireAuth allowedRoles={["create-user"]} />}>
+        <Route
+          element={
+            <RequireAuth
+              allowedRoles={["Super Administrator", "Divisional Administrator"]}
+            />
+          }
+        >
           <Route
             path="/dashboard"
             element={
               <Suspense fallback={renderLoader()}>
                 <Dashboard />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/users"
+            element={
+              <Suspense fallback={renderLoader()}>
+                <Users />
               </Suspense>
             }
           />

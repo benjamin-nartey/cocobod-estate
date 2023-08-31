@@ -12,8 +12,8 @@ function RequireAuth({ allowedRoles }) {
   const location = useLocation();
 
   const areRolesAllowed = () => {
-    const result = auth?.currentUser?.roles?.[0].permissions.find(
-      (permission) => allowedRoles.includes(permission.name)
+    const result = auth?.currentUser?.roles?.find(
+      (role) => allowedRoles.includes(role.name)
     )
       ? true
       : false;
