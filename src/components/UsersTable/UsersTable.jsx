@@ -3,7 +3,7 @@ import { Space, Table, Tag } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { BiEdit } from "react-icons/bi";
 import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "../../axios/axiosInstance";
+import { axiosInstance } from "../../axios/axiosInstance";
 import { useState } from "react";
 
 const { Column, ColumnGroup } = Table;
@@ -29,23 +29,23 @@ const UsersTable = () => {
 
   return (
     <Table dataSource={data?.records} style={{ width: "100%" }}>
-      <Column title="Name" dataIndex={`name`} key="name" />
+      <Column title="Name" dataIndex="name" key="name" />
       <Column
         title="Department"
         dataIndex="staff"
-        render={(value) => <p>{value.department.name}</p>}
+        render={(value) => <p>{value?.department?.name}</p>}
         key="department"
       />
       <Column
         title="Division"
         dataIndex="staff"
-        render={(value) => <p>{value?.department.division?.name}</p>}
+        render={(value) => <p>{value?.department?.division?.name}</p>}
         key="division"
       />
       <Column
         title=" Station"
         dataIndex="staff"
-        render={(value) => <p>{value?.station.region?.name}</p>}
+        render={(value) => <p>{value?.station?.region?.name}</p>}
         key="region"
       />
 
@@ -55,14 +55,14 @@ const UsersTable = () => {
         key="roles"
         render={(roles) => (
           <>
-            {roles.map((role, i) => (
+            {roles?.map((role, i) => (
               <Tag
                 color={`${
-                  role.name === "Super Administrator" ? "green" : "blue"
+                  role?.name === "Super Administrator" ? "green" : "blue"
                 }`}
                 key={i}
               >
-                {role.name}
+                {role?.name}
               </Tag>
             ))}
           </>
@@ -72,16 +72,16 @@ const UsersTable = () => {
         title="Action"
         key="action"
         render={(_, record) => (
-          <Space size="middle">
-            <BiEdit size={24} className="cursor-pointer text-gray-600" />
+          <div className="flex items-center justify-center gap-4">
+            <BiEdit size={22} className="cursor-pointer text-gray-600" />
             <DeleteOutlined
               style={{
-                fontSize: "24px",
+                fontSize: "18px",
                 color: " #FF6A74",
                 cursor: "pointer",
               }}
             />
-          </Space>
+          </div>
         )}
       />
     </Table>

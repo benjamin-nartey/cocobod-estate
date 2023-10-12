@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
-import axiosInstance from "./axios/axiosInstance";
+import { axiosInstance } from "./axios/axiosInstance";
 import { useNavigate, useLocation } from "react-router-dom";
 import state from "./store/store";
 import { lazy, Suspense } from "react";
