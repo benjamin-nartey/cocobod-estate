@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import debounce from "lodash.debounce";
 import { Select, Spin } from "antd";
 
-function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
+function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
   const [fetching, setFetching] = useState(false);
   const [options, setOptions] = useState([]);
   const fetchRef = useRef(0);

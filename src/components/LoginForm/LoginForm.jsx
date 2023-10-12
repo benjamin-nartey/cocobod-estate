@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import api from "../../axios/axios";
+
 import axios from "axios";
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
 
@@ -15,6 +15,10 @@ const defaultFormFields = {
   email: "",
   password: "",
 };
+
+const API = axios.create({
+  baseURL: "https://cocobod-estates-api.onrender.com/api/v1",
+});
 
 function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);
@@ -62,8 +66,8 @@ function LoginForm() {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        "https://cocobod-estates-api.onrender.com/api/v1/auth",
+      const response = await API.post(
+        "/auth",
         { email, password },
         {
           headers: {
@@ -73,16 +77,12 @@ function LoginForm() {
         }
       );
 
-      const userResponse = await axios.get(
-        "https://cocobod-estates-api.onrender.com/api/v1/auth/user",
-
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${response?.data?.accessToken}`,
-          },
-        }
-      );
+      const userResponse = await API.get("/auth/user", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${response?.data?.accessToken}`,
+        },
+      });
 
       const currentUser = userResponse?.data;
 

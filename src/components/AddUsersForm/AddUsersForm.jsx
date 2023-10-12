@@ -4,16 +4,30 @@ import { Button, Modal, Form, Input } from "antd";
 import DebounceSelect from "../DebounceSelect/DebounceSelect";
 import { UserOutlined } from "@ant-design/icons";
 import { MdOutlineEmail } from "react-icons/md";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "../../axios/axiosInstance";
 
 const AddUsersForm = () => {
-  const [value, setValue] = useState([]);
+  const [roleValue, setRoleValue] = useState([]);
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("Content of the modal");
 
+  const [formFields, setformFields] = useState({
+    name: "",
+    email: "",
+    roles: [],
+  });
+
+  const { name, email, roles } = formFields;
+
   const showModal = () => {
     setOpen(true);
   };
+
+  console.log(formFields);
+
+  const handleSubmit = (e) => {};
 
   const handleOk = () => {
     setModalText("The modal will be closed after two seconds");
@@ -29,17 +43,35 @@ const AddUsersForm = () => {
     setOpen(false);
   };
 
-  async function fetchUserList(username) {
-    console.log("fetching user", username);
-    return fetch("https://randomuser.me/api/?results=5")
-      .then((response) => response.json())
+  //   async function fetchUserList(username) {
+  //     console.log("fetching user", username);
+  //     return fetch("https://randomuser.me/api/?results=5")
+  //       .then((response) => response.json())
+  //       .then((body) =>
+  //         body.results.map((user) => ({
+  //           label: `${user.name.first} ${user.name.last}`,
+  //           value: user.login.username,
+  //         }))
+  //       );
+  //   }
+
+  async function fetchRoles(username) {
+    //   console.log("fetching user", username);
+    return axiosInstance
+      .get("/roles", {
+        params: {
+          pageNum: "1",
+        },
+      })
+      .then((response) => response.data)
       .then((body) =>
-        body.results.map((user) => ({
-          label: `${user.name.first} ${user.name.last}`,
-          value: user.login.username,
+        body.records.map((record) => ({
+          label: `${record.name}`,
+          value: record.id,
         }))
       );
   }
+
   return (
     <>
       <Button
@@ -86,7 +118,15 @@ const AddUsersForm = () => {
               },
             ]}
           >
-            <Input placeholder="Enter name" prefix={<UserOutlined />} />
+            <Input
+              name="name"
+              value={name}
+              onChange={(e) =>
+                setformFields({ ...formFields, name: e.target.value })
+              }
+              placeholder="Enter name"
+              prefix={<UserOutlined />}
+            />
           </Form.Item>
 
           <Form.Item
@@ -99,6 +139,11 @@ const AddUsersForm = () => {
             ]}
           >
             <Input
+              name="email"
+              value={email}
+              onChange={(e) =>
+                setformFields({ ...formFields, email: e.target.value })
+              }
               type="email"
               placeholder="Enter email"
               prefix={<MdOutlineEmail />}
@@ -116,12 +161,14 @@ const AddUsersForm = () => {
           >
             <DebounceSelect
               mode="multiple"
-              value={value}
+              value={roles}
               placeholder="Select roles"
-              fetchOptions={fetchUserList}
-              onChange={(newValue) => {
-                setValue(newValue);
-              }}
+              fetchOptions={fetchRoles}
+              //   onChange={(newValue) => {
+              //     setRoleValue(newValue);
+              //   }}
+
+              onChange={(e) => setformFields({ ...formFields, roles: e })}
               style={{
                 width: "100%",
               }}
