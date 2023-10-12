@@ -1,62 +1,84 @@
 import React, { useState } from "react";
 
 import { Button, Modal, Form, Input } from "antd";
+import { message } from "antd";
 import DebounceSelect from "../DebounceSelect/DebounceSelect";
 import { UserOutlined } from "@ant-design/icons";
+
 import { MdOutlineEmail } from "react-icons/md";
-import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../axios/axiosInstance";
 
 const AddUsersForm = () => {
-  const [roleValue, setRoleValue] = useState([]);
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("Content of the modal");
+  const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "User added successfully",
+    });
+  };
+
+  const errorMessage = () => {
+    messageApi.open({
+      type: "error",
+      content: "Error creating user",
+    });
+  };
 
   const [formFields, setformFields] = useState({
     name: "",
     email: "",
-    roles: [],
+    roleIds: [],
   });
 
-  const { name, email, roles } = formFields;
+  const { name, email, roleIds } = formFields;
 
   const showModal = () => {
     setOpen(true);
   };
 
-  console.log(formFields);
-
-  const handleSubmit = (e) => {};
-
-  const handleOk = () => {
-    setModalText("The modal will be closed after two seconds");
-    // setConfirmLoading(true);
-    setTimeout(() => {
-      //   setOpen(false);
-      //   setConfirmLoading(false);
-    }, 2000);
-  };
-
   const handleCancel = () => {
-    console.log("Clicked cancel button");
     setOpen(false);
   };
 
-  //   async function fetchUserList(username) {
-  //     console.log("fetching user", username);
-  //     return fetch("https://randomuser.me/api/?results=5")
-  //       .then((response) => response.json())
-  //       .then((body) =>
-  //         body.results.map((user) => ({
-  //           label: `${user.name.first} ${user.name.last}`,
-  //           value: user.login.username,
-  //         }))
-  //       );
-  //   }
+  console.log(formFields);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const roles = roleIds.map((role) => role.value);
+
+    try {
+      await axiosInstance.post("/users", {
+        name,
+        email,
+        roleIds: roles,
+      });
+
+      success();
+
+      clearInput();
+      handleCancel();
+    } catch (error) {
+      errorMessage();
+      throw new Error(`Error in creating user ${error}`);
+    }
+  };
+
+  const clearInput = () => {
+    setformFields({ name: "", email: "", roleIds: [] });
+    form.resetFields();
+  };
+
+  const handleOk = () => {
+    //an empty function to keep the modal working
+  };
 
   async function fetchRoles(username) {
-    //   console.log("fetching user", username);
     return axiosInstance
       .get("/roles", {
         params: {
@@ -74,6 +96,7 @@ const AddUsersForm = () => {
 
   return (
     <>
+      {contextHolder}
       <Button
         type="primary"
         onClick={showModal}
@@ -82,7 +105,7 @@ const AddUsersForm = () => {
         Add User
       </Button>
       <Modal
-        title="Title"
+        title="ADD USER"
         open={open}
         onOk={handleOk}
         okButtonProps={{
@@ -95,6 +118,8 @@ const AddUsersForm = () => {
         }}
       >
         <Form
+          form={form}
+          onSubmitCapture={handleSubmit}
           name="wrap"
           labelCol={{
             flex: "110px",
@@ -152,7 +177,7 @@ const AddUsersForm = () => {
 
           <Form.Item
             label="Roles"
-            name="roles"
+            name="roleIds"
             rules={[
               {
                 required: true,
@@ -161,14 +186,10 @@ const AddUsersForm = () => {
           >
             <DebounceSelect
               mode="multiple"
-              value={roles}
+              value={roleIds}
               placeholder="Select roles"
               fetchOptions={fetchRoles}
-              //   onChange={(newValue) => {
-              //     setRoleValue(newValue);
-              //   }}
-
-              onChange={(e) => setformFields({ ...formFields, roles: e })}
+              onChange={(e) => setformFields({ ...formFields, roleIds: e })}
               style={{
                 width: "100%",
               }}
