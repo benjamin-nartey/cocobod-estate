@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { Space, Table, Tag } from "antd";
+import { Table, Tag } from "antd";
 import { Button, Modal, Form, Input } from "antd";
-import { message } from "antd";
+import { message, Popconfirm } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { BiEdit } from "react-icons/bi";
 import { useQuery } from "@tanstack/react-query";
@@ -25,6 +25,11 @@ const UsersTable = () => {
     roleIds: [],
     id: "",
   });
+
+  const confirm = (e) => {
+    message.success("Click on Yes");
+  };
+  const cancel = (e) => {};
 
   const { name, email, roleIds, id } = formFields;
 
@@ -293,13 +298,24 @@ const UsersTable = () => {
                 >
                   <BiEdit size={22} className="cursor-pointer text-gray-600" />
                 </button>
-                <DeleteOutlined
-                  style={{
-                    fontSize: "18px",
-                    color: " #FF6A74",
-                    cursor: "pointer",
-                  }}
-                />
+                <Popconfirm
+                  title="Delete the task"
+                  description="Are you sure to delete this task?"
+                  onConfirm={confirm}
+                  onCancel={cancel}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <span className="grid place-items-center">
+                    <DeleteOutlined
+                      style={{
+                        fontSize: "18px",
+                        color: " #FF6A74",
+                        cursor: "pointer",
+                      }}
+                    />
+                  </span>
+                </Popconfirm>
               </div>
             );
           }}

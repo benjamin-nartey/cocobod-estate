@@ -5,6 +5,12 @@
 body {
   font-family: "Open Sans", sans-serif;
 }
-html{
+html {
   scroll-behavior: smooth;
+}
+
+.ant-btn-primary {
+  background-color: transparent;
+  color: black;
+  border: 0.5px solid rgba(128, 128, 128, 0.3);
 }

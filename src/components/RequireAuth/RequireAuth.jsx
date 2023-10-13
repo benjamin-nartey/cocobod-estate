@@ -12,8 +12,8 @@ function RequireAuth({ allowedRoles }) {
   const location = useLocation();
 
   const areRolesAllowed = () => {
-    const result = auth?.currentUser?.roles?.find(
-      (role) => allowedRoles.includes(role.name)
+    const result = auth?.currentUser?.roles?.find((role) =>
+      allowedRoles.includes(role.name)
     )
       ? true
       : false;
@@ -23,8 +23,6 @@ function RequireAuth({ allowedRoles }) {
 
   return areRolesAllowed() ? (
     <Outlet />
-  ) : snap.loadingState ? (
-    <Navigate to="/loadingPage" state={{ from: location }} replace />
   ) : auth?.currentUser?.staff?.name ? (
     <Navigate to="/unauthorized" state={{ from: location }} replace />
   ) : (

@@ -6,7 +6,7 @@ import state from "./store/store";
 import { lazy, Suspense } from "react";
 
 import Navigation from "./routes/Navigation/Navigation";
-import LoadingPage from "./routes/LoadingPage/LoadingPage";
+
 
 // const Navigation = lazy(() => import("./routes/Navigation/Navigation"));
 const Authentication = lazy(() =>
@@ -25,12 +25,10 @@ const Gallery = lazy(() => import("./routes/Gallery/Gallery"));
 const PropertyMap = lazy(() => import("./routes/PropertyMap/PropertyMap"));
 const RequireAuth = lazy(() => import("./components/RequireAuth/RequireAuth"));
 const Dashboard = lazy(() => import("./routes/Dashboard/Dashboard"));
-// const LoadingPage = lazy(() => import("./routes/LoadingPage/LoadingPage"));
+
 const Unauthorized = lazy(() => import("./routes/Unauthorized/Unauthorized"));
 
 const NotExistPage = lazy(() => import("./routes/NotExistPage/NotExistPage"));
-
-const renderLoader = () => <LoadingPage />;
 
 function App() {
   const navigate = useNavigate();
@@ -64,7 +62,7 @@ function App() {
       <Route
         index
         element={
-          <Suspense fallback={renderLoader()}>
+          <Suspense >
             <Authentication />
           </Suspense>
         }
@@ -72,7 +70,7 @@ function App() {
       <Route
         path="login"
         element={
-          <Suspense fallback={renderLoader()}>
+          <Suspense >
             <Authentication />
           </Suspense>
         }
@@ -80,18 +78,18 @@ function App() {
       <Route
         path="unauthorized"
         element={
-          <Suspense fallback={renderLoader()}>
+          <Suspense>
             <Unauthorized />
           </Suspense>
         }
       />
 
-      <Route path="loadingPage" element={<LoadingPage />} />
+      {/* <Route path="loadingPage" element={<LoadingPage />} /> */}
 
       <Route
         path="*"
         element={
-          <Suspense fallback={renderLoader()}>
+          <Suspense>
             <NotExistPage />
           </Suspense>
         }
@@ -109,7 +107,7 @@ function App() {
         >
           <Route
             element={
-              <Suspense fallback={renderLoader()}>
+              <Suspense >
                 <Home />
               </Suspense>
             }
@@ -117,7 +115,7 @@ function App() {
             <Route
               path="/home"
               element={
-                <Suspense fallback={renderLoader()}>
+                <Suspense>
                   <Properties />
                 </Suspense>
               }
@@ -125,7 +123,7 @@ function App() {
             <Route
               path="/home/*"
               element={
-                <Suspense fallback={renderLoader()}>
+                <Suspense>
                   <NotExistPage />
                 </Suspense>
               }
@@ -133,7 +131,7 @@ function App() {
             <Route
               path="home/category/:categoryId"
               element={
-                <Suspense fallback={renderLoader()}>
+                <Suspense>
                   <Properties />
                 </Suspense>
               }
@@ -141,7 +139,7 @@ function App() {
             <Route
               path="home/category/*"
               element={
-                <Suspense fallback={renderLoader()}>
+                <Suspense>
                   <NotExistPage />
                 </Suspense>
               }
@@ -149,7 +147,7 @@ function App() {
           </Route>
           <Route
             element={
-              <Suspense fallback={renderLoader()}>
+              <Suspense>
                 <PropertyDetailsPage />
               </Suspense>
             }
@@ -157,7 +155,7 @@ function App() {
             <Route
               path="property-detail/:propId"
               element={
-                <Suspense fallback={renderLoader()}>
+                <Suspense>
                   <PropertyDetail />
                 </Suspense>
               }
@@ -166,7 +164,7 @@ function App() {
           <Route
             path="gallery"
             element={
-              <Suspense fallback={renderLoader()}>
+              <Suspense>
                 <Gallery />
               </Suspense>
             }
@@ -174,7 +172,7 @@ function App() {
           <Route
             path="map"
             element={
-              <Suspense fallback={renderLoader()}>
+              <Suspense >
                 <PropertyMap />
               </Suspense>
             }
@@ -193,7 +191,7 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <Suspense fallback={renderLoader()}>
+              <Suspense>
                 <Dashboard />
               </Suspense>
             }
@@ -202,7 +200,7 @@ function App() {
           <Route
             path="/users"
             element={
-              <Suspense fallback={renderLoader()}>
+              <Suspense>
                 <Users />
               </Suspense>
             }

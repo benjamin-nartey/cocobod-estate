@@ -44,29 +44,6 @@ function Sidebar({ closeToggle }) {
     if (closeToggle) closeToggle(false);
   };
 
-  const handleLogout = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.delete(
-        "https://cocobod-estates-api.onrender.com/api/v1/auth",
-        {
-          headers: {
-            Authorization: `Bearer ${refreshToken}`,
-          },
-        }
-      );
-
-      state.currentUser = {};
-      setRefreshToken(null);
-      setAccessToken(null);
-      navigate(from, { replace: true });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const isNotActiveStyle =
     "px-5 py-2 flex items-center text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize";
   const isActiveStyle =
@@ -105,8 +82,8 @@ function Sidebar({ closeToggle }) {
             <AiFillHome size={18} />
             Home
           </NavLink>
-          {snap?.currentUser?.currentUser?.roles.find(
-            (role) => allowedRoles.includes(role.name)
+          {snap?.currentUser?.currentUser?.roles.find((role) =>
+            allowedRoles.includes(role.name)
           ) && (
             <>
               <NavLink
@@ -172,11 +149,7 @@ function Sidebar({ closeToggle }) {
             <IoMdMap size={18} />
             Map
           </NavLink>
-          <button
-            to="/loadingPage"
-            className={`${isNotActiveStyle} hidden max-md:flex`}
-            onClick={handleLogout}
-          >
+          <button className={`${isNotActiveStyle} hidden max-md:flex`}>
             <PoweroffOutlined size={18} />
             Logout
           </button>
