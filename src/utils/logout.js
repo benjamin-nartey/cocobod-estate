@@ -15,6 +15,8 @@ export const Logout = async () => {
     await api.delete("/auth");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("currentUserState");
+    
   } catch (error) {
     console.log(error);
   } finally {

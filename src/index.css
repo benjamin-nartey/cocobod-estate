@@ -10,7 +10,34 @@ html {
 }
 
 .ant-btn-primary {
-  background-color: transparent;
-  color: black;
-  border: 0.5px solid rgba(128, 128, 128, 0.3);
+  background-color: transparent !important;
+  color: #6e431d !important;
+  border: 0.5px solid rgba(128, 128, 128, 0.3) !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: #6e431d !important;
+  color: #fff !important;
+  border: 0.5px solid rgba(128, 128, 128, 0.3) !important;
+}
+.ant-btn-default {
+  background-color: transparent !important;
+  color: #6e431d !important;
+  border: 0.5px solid rgba(128, 128, 128, 0.3) !important;
+}
+
+.ant-btn-default:hover {
+  background-color: #6e431d !important;
+  color: #fff !important;
+  border: 0.5px solid rgba(128, 128, 128, 0.3) !important;
+}
+
+.ant-table-container {
+  overflow-x: scroll;
+}
+
+.ant-input:focus,
+.ant-input:hover,
+.ant-input:active {
+  border-color: #6e431d !important;
 }

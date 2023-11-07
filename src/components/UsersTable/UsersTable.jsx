@@ -12,10 +12,12 @@ import { useState } from "react";
 
 import { MdOutlineEmail } from "react-icons/md";
 
-const { Column, ColumnGroup } = Table;
-
 const UsersTable = () => {
   const [open, setOpen] = useState(false);
+  const [recordsPerPage, setRecordsPerPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -59,19 +61,30 @@ const UsersTable = () => {
     //an empty function to keep the modal working
   };
 
-  const { data, status, error } = useQuery(["users"], async () => {
-    const response = await axiosInstance.get("/users", {
-      params: {
-        pageNum: "1",
-      },
-    });
+  const fetchUsers = async (pageNum) => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get("/users", {
+        params: {
+          pageNum: pageNum,
+        },
+      });
+      setTotalPages(response.data.meta.totalPages);
+      setRecordsPerPage(response.data.meta.recordsPerPage);
+      console.log({ totalPages });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return response.data;
-  });
+  const { data, status, error } = useQuery(["users"], () => fetchUsers(1));
 
-  if (status === "loading") {
-    return <p>...loading</p>;
-  } else if (status === "error") {
+  console.log(data);
+
+  if (status === "error") {
     console.log(error);
   }
 
@@ -117,6 +130,113 @@ const UsersTable = () => {
     setformFields({ name: "", email: "", roleIds: [] });
     form.resetFields();
   };
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return (
+          String(record.name).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.status).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.staff.department.name)
+            .toLowerCase()
+            .includes(value.toLowerCase()) ||
+          String(record.staff.department.division.name)
+            .toLowerCase()
+            .includes(value.toLowerCase()) ||
+          String(record.staff.station.region.name)
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        );
+      },
+    },
+    {
+      title: "Department",
+      dataIndex: ["staff", "department", "name"],
+      key: "department",
+      filteredValue: [searchText],
+    },
+    {
+      title: "Division",
+      dataIndex: ["staff", "department", "division", "name"],
+      key: "division",
+    },
+    {
+      title: " Station",
+      dataIndex: ["staff", "station", "region", "name"],
+      key: "region",
+    },
+    {
+      title: "Roles",
+      dataIndex: "roles",
+      key: 'roles',
+      render: (_, {roles}) => (
+        <>
+          {roles?.map((role, i) => (
+            <Tag
+              color={`${
+                role?.name === "Super Administrator" ? "green" : "blue"
+              }`}
+              key={i}
+            >
+              {role?.name}
+            </Tag>
+          ))}
+        </>
+      ),
+    },
+    {
+      title: " Status",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "action",
+      render: (value) => {
+        return (
+          <div className="flex items-center justify-center gap-4">
+            <button
+              onClick={(e) => {
+                setformFields({
+                  ...formFields,
+                  name: value?.name,
+                  email: value?.email,
+                  id: value?.id,
+                });
+                console.log(value);
+                showModal();
+              }}
+            >
+              <BiEdit size={22} className="cursor-pointer text-gray-600" />
+            </button>
+            <Popconfirm
+              title="Delete the task"
+              description="Are you sure to delete this task?"
+              onConfirm={confirm}
+              onCancel={cancel}
+              okText="Yes"
+              cancelText="No"
+            >
+              <span className="grid place-items-center">
+                <DeleteOutlined
+                  style={{
+                    fontSize: "18px",
+                    color: " #FF6A74",
+                    cursor: "pointer",
+                  }}
+                />
+              </span>
+            </Popconfirm>
+          </div>
+        );
+      },
+    },
+  ];
 
   console.log(formFields);
 
@@ -229,99 +349,27 @@ const UsersTable = () => {
         </Form>
       </Modal>
 
-      <Table dataSource={data?.records} style={{ width: "100%" }} rowKey="id">
-        <Column title="Name" dataIndex="name" key="name" />
-        <Column
-          title="Department"
-          dataIndex="staff"
-          render={(value) => <p>{value?.department?.name}</p>}
-          key="department"
-        />
-        <Column
-          title="Division"
-          dataIndex="staff"
-          render={(value) => <p>{value?.department?.division?.name}</p>}
-          key="division"
-        />
-        <Column
-          title=" Station"
-          dataIndex="staff"
-          render={(value) => <p>{value?.station?.region?.name}</p>}
-          key="region"
-        />
-
-        <Column
-          title="Roles"
-          dataIndex="roles"
-          key="roles"
-          render={(roles) => (
-            <>
-              {roles?.map((role, i) => (
-                <Tag
-                  color={`${
-                    role?.name === "Super Administrator" ? "green" : "blue"
-                  }`}
-                  key={i}
-                >
-                  {role?.name}
-                </Tag>
-              ))}
-            </>
-          )}
-        />
-
-        <Column
-          title=" Status"
-          dataIndex="status"
-          render={(value) => <p>{value}</p>}
-          key="status"
-        />
-
-        <Column
-          title="Action"
-          dataIndex=""
-          key="action"
-          render={(value) => {
-            return (
-              <div className="flex items-center justify-center gap-4">
-                <button
-                  onClick={(e) => {
-                    setformFields({
-                      ...formFields,
-                      name: value?.name,
-                      email: value?.email,
-                      id: value?.id,
-                    });
-                    console.log(value);
-                    showModal();
-                  }}
-                >
-                  <BiEdit size={22} className="cursor-pointer text-gray-600" />
-                </button>
-                <Popconfirm
-                  title="Delete the task"
-                  description="Are you sure to delete this task?"
-                  onConfirm={confirm}
-                  onCancel={cancel}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <span className="grid place-items-center">
-                    <DeleteOutlined
-                      style={{
-                        fontSize: "18px",
-                        color: " #FF6A74",
-                        cursor: "pointer",
-                      }}
-                    />
-                  </span>
-                </Popconfirm>
-              </div>
-            );
-          }}
-        />
-      </Table>
+      <Input.Search
+        placeholder="Search records..."
+        onSearch={(value) => setSearchText(value)}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+      <Table
+        dataSource={data?.records}
+        loading={status === "loading" || loading}
+        pagination={{
+          pageSize: recordsPerPage,
+          total: totalPages,
+          onChange: (pageNum) => {
+            fetchUsers(pageNum);
+          },
+        }}
+        style={{ width: "100%" }}
+        rowKey="id"
+        columns={columns}
+      ></Table>
     </>
   );
 };
 export default UsersTable;
+

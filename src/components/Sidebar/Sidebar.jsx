@@ -18,6 +18,7 @@ import { useSnapshot } from "valtio";
 
 import state from "../../store/store";
 import { HiUsers } from "react-icons/hi";
+import { Logout } from "../../utils/logout";
 
 function Sidebar({ closeToggle }) {
   const allowedRoles = ["Super Administrator", "Divisional Administrator"];
@@ -28,17 +29,13 @@ function Sidebar({ closeToggle }) {
 
   const snap = useSnapshot(state);
 
-  // console.log(snap.currentUser.currentUser);
-
-  // console.log(
-  //   snap?.currentUser?.currentUser?.roles.find((role) =>
-  //     allowedRoles.includes(role.name)
-  //   )
-  // );
-
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/login";
+
+  const handleLogout = async () => {
+    await Logout().then(navigate(from, { replace: true }));
+  };
 
   const handleCloseSidebar = () => {
     if (closeToggle) closeToggle(false);
@@ -149,7 +146,10 @@ function Sidebar({ closeToggle }) {
             <IoMdMap size={18} />
             Map
           </NavLink>
-          <button className={`${isNotActiveStyle} hidden max-md:flex`}>
+          <button
+            onClick={handleLogout}
+            className={`${isNotActiveStyle} hidden max-md:flex`}
+          >
             <PoweroffOutlined size={18} />
             Logout
           </button>

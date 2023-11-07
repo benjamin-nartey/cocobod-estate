@@ -24,9 +24,9 @@ function Properties() {
       });
 
       if (location.pathname === "/home") {
-        setProperties(response.data);
+        return setProperties(response.data);
       } else {
-        setProperties(filter);
+        return setProperties(filter);
       }
     } catch (error) {
       console.log(error);

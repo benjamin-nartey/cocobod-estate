@@ -4,9 +4,8 @@ import { axiosInstance } from "./axios/axiosInstance";
 import { useNavigate, useLocation } from "react-router-dom";
 import state from "./store/store";
 import { lazy, Suspense } from "react";
-
+import FetchingPage from "./routes/FetchingPage/FetchingPage";
 import Navigation from "./routes/Navigation/Navigation";
-
 
 // const Navigation = lazy(() => import("./routes/Navigation/Navigation"));
 const Authentication = lazy(() =>
@@ -62,15 +61,16 @@ function App() {
       <Route
         index
         element={
-          <Suspense >
+          <Suspense>
             <Authentication />
           </Suspense>
         }
       />
+
       <Route
         path="login"
         element={
-          <Suspense >
+          <Suspense>
             <Authentication />
           </Suspense>
         }
@@ -84,7 +84,7 @@ function App() {
         }
       />
 
-      {/* <Route path="loadingPage" element={<LoadingPage />} /> */}
+      <Route path="fetching" element={<FetchingPage />} />
 
       <Route
         path="*"
@@ -107,7 +107,7 @@ function App() {
         >
           <Route
             element={
-              <Suspense >
+              <Suspense>
                 <Home />
               </Suspense>
             }
@@ -172,7 +172,7 @@ function App() {
           <Route
             path="map"
             element={
-              <Suspense >
+              <Suspense>
                 <PropertyMap />
               </Suspense>
             }

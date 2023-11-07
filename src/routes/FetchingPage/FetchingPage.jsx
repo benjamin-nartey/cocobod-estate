@@ -1,5 +1,6 @@
 import React from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import logo from "../../assets/logo-cocobod.png";
 import navBg from "../../assets/navbg.png";
 import { HiArrowDown, HiMenu } from "react-icons/hi";
 import { useState } from "react";
@@ -22,7 +23,7 @@ import { useSnapshot } from "valtio";
 import { ArrowDownOutlined } from "@ant-design/icons";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
-function Navigation() {
+function FetchingPage() {
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [toggleLogout, setToggleLogout] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,8 +40,9 @@ function Navigation() {
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/login";
 
-  const handleLogout = async () => {
-    await Logout().then(navigate(from, { replace: true }));
+  const handleLogout = () => {
+    Logout();
+    navigate(from, { replace: true });
   };
 
   function getRandomColor() {
@@ -66,7 +68,22 @@ function Navigation() {
       </div>
       <div className="flex bg-[#F4EDE7] max-md:flex-col min-h-screen transition-height duration-75 ease-out overflow-hidden  ">
         <div className="flex flex-initial h-screen max-md:hidden">
-          <Sidebar />
+          <div
+            style={{ minWidth: "220px" }}
+            className="flex flex-col justify-between bg-[#6E431D] h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
+          >
+             <div className="w-full h-[18vh] bg-[#F4EDE7] grid place-items-center px-5">
+        <div className=" logo-box flex justify-center items-center gap-2 ">
+          <img className="w-[45px] h-auto " src={logo} alt="logo" />
+          <div className="line w-[1.2px] h-[25px] bg-[#6E431D] "></div>
+          <h4 className="">
+            <span className="block text-[12px] text-[#6E431D] font-semibold">
+              Ghana Cocoa Board
+            </span>
+          </h4>
+        </div>
+      </div>
+          </div>
         </div>
         <div className="main-content-column h-screen w-full overflow-y-auto overflow-x-hidden">
           <div
@@ -132,4 +149,4 @@ function Navigation() {
   );
 }
 
-export default Navigation;
+export default FetchingPage;

@@ -28,9 +28,9 @@ const Card = ({ icon, thumbnail, alt, className, title, numberOfItems }) => {
         </div>
       </div>
       <div className="w-full flex flex-col justify-between px-4 h-2/5 ">
-        <h3 className="font-bold text-[20px] text-gray-100 ">{title}</h3>
+        <h3 className="font-semibold text-[20px] text-gray-100 ">{title}</h3>
         <div className="flex justify-between items-center py-2">
-          <span className="text-base font-normal text-gray-200 ">
+          <span className="text-base font-medium text-gray-200 ">
             {numberOfItems}
           </span>
           <img className="w-12 h-12" src={thumbnail} alt={alt} />
@@ -46,11 +46,11 @@ const Dashboard = () => {
       <div className="flex justify-start items-center w-full flex-wrap gap-10">
         <Card
           title="Properties"
-          numberOfItems={`21,000`}
+          numberOfItems="21,000"
           icon={propertiesIcon}
           thumbnail={propertiesThumbnail}
           alt="house"
-          className="bg-[#508aff]"
+          className="bg-[rgba(160,82,45,.8)]"
         />
         <Card
           title="Departments"
@@ -58,7 +58,7 @@ const Dashboard = () => {
           icon={departmentsIcon}
           thumbnail={departmentThumbnail}
           alt="department"
-          className="bg-[#ffc355]"
+          className="bg-[rgb(204,119,34,.8)]"
         />
         <Card
           title="Divisions"
@@ -66,7 +66,7 @@ const Dashboard = () => {
           icon={divisionsIcon}
           thumbnail={divisionsThumbnail}
           alt="divisions"
-          className="bg-[#ff7ead]"
+          className="bg-[rgb(129,65,65,.8)]"
         />
         <Card
           title="Users"
@@ -74,7 +74,7 @@ const Dashboard = () => {
           icon={usersIcon}
           thumbnail={usersThumbnail}
           alt="users"
-          className="bg-[#8255ff]"
+          className="bg-[rgb(192,64,0,.8)]"
         />
       </div>
     </section>
