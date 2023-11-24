@@ -9,10 +9,27 @@ import { UserOutlined } from "@ant-design/icons";
 import { MdOutlineEmail } from "react-icons/md";
 import { axiosInstance } from "../../axios/axiosInstance";
 
-const AddUsersForm = () => {
+const AddAreasForm = () => {
   const [open, setOpen] = useState(false);
   const [pageNum, setpageNum] = useState(1);
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState([
+    {
+      label: "REGION",
+      value: "REGION",
+    },
+    {
+      label: "METROPOLITAN",
+      value: "METROPOLITAN",
+    },
+    {
+      label: "MUNICIPAL",
+      value: "MUNICIPAL",
+    },
+    {
+      label: "DISTRICT",
+      value: "DISTRICT",
+    },
+  ]);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("Content of the modal");
   const [form] = Form.useForm();
@@ -34,11 +51,10 @@ const AddUsersForm = () => {
 
   const [formFields, setformFields] = useState({
     name: "",
-    email: "",
-    roleIds: [],
+    category: "",
   });
 
-  const { name, email, roleIds } = formFields;
+  const { name, category } = formFields;
 
   const showModal = () => {
     setOpen(true);
@@ -53,57 +69,33 @@ const AddUsersForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const roles = roleIds.map((role) => role.value);
-
     try {
-      await axiosInstance.post("/users", {
+      await axiosInstance.post("/areas", {
         name,
-        email,
-        roleIds: roles,
+        category,
       });
 
-      success('User created successfully');
+      success("Area created successfully");
 
       clearInput();
       handleCancel();
     } catch (error) {
-      errorMessage('Error creating user');
-      throw new Error(`Error creating user ${error}`);
+      errorMessage("Error creating Area");
+      throw new Error(`Error creating Area ${error}`);
     }
   };
 
-  const clearInput = () => {
-    setformFields({ name: "", email: "", roleIds: [] });
+  function clearInput() {
+    setformFields({
+      name: "",
+      category: "",
+    });
     form.resetFields();
-  };
+  }
 
   const handleOk = () => {
     //an empty function to keep the modal working
   };
-
-  async function fetchRoles(pageNum) {
-    const response = await axiosInstance.get("/roles", {
-      params: {
-        pageNum: pageNum,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptions(...options, dataRcord);
-
-    return options;
-  }
-
-  useEffect(() => {
-    fetchRoles(pageNum);
-  }, []);
 
   return (
     <>
@@ -113,10 +105,10 @@ const AddUsersForm = () => {
         onClick={showModal}
         style={{ backgroundColor: "#6E431D", color: "#fff" }}
       >
-        Add User
+        Add Area
       </Button>
       <Modal
-        title="ADD USER"
+        title="ADD AREA"
         open={open}
         onOk={handleOk}
         okButtonProps={{
@@ -160,35 +152,14 @@ const AddUsersForm = () => {
               onChange={(e) =>
                 setformFields({ ...formFields, name: e.target.value })
               }
-              placeholder="Enter name"
+              placeholder="Enter Area name"
               prefix={<UserOutlined />}
             />
           </Form.Item>
 
           <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              name="email"
-              value={email}
-              onChange={(e) =>
-                setformFields({ ...formFields, email: e.target.value })
-              }
-              type="email"
-              placeholder="Enter email"
-              prefix={<MdOutlineEmail />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Roles"
-            name="roleIds"
+            label="Category"
+            name="category"
             rules={[
               {
                 required: true,
@@ -196,11 +167,11 @@ const AddUsersForm = () => {
             ]}
           >
             <CustomSelect
-              mode="multiple"
-              value={roleIds}
-              placeholder="Select roles"
+              mode="single"
+              value={category}
+              placeholder="Select category"
               options={options}
-              onChange={(e) => setformFields({ ...formFields, roleIds: e })}
+              onChange={(e) => setformFields({ ...formFields, category: e })}
               style={{
                 width: "100%",
               }}
@@ -221,4 +192,4 @@ const AddUsersForm = () => {
     </>
   );
 };
-export default AddUsersForm;
+export default AddAreasForm;

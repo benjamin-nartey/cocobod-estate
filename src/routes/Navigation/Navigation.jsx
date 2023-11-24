@@ -21,11 +21,11 @@ import state from "../../store/store";
 import { useSnapshot } from "valtio";
 import { ArrowDownOutlined } from "@ant-design/icons";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import Loader from "../../components/Loader/Loader";
 
 function Navigation() {
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [toggleLogout, setToggleLogout] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", null);
   const [accessToken, setAccessToken] = useLocalStorage("accessToken", null);
   const [avatarBackground, setAvatarBackground] = useState(getRandomColor());
@@ -40,7 +40,11 @@ function Navigation() {
   const from = location.state?.from?.pathname || "/login";
 
   const handleLogout = async () => {
-    await Logout().then(navigate(from, { replace: true }));
+    const response = await Logout();
+    if (!response) {
+      return;
+    }
+    navigate(from, { replace: true });
   };
 
   function getRandomColor() {
@@ -60,7 +64,21 @@ function Navigation() {
             onClick={handleLogout}
             className="px-4 py-2 bg-white rounded-md text-base font-medium flex items-center justify-center gap-2 max-md:hidden"
           >
-            <AiOutlinePoweroff /> Logout
+            {snap.loadingState ? (
+              <>
+                {" "}
+                <Loader
+                  width="w-5"
+                  height="h-5"
+                  fillColor="fill-[#6E431D]"
+                />{" "}
+                Loging...
+              </>
+            ) : (
+              <>
+                <AiOutlinePoweroff size={18} /> Logout
+              </>
+            )}
           </button>
         )}
       </div>
@@ -117,7 +135,7 @@ function Navigation() {
         </div>
         {toggleSidebar && (
           <div className="fixed w-4/5 bg-white h-screen overflow-y-auto shadow-md z-10 animate-slide-in">
-            <div className="absolute w-full flex justify-end items-center p-2">
+            <div className="absolute w-full flex justify-end items-center p-2 z-20">
               <AiFillCloseCircle
                 fontSize={30}
                 className="cursor-pointer text-[#6E431D] "

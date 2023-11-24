@@ -2,43 +2,40 @@ import React, { useEffect, useState } from "react";
 
 import { Button, Modal, Form, Input } from "antd";
 import { message } from "antd";
-import DebounceSelect from "../DebounceSelect/DebounceSelect";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { UserOutlined } from "@ant-design/icons";
 
-import { MdOutlineEmail } from "react-icons/md";
 import { axiosInstance } from "../../axios/axiosInstance";
 
-const AddUsersForm = () => {
-  const [open, setOpen] = useState(false);
-  const [pageNum, setpageNum] = useState(1);
+const AddDepartmentsForm = () => {
+  const [pageNum, setPageNum] = useState(1);
   const [options, setOptions] = useState([]);
+  const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("Content of the modal");
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const success = (content) => {
+  const success = () => {
     messageApi.open({
       type: "success",
-      content: content,
+      content: "User added successfully",
     });
   };
 
-  const errorMessage = (content) => {
+  const errorMessage = () => {
     messageApi.open({
       type: "error",
-      content: content,
+      content: "Error creating user",
     });
   };
 
   const [formFields, setformFields] = useState({
     name: "",
-    email: "",
-    roleIds: [],
+    divisionId: [],
   });
 
-  const { name, email, roleIds } = formFields;
+  const { name, divisionId } = formFields;
 
   const showModal = () => {
     setOpen(true);
@@ -53,27 +50,26 @@ const AddUsersForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const roles = roleIds.map((role) => role.value);
+    const divisions = divisionId.map((division) => division.value);
 
     try {
-      await axiosInstance.post("/users", {
+      await axiosInstance.post("/departments", {
         name,
-        email,
-        roleIds: roles,
+        divisionId: divisions,
       });
 
-      success('User created successfully');
+      success();
 
       clearInput();
       handleCancel();
     } catch (error) {
-      errorMessage('Error creating user');
-      throw new Error(`Error creating user ${error}`);
+      errorMessage();
+      throw new Error(`Error in creating department ${error}`);
     }
   };
 
   const clearInput = () => {
-    setformFields({ name: "", email: "", roleIds: [] });
+    setformFields({ name: "", divisionId: [] });
     form.resetFields();
   };
 
@@ -81,8 +77,8 @@ const AddUsersForm = () => {
     //an empty function to keep the modal working
   };
 
-  async function fetchRoles(pageNum) {
-    const response = await axiosInstance.get("/roles", {
+  async function fetchDivisions(pageNum) {
+    const response = await axiosInstance.get("/divisions", {
       params: {
         pageNum: pageNum,
       },
@@ -102,7 +98,7 @@ const AddUsersForm = () => {
   }
 
   useEffect(() => {
-    fetchRoles(pageNum);
+    fetchDivisions(pageNum);
   }, []);
 
   return (
@@ -113,10 +109,10 @@ const AddUsersForm = () => {
         onClick={showModal}
         style={{ backgroundColor: "#6E431D", color: "#fff" }}
       >
-        Add User
+        Add Department
       </Button>
       <Modal
-        title="ADD USER"
+        title="ADD DEPARTMENT"
         open={open}
         onOk={handleOk}
         okButtonProps={{
@@ -166,29 +162,8 @@ const AddUsersForm = () => {
           </Form.Item>
 
           <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              name="email"
-              value={email}
-              onChange={(e) =>
-                setformFields({ ...formFields, email: e.target.value })
-              }
-              type="email"
-              placeholder="Enter email"
-              prefix={<MdOutlineEmail />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Roles"
-            name="roleIds"
+            label="Divisions"
+            name="divisionId"
             rules={[
               {
                 required: true,
@@ -196,11 +171,11 @@ const AddUsersForm = () => {
             ]}
           >
             <CustomSelect
-              mode="multiple"
-              value={roleIds}
-              placeholder="Select roles"
+              mode="single"
+              value={divisionId}
+              placeholder="Select divisions"
               options={options}
-              onChange={(e) => setformFields({ ...formFields, roleIds: e })}
+              onChange={(e) => setformFields({ ...formFields, divisionId: e })}
               style={{
                 width: "100%",
               }}
@@ -221,4 +196,4 @@ const AddUsersForm = () => {
     </>
   );
 };
-export default AddUsersForm;
+export default AddDepartmentsForm;

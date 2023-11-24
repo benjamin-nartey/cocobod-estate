@@ -1,11 +1,20 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { AiFillHome } from "react-icons/ai";
+import { AiFillCalendar } from "react-icons/ai";
 import { BiTimeFive } from "react-icons/bi";
 import { GiAutoRepair } from "react-icons/gi";
-import { MdDashboard, MdOutlineReceipt } from "react-icons/md";
+import {
+  MdAreaChart,
+  MdDashboard,
+  MdLocationPin,
+  MdOutlineReceipt,
+  MdOutlineSafetyDivider,
+  MdProductionQuantityLimits,
+  MdWorkspacePremium,
+} from "react-icons/md";
 import { IoMdMap } from "react-icons/io";
-import { GiHouseKeys } from "react-icons/gi";
+import { BsFillBuildingsFill } from "react-icons/bs";
 import logo from "../../assets/logo-cocobod.png";
 import { ReactComponent as SidebarImage } from "../../assets/sidebarImg.svg";
 import { PoweroffOutlined } from "@ant-design/icons";
@@ -19,14 +28,10 @@ import { useSnapshot } from "valtio";
 import state from "../../store/store";
 import { HiUsers } from "react-icons/hi";
 import { Logout } from "../../utils/logout";
+import Loader from "../Loader/Loader";
 
 function Sidebar({ closeToggle }) {
   const allowedRoles = ["Super Administrator", "Divisional Administrator"];
-
-  const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", null);
-  const [accessToken, setAccessToken] = useLocalStorage("accessToken", null);
-  const [loading, setLoading] = useState(false);
-
   const snap = useSnapshot(state);
 
   const location = useLocation();
@@ -34,7 +39,11 @@ function Sidebar({ closeToggle }) {
   const from = location.state?.from?.pathname || "/login";
 
   const handleLogout = async () => {
-    await Logout().then(navigate(from, { replace: true }));
+    const response = await Logout();
+    if (!response) {
+      return;
+    }
+    navigate(from, { replace: true });
   };
 
   const handleCloseSidebar = () => {
@@ -56,7 +65,7 @@ function Sidebar({ closeToggle }) {
       style={{ minWidth: "220px" }}
       className="flex flex-col justify-between bg-[#6E431D] h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
     >
-      <div className="w-full h-[18vh] bg-[#F4EDE7] grid place-items-center px-5">
+      <div className="w-full h-[18vh] sticky top-0 z-10 bg-[#F4EDE7] grid place-items-center px-5">
         <div className=" logo-box flex justify-center items-center gap-2 ">
           <img className="w-[45px] h-auto " src={logo} alt="logo" />
           <div className="line w-[1.2px] h-[25px] bg-[#6E431D] "></div>
@@ -95,6 +104,17 @@ function Sidebar({ closeToggle }) {
               </NavLink>
 
               <NavLink
+                to="/properties"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <AiFillCalendar size={18} />
+                Properties
+              </NavLink>
+
+              <NavLink
                 to="/users"
                 className={({ isActive }) =>
                   isActive ? isActiveStyle : isNotActiveStyle
@@ -103,6 +123,72 @@ function Sidebar({ closeToggle }) {
               >
                 <HiUsers size={18} />
                 Users
+              </NavLink>
+
+              <NavLink
+                to="/departments"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <BsFillBuildingsFill size={18} />
+                Departments
+              </NavLink>
+
+              <NavLink
+                to="/divisions"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdOutlineSafetyDivider size={25} />
+                Divisions
+              </NavLink>
+
+              <NavLink
+                to="/roles"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdWorkspacePremium size={25} />
+                Roles
+              </NavLink>
+
+              <NavLink
+                to="/locations"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdLocationPin size={25} />
+                Locations
+              </NavLink>
+
+              <NavLink
+                to="/areas"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdAreaChart size={25} />
+                Areas
+              </NavLink>
+
+              <NavLink
+                to="/property-types"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdProductionQuantityLimits size={25} />
+                Property types
               </NavLink>
             </>
           )}
@@ -150,8 +236,13 @@ function Sidebar({ closeToggle }) {
             onClick={handleLogout}
             className={`${isNotActiveStyle} hidden max-md:flex`}
           >
-            <PoweroffOutlined size={18} />
-            Logout
+            {snap.loadingState ? (
+              <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
+            ) : (
+              <>
+                <PoweroffOutlined size={18} /> Logout
+              </>
+            )}
           </button>
         </nav>
         <div className="w-full px-4 mt-8 grid place-items-center">

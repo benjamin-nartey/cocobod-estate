@@ -13,7 +13,16 @@ const Authentication = lazy(() =>
 );
 const Home = lazy(() => import("./routes/Home/Home"));
 const Users = lazy(() => import("./routes/Users/Users"));
+const Departments = lazy(() => import("./routes/Departments/Departments"));
+const Divisions = lazy(() => import("./routes/Divisions/Divisions"));
+const Roles = lazy(() => import("./routes/Roles/Roles"));
 const Properties = lazy(() => import("./routes/Properties/Properties"));
+const Property = lazy(() => import("./routes/Property/Property"));
+const Locations = lazy(() => import("./routes/Locations/Locations"));
+const Areas = lazy(() => import("./routes/Areas/Areas"));
+const PropertyTypes = lazy(() =>
+  import("./routes/PropertyTypes/PropertyTypes")
+);
 const PropertyDetailsPage = lazy(() =>
   import("./routes/PropertyDetailsPage/PropertyDetailsPage")
 );
@@ -202,6 +211,69 @@ function App() {
             element={
               <Suspense>
                 <Users />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/departments"
+            element={
+              <Suspense>
+                <Departments />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/divisions"
+            element={
+              <Suspense>
+                <Divisions />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/roles"
+            element={
+              <Suspense>
+                <Roles />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/properties"
+            element={
+              <Suspense>
+                <Property />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/locations"
+            element={
+              <Suspense>
+                <Locations />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/areas"
+            element={
+              <Suspense>
+                <Areas />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/property-types"
+            element={
+              <Suspense>
+                <PropertyTypes />
               </Suspense>
             }
           />

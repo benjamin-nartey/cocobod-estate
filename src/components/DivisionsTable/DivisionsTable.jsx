@@ -11,14 +11,12 @@ import DebounceSelect from "../DebounceSelect/DebounceSelect";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { useState } from "react";
 
-import { MdOutlineEmail } from "react-icons/md";
-
-const UsersTable = () => {
+const DivisionsTable = () => {
+  const [pageNum, setPageNum] = useState(1);
   const [options, setOptions] = useState([]);
+
   const [open, setOpen] = useState(false);
   const [recordsPerPage, setRecordsPerPage] = useState(1);
-  const [page, setPage] = useState(1);
-  const [rolePage, setRolePage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,8 +25,7 @@ const UsersTable = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [formFields, setformFields] = useState({
     name: "",
-    email: "",
-    roleIds: [],
+    divisionIds: [],
     id: "",
   });
 
@@ -37,7 +34,7 @@ const UsersTable = () => {
   };
   const cancel = (e) => {};
 
-  const { name, email, roleIds, id } = formFields;
+  const { name, divisionIds, id } = formFields;
 
   const showModal = () => {
     setOpen(true);
@@ -45,6 +42,7 @@ const UsersTable = () => {
 
   const handleCancel = () => {
     setOpen(false);
+    form.resetFields();
   };
 
   const success = () => {
@@ -61,18 +59,16 @@ const UsersTable = () => {
     });
   };
 
-  console.log({ options });
-
   const handleOk = () => {
     //an empty function to keep the modal working
   };
 
-  const fetchUsers = async (page) => {
+  const fetchDivisions = async (pageNum) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get("/users", {
+      const response = await axiosInstance.get("/divisions", {
         params: {
-          pageNum: page,
+          pageNum: pageNum,
         },
       });
       setTotalPages(response.data.meta.totalPages);
@@ -86,11 +82,9 @@ const UsersTable = () => {
     }
   };
 
-  const { data, status, error } = useQuery({
-    queryKey: ["users", page],
-    queryFn: () => fetchUsers(page),
-    keepPreviousData: true,
-  });
+  const { data, status, error } = useQuery(["divisions"], () =>
+    fetchDivisions(1)
+  );
 
   console.log(data);
 
@@ -98,10 +92,10 @@ const UsersTable = () => {
     console.log(error);
   }
 
-  async function fetchRoles(rolePage) {
-    const response = await axiosInstance.get("/roles", {
+  async function fetchDivisionsForPatch(pageNum) {
+    const response = await axiosInstance.get("/divisions", {
       params: {
-        pageNum: rolePage,
+        pageNum: pageNum,
       },
     });
 
@@ -119,19 +113,18 @@ const UsersTable = () => {
   }
 
   useEffect(() => {
-    fetchRoles(rolePage);
+    fetchDivisionsForPatch(pageNum);
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const roles = roleIds.map((role) => role.value);
+    const divisions = divisionIds.map((division) => division.value);
 
     try {
-      await axiosInstance.patch(`/users/${id}`, {
+      await axiosInstance.patch(`/departments/${id}`, {
         name,
-        email,
-        roleIds: roles,
+        divisionIds: divisions,
       });
 
       success();
@@ -145,13 +138,13 @@ const UsersTable = () => {
   };
 
   const clearInput = () => {
-    setformFields({ name: "", email: "", roleIds: [] });
+    setformFields({ name: "", divisionIds: [] });
     form.resetFields();
   };
 
   const columns = [
     {
-      title: "Name",
+      title: "Division Name",
       dataIndex: "name",
       key: "name",
       filteredValue: [searchText],
@@ -159,52 +152,11 @@ const UsersTable = () => {
         return (
           String(record.name).toLowerCase().includes(value.toLowerCase()) ||
           String(record.status).toLowerCase().includes(value.toLowerCase()) ||
-          String(record.staff.department.name)
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          String(record.staff.department.division.name)
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          String(record.staff.station.region.name)
+          String(record.division.name)
             .toLowerCase()
             .includes(value.toLowerCase())
         );
       },
-    },
-    {
-      title: "Department",
-      dataIndex: ["staff", "department", "name"],
-      key: "department",
-      filteredValue: [searchText],
-    },
-    {
-      title: "Division",
-      dataIndex: ["staff", "department", "division", "name"],
-      key: "division",
-    },
-    {
-      title: " Station",
-      dataIndex: ["staff", "station", "region", "name"],
-      key: "region",
-    },
-    {
-      title: "Roles",
-      dataIndex: "roles",
-      key: "roles",
-      render: (_, { roles }) => (
-        <>
-          {roles?.map((role, i) => (
-            <Tag
-              color={`${
-                role?.name === "Super Administrator" ? "green" : "blue"
-              }`}
-              key={i}
-            >
-              {role?.name}
-            </Tag>
-          ))}
-        </>
-      ),
     },
     {
       title: " Status",
@@ -223,7 +175,6 @@ const UsersTable = () => {
                 setformFields({
                   ...formFields,
                   name: value?.name,
-                  email: value?.email,
                   id: value?.id,
                 });
                 console.log(value);
@@ -262,7 +213,7 @@ const UsersTable = () => {
     <>
       {contextHolder}
       <Modal
-        title="EDIT USER"
+        title="EDIT DIVISION"
         open={open}
         onOk={handleOk}
         okButtonProps={{
@@ -313,30 +264,8 @@ const UsersTable = () => {
           </Form.Item>
 
           <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              name="email"
-              defaultValue={email}
-              value={email}
-              onChange={(e) =>
-                setformFields({ ...formFields, email: e.target.value })
-              }
-              type="email"
-              placeholder="Enter email"
-              prefix={<MdOutlineEmail />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Roles"
-            name="roleIds"
+            label="Divisions"
+            name="divisionIds"
             rules={[
               {
                 required: true,
@@ -345,10 +274,13 @@ const UsersTable = () => {
           >
             <CustomSelect
               mode="multiple"
-              value={roleIds}
-              placeholder="Select roles"
+              value={divisionIds}
+              placeholder="Select divisions"
               options={options}
-              onChange={(e) => setformFields({ ...formFields, roleIds: e })}
+              onChange={(e) => setformFields({ ...formFields, divisionIds: e })}
+              style={{
+                width: "100%",
+              }}
             />
           </Form.Item>
 
@@ -376,7 +308,7 @@ const UsersTable = () => {
           pageSize: recordsPerPage,
           total: totalPages,
           onChange: (pageNum) => {
-            fetchUsers(pageNum);
+            fetchDivisions(pageNum);
           },
         }}
         style={{ width: "100%" }}
@@ -386,4 +318,4 @@ const UsersTable = () => {
     </>
   );
 };
-export default UsersTable;
+export default DivisionsTable;

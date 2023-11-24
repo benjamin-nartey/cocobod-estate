@@ -9,7 +9,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { MdOutlineEmail } from "react-icons/md";
 import { axiosInstance } from "../../axios/axiosInstance";
 
-const AddUsersForm = () => {
+const AddLocationsForm = () => {
   const [open, setOpen] = useState(false);
   const [pageNum, setpageNum] = useState(1);
   const [options, setOptions] = useState([]);
@@ -34,11 +34,14 @@ const AddUsersForm = () => {
 
   const [formFields, setformFields] = useState({
     name: "",
-    email: "",
-    roleIds: [],
+    digitalAddress: "",
+    town: "",
+    areaId: "",
+    lat: "",
+    long: "",
   });
 
-  const { name, email, roleIds } = formFields;
+  const { name, digitalAddress, town, areaId, lat, long } = formFields;
 
   const showModal = () => {
     setOpen(true);
@@ -53,27 +56,35 @@ const AddUsersForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const roles = roleIds.map((role) => role.value);
-
     try {
-      await axiosInstance.post("/users", {
+      await axiosInstance.post("/locations", {
         name,
-        email,
-        roleIds: roles,
+        digitalAddress,
+        town,
+        areaId,
+        lat,
+        long,
       });
 
-      success('User created successfully');
+      success("Location created successfully");
 
       clearInput();
       handleCancel();
     } catch (error) {
-      errorMessage('Error creating user');
-      throw new Error(`Error creating user ${error}`);
+      errorMessage("Error creating location");
+      throw new Error(`Error creating location ${error}`);
     }
   };
 
   const clearInput = () => {
-    setformFields({ name: "", email: "", roleIds: [] });
+    setformFields({
+      name: "",
+      digitalAddress: "",
+      town: "",
+      areaId: "",
+      lat: "",
+      long: "",
+    });
     form.resetFields();
   };
 
@@ -81,8 +92,8 @@ const AddUsersForm = () => {
     //an empty function to keep the modal working
   };
 
-  async function fetchRoles(pageNum) {
-    const response = await axiosInstance.get("/roles", {
+  async function fetchAreas(pageNum) {
+    const response = await axiosInstance.get("/areas", {
       params: {
         pageNum: pageNum,
       },
@@ -102,7 +113,7 @@ const AddUsersForm = () => {
   }
 
   useEffect(() => {
-    fetchRoles(pageNum);
+    fetchAreas(pageNum);
   }, []);
 
   return (
@@ -113,10 +124,10 @@ const AddUsersForm = () => {
         onClick={showModal}
         style={{ backgroundColor: "#6E431D", color: "#fff" }}
       >
-        Add User
+        Add Location
       </Button>
       <Modal
-        title="ADD USER"
+        title="ADD LOCATION"
         open={open}
         onOk={handleOk}
         okButtonProps={{
@@ -160,14 +171,14 @@ const AddUsersForm = () => {
               onChange={(e) =>
                 setformFields({ ...formFields, name: e.target.value })
               }
-              placeholder="Enter name"
+              placeholder="Enter location name"
               prefix={<UserOutlined />}
             />
           </Form.Item>
 
           <Form.Item
-            label="Email"
-            name="email"
+            label="Digital Address"
+            name="digitalAddress"
             rules={[
               {
                 required: true,
@@ -175,20 +186,41 @@ const AddUsersForm = () => {
             ]}
           >
             <Input
-              name="email"
-              value={email}
+              name="digitalAddress"
+              value={digitalAddress}
               onChange={(e) =>
-                setformFields({ ...formFields, email: e.target.value })
+                setformFields({ ...formFields, digitalAddress: e.target.value })
               }
-              type="email"
-              placeholder="Enter email"
+              type="text"
+              placeholder="Enter digital address"
               prefix={<MdOutlineEmail />}
             />
           </Form.Item>
 
           <Form.Item
-            label="Roles"
-            name="roleIds"
+            label="Town"
+            name="town"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input
+              name="town"
+              value={town}
+              onChange={(e) =>
+                setformFields({ ...formFields, town: e.target.value })
+              }
+              type="text"
+              placeholder="Enter town name"
+              prefix={<MdOutlineEmail />}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Area"
+            name="areaId"
             rules={[
               {
                 required: true,
@@ -196,14 +228,54 @@ const AddUsersForm = () => {
             ]}
           >
             <CustomSelect
-              mode="multiple"
-              value={roleIds}
-              placeholder="Select roles"
+              mode="single"
+              value={areaId}
+              placeholder="Select area"
               options={options}
-              onChange={(e) => setformFields({ ...formFields, roleIds: e })}
+              onChange={(e) => setformFields({ ...formFields, areaId: e })}
               style={{
                 width: "100%",
               }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Lattitude"
+            name="lat"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input
+              name="lat"
+              value={lat}
+              onChange={(e) =>
+                setformFields({ ...formFields, lat: e.target.value })
+              }
+              placeholder="Enter lattitude"
+              prefix={<UserOutlined />}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Longitude"
+            name="long"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input
+              name="long"
+              value={long}
+              onChange={(e) =>
+                setformFields({ ...formFields, long: e.target.value })
+              }
+              placeholder="Enter longitude"
+              prefix={<UserOutlined />}
             />
           </Form.Item>
 
@@ -221,4 +293,4 @@ const AddUsersForm = () => {
     </>
   );
 };
-export default AddUsersForm;
+export default AddLocationsForm;

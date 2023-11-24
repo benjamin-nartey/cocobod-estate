@@ -7,6 +7,8 @@ import {
   divisionsIcon,
   usersThumbnail,
   divisionsThumbnail,
+  rolesIcon,
+  rolesThumbnail,
 } from "../../assets/icons/icons";
 import { cn } from "../../utils/helper";
 
@@ -75,6 +77,15 @@ const Dashboard = () => {
           thumbnail={usersThumbnail}
           alt="users"
           className="bg-[rgb(192,64,0,.8)]"
+        />
+
+        <Card
+          title="Roles"
+          numberOfItems="10"
+          icon={rolesIcon}
+          thumbnail={rolesThumbnail}
+          alt="roles"
+          className="bg-[rgba(209,120,75,0.8)]"
         />
       </div>
     </section>

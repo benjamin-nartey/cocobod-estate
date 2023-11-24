@@ -7,18 +7,15 @@ import { BiEdit } from "react-icons/bi";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../axios/axiosInstance";
 import { UserOutlined } from "@ant-design/icons";
-import DebounceSelect from "../DebounceSelect/DebounceSelect";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { useState } from "react";
-
 import { MdOutlineEmail } from "react-icons/md";
 
-const UsersTable = () => {
+const PropertyTable = () => {
+  const [pageNum, setPageNum] = useState(1);
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
   const [recordsPerPage, setRecordsPerPage] = useState(1);
-  const [page, setPage] = useState(1);
-  const [rolePage, setRolePage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,9 +24,11 @@ const UsersTable = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [formFields, setformFields] = useState({
     name: "",
-    email: "",
-    roleIds: [],
-    id: "",
+    description: "",
+    propertyNumber: "",
+    propertyTypeId: "",
+    locationId: "",
+    divisionId: "",
   });
 
   const confirm = (e) => {
@@ -37,7 +36,14 @@ const UsersTable = () => {
   };
   const cancel = (e) => {};
 
-  const { name, email, roleIds, id } = formFields;
+  const {
+    name,
+    description,
+    propertyNumber,
+    propertyTypeId,
+    locationId,
+    divisionId,
+  } = formFields;
 
   const showModal = () => {
     setOpen(true);
@@ -45,34 +51,33 @@ const UsersTable = () => {
 
   const handleCancel = () => {
     setOpen(false);
+    form.resetFields();
   };
 
-  const success = () => {
+  const success = (content) => {
     messageApi.open({
       type: "success",
-      content: "User updated successfully",
+      content: content,
     });
   };
 
-  const errorMessage = () => {
+  const errorMessage = (content) => {
     messageApi.open({
       type: "error",
-      content: "Error updating user",
+      content: content,
     });
   };
-
-  console.log({ options });
 
   const handleOk = () => {
     //an empty function to keep the modal working
   };
 
-  const fetchUsers = async (page) => {
+  const fetchProperties = async (pageNum) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get("/users", {
+      const response = await axiosInstance.get("/properties", {
         params: {
-          pageNum: page,
+          pageNum: pageNum,
         },
       });
       setTotalPages(response.data.meta.totalPages);
@@ -86,11 +91,9 @@ const UsersTable = () => {
     }
   };
 
-  const { data, status, error } = useQuery({
-    queryKey: ["users", page],
-    queryFn: () => fetchUsers(page),
-    keepPreviousData: true,
-  });
+  const { data, status, error } = useQuery(["properties"], () =>
+    fetchProperties(1)
+  );
 
   console.log(data);
 
@@ -98,10 +101,10 @@ const UsersTable = () => {
     console.log(error);
   }
 
-  async function fetchRoles(rolePage) {
-    const response = await axiosInstance.get("/roles", {
+  async function fetchAreas(pageNum) {
+    const response = await axiosInstance.get("/areas", {
       params: {
-        pageNum: rolePage,
+        pageNum: pageNum,
       },
     });
 
@@ -119,39 +122,40 @@ const UsersTable = () => {
   }
 
   useEffect(() => {
-    fetchRoles(rolePage);
+    fetchAreas(pageNum);
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const roles = roleIds.map((role) => role.value);
-
     try {
-      await axiosInstance.patch(`/users/${id}`, {
+      await axiosInstance.patch(`/locations/${locationId}`, {
         name,
-        email,
-        roleIds: roles,
+        digitalAddress,
+        town,
+        areaId,
+        lat,
+        long,
       });
 
-      success();
+      success("Location updated successfully");
 
       clearInput();
       handleCancel();
     } catch (error) {
-      errorMessage();
-      throw new Error(`Error adding user edits ${error}`);
+      errorMessage("Error updating location");
+      throw new Error(`Error updating location ${error}`);
     }
   };
 
   const clearInput = () => {
-    setformFields({ name: "", email: "", roleIds: [] });
+    setformFields({ name: "", divisionId: [] });
     form.resetFields();
   };
 
   const columns = [
     {
-      title: "Name",
+      title: "Property Name",
       dataIndex: "name",
       key: "name",
       filteredValue: [searchText],
@@ -159,52 +163,44 @@ const UsersTable = () => {
         return (
           String(record.name).toLowerCase().includes(value.toLowerCase()) ||
           String(record.status).toLowerCase().includes(value.toLowerCase()) ||
-          String(record.staff.department.name)
+          String(record.propertyType.name)
             .toLowerCase()
             .includes(value.toLowerCase()) ||
-          String(record.staff.department.division.name)
+          String(record.location.name)
             .toLowerCase()
             .includes(value.toLowerCase()) ||
-          String(record.staff.station.region.name)
+          String(record.division.name)
             .toLowerCase()
             .includes(value.toLowerCase())
         );
       },
     },
     {
-      title: "Department",
-      dataIndex: ["staff", "department", "name"],
-      key: "department",
+      title: "Property Number",
+      dataIndex: ["propertyNumber"],
+      key: "propertyNumber",
       filteredValue: [searchText],
     },
     {
+      title: "Property Type",
+      dataIndex: ['propertyType', 'name'],
+      key: "propertyType",
+      filteredValue: [searchText],
+    },
+    {
+      title: "Location ",
+      dataIndex: ["location", "name"],
+      key: "location",
+    },
+    {
       title: "Division",
-      dataIndex: ["staff", "department", "division", "name"],
+      dataIndex: ["division", "name"],
       key: "division",
     },
     {
-      title: " Station",
-      dataIndex: ["staff", "station", "region", "name"],
-      key: "region",
-    },
-    {
-      title: "Roles",
-      dataIndex: "roles",
-      key: "roles",
-      render: (_, { roles }) => (
-        <>
-          {roles?.map((role, i) => (
-            <Tag
-              color={`${
-                role?.name === "Super Administrator" ? "green" : "blue"
-              }`}
-              key={i}
-            >
-              {role?.name}
-            </Tag>
-          ))}
-        </>
-      ),
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: " Status",
@@ -223,8 +219,7 @@ const UsersTable = () => {
                 setformFields({
                   ...formFields,
                   name: value?.name,
-                  email: value?.email,
-                  id: value?.id,
+                  locationId: value?.id,
                 });
                 console.log(value);
                 showModal();
@@ -262,7 +257,7 @@ const UsersTable = () => {
     <>
       {contextHolder}
       <Modal
-        title="EDIT USER"
+        title="EDIT PROPERTY"
         open={open}
         onOk={handleOk}
         okButtonProps={{
@@ -277,7 +272,7 @@ const UsersTable = () => {
         <Form
           form={form}
           onSubmitCapture={handleSubmit}
-          name="useredit"
+          name="wrap"
           labelCol={{
             flex: "110px",
           }}
@@ -303,18 +298,17 @@ const UsersTable = () => {
             <Input
               name="name"
               value={name}
-              defaultValue={name}
               onChange={(e) =>
                 setformFields({ ...formFields, name: e.target.value })
               }
-              placeholder="Enter name"
+              placeholder="Enter property name"
               prefix={<UserOutlined />}
             />
           </Form.Item>
 
           <Form.Item
-            label="Email"
-            name="email"
+            label="Description"
+            name="description"
             rules={[
               {
                 required: true,
@@ -322,21 +316,40 @@ const UsersTable = () => {
             ]}
           >
             <Input
-              name="email"
-              defaultValue={email}
-              value={email}
+              name="description"
+              value={description}
               onChange={(e) =>
-                setformFields({ ...formFields, email: e.target.value })
+                setformFields({ ...formFields, description: e.target.value })
               }
-              type="email"
-              placeholder="Enter email"
+              type="text"
+              placeholder="Enter property description"
+              prefix={<MdOutlineEmail />}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Property Number"
+            name="propertyNumber"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input
+              name="propertyNumber"
+              value={propertyNumber}
+              onChange={(e) =>
+                setformFields({ ...formFields, propertyNumber: e.target.value })
+              }
+              type="text"
+              placeholder="Enter property number"
               prefix={<MdOutlineEmail />}
             />
           </Form.Item>
 
           <Form.Item
-            label="Roles"
-            name="roleIds"
+            label="Property Type"
+            name="propertyTypeId"
             rules={[
               {
                 required: true,
@@ -344,13 +357,69 @@ const UsersTable = () => {
             ]}
           >
             <CustomSelect
-              mode="multiple"
-              value={roleIds}
-              placeholder="Select roles"
+              mode="single"
+              value={propertyTypeId}
+              placeholder="Select property type"
               options={options}
-              onChange={(e) => setformFields({ ...formFields, roleIds: e })}
+              onChange={(e) =>
+                setformFields({ ...formFields, propertyTypeId: e })
+              }
+              style={{
+                width: "100%",
+              }}
             />
           </Form.Item>
+
+          <Form.Item
+            label="Division"
+            name="divisionId"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <CustomSelect
+              mode="single"
+              value={divisionId}
+              placeholder="Select division"
+              options={options}
+              onChange={(e) => setformFields({ ...formFields, divisionId: e })}
+              style={{
+                width: "100%",
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Location"
+            name="locationId"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <CustomSelect
+              mode="single"
+              value={locationId}
+              placeholder="Select location"
+              options={options}
+              onChange={(e) => setformFields({ ...formFields, locationId: e })}
+              style={{
+                width: "100%",
+              }}
+            />
+          </Form.Item>
+
+          {/* <Form.Item label=" " name="uploadImages">
+            <PhotosUploader
+              props={props}
+              handleUpload={handleUpload}
+              handleChange={handleChange}
+              fileList={fileList}
+            />
+          </Form.Item> */}
 
           <Form.Item label=" ">
             <Button
@@ -376,7 +445,7 @@ const UsersTable = () => {
           pageSize: recordsPerPage,
           total: totalPages,
           onChange: (pageNum) => {
-            fetchUsers(pageNum);
+            fetchProperties(pageNum);
           },
         }}
         style={{ width: "100%" }}
@@ -386,4 +455,4 @@ const UsersTable = () => {
     </>
   );
 };
-export default UsersTable;
+export default PropertyTable;

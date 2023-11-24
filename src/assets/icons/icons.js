@@ -6,6 +6,8 @@ import usersIcon from "./users.png";
 import divisionsIcon from "./divisions.png";
 import divisionsThumbnail from "./divisions-performance.png";
 import usersThumbnail from "./users-performance.png";
+import rolesIcon from "./roles.png.png";
+import rolesThumbnail from "./roles-performace.png";
 
 export {
   departmentsIcon,
@@ -16,4 +18,6 @@ export {
   divisionsIcon,
   usersThumbnail,
   divisionsThumbnail,
+  rolesIcon,
+  rolesThumbnail,
 };
