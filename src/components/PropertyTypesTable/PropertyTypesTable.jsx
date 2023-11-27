@@ -1,18 +1,15 @@
-import React, { useEffect } from "react";
-import { Table, Tag } from "antd";
-import { Button, Modal, Form, Input } from "antd";
-import { message, Popconfirm } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
-import { BiEdit } from "react-icons/bi";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../axios/axiosInstance";
-import { UserOutlined } from "@ant-design/icons";
-import CustomSelect from "../CustomSelect/CustomSelect";
 import { useState } from "react";
 
+import { Button, Modal, Form, Input, Table, message, Popconfirm } from "antd";
+
+import { DeleteOutlined, UserOutlined } from "@ant-design/icons";
+import { BiEdit } from "react-icons/bi";
+
+import { axiosInstance } from "../../axios/axiosInstance";
+
+import { useQuery } from "@tanstack/react-query";
+
 const PropertyTypesTable = () => {
-  const [pageNum, setPageNum] = useState(1);
-  const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
   const [recordsPerPage, setRecordsPerPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -79,7 +76,7 @@ const PropertyTypesTable = () => {
     }
   };
 
-  const { data, status, error } = useQuery(["propertTypes"], () =>
+  const { data, status, error } = useQuery(["propertyTypes"], () =>
     fetchPropertyTypes(1)
   );
 
@@ -125,17 +122,13 @@ const PropertyTypesTable = () => {
         );
       },
     },
-    // {
-    //   title: "Division",
-    //   dataIndex: ["division", "name"],
-    //   key: "division",
-    //   filteredValue: [searchText],
-    // },
+
     {
       title: " Status",
       dataIndex: "status",
       key: "status",
     },
+
     {
       title: "Action",
       dataIndex: "",

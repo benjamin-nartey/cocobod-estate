@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
-import { Table, Tag } from "antd";
-import { Button, Modal, Form, Input } from "antd";
-import { message, Popconfirm } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+
+import { Button, Modal, Form, Input, message, Popconfirm, Table } from "antd";
+
+import { DeleteOutlined, UserOutlined } from "@ant-design/icons";
 import { BiEdit } from "react-icons/bi";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../axios/axiosInstance";
-import { UserOutlined } from "@ant-design/icons";
-import DebounceSelect from "../DebounceSelect/DebounceSelect";
+
 import CustomSelect from "../CustomSelect/CustomSelect";
-import { useState } from "react";
+
+import { useQuery } from "@tanstack/react-query";
+
+import { axiosInstance } from "../../axios/axiosInstance";
 
 const DivisionsTable = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -45,17 +45,17 @@ const DivisionsTable = () => {
     form.resetFields();
   };
 
-  const success = () => {
+  const success = (content) => {
     messageApi.open({
       type: "success",
-      content: "User updated successfully",
+      content: content,
     });
   };
 
-  const errorMessage = () => {
+  const errorMessage = (content) => {
     messageApi.open({
       type: "error",
-      content: "Error updating user",
+      content: content,
     });
   };
 
@@ -71,10 +71,12 @@ const DivisionsTable = () => {
           pageNum: pageNum,
         },
       });
-      setTotalPages(response.data.meta.totalPages);
-      setRecordsPerPage(response.data.meta.recordsPerPage);
-      console.log({ totalPages });
-      return response.data;
+      if (response) {
+        setTotalPages(response.data.meta.totalPages);
+        setRecordsPerPage(response.data.meta.recordsPerPage);
+        console.log({ totalPages });
+        return response.data;
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -122,25 +124,27 @@ const DivisionsTable = () => {
     const divisions = divisionIds.map((division) => division.value);
 
     try {
-      await axiosInstance.patch(`/departments/${id}`, {
+      const response = await axiosInstance.patch(`/divisions/${id}`, {
         name,
         divisionIds: divisions,
       });
 
-      success();
+      if (response) {
+        success("division updated successfuly");
 
-      clearInput();
-      handleCancel();
+        clearInput();
+        handleCancel();
+      }
     } catch (error) {
-      errorMessage();
-      throw new Error(`Error adding user edits ${error}`);
+      errorMessage("Error updating division");
+      throw new Error(`Error updating division ${error}`);
     }
   };
 
-  const clearInput = () => {
+  function clearInput() {
     setformFields({ name: "", divisionIds: [] });
     form.resetFields();
-  };
+  }
 
   const columns = [
     {

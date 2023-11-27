@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { Button, Modal, Form, Input } from "antd";
-import { message } from "antd";
-import DebounceSelect from "../DebounceSelect/DebounceSelect";
-import CustomSelect from "../CustomSelect/CustomSelect";
+import { Button, Modal, Form, Input, message } from "antd";
+
 import { UserOutlined } from "@ant-design/icons";
 
-import { MdOutlineEmail } from "react-icons/md";
-import { axiosInstance } from "../../axios/axiosInstance";
+import CustomSelect from "../CustomSelect/CustomSelect";
+
+import { useAddAreaData } from "../../Hooks/useAddFetch";
 
 const AddAreasForm = () => {
   const [open, setOpen] = useState(false);
@@ -34,6 +33,8 @@ const AddAreasForm = () => {
   const [modalText, setModalText] = useState("Content of the modal");
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const { mutate } = useAddAreaData();
 
   const success = (content) => {
     messageApi.open({
@@ -70,15 +71,19 @@ const AddAreasForm = () => {
     e.preventDefault();
 
     try {
-      await axiosInstance.post("/areas", {
+      const area = {
         name,
         category,
+      };
+
+      mutate(area, {
+        onSuccess: () => {
+          success("Area created successfully");
+
+          clearInput();
+          handleCancel();
+        },
       });
-
-      success("Area created successfully");
-
-      clearInput();
-      handleCancel();
     } catch (error) {
       errorMessage("Error creating Area");
       throw new Error(`Error creating Area ${error}`);

@@ -1,15 +1,18 @@
-import React, { useEffect } from "react";
-import { Table, Tag } from "antd";
-import { Button, Modal, Form, Input } from "antd";
-import { message, Popconfirm } from "antd";
+import React, { useEffect, useState } from "react";
+
+import { Button, Modal, Form, Input, Table, message, Popconfirm } from "antd";
+
 import { DeleteOutlined } from "@ant-design/icons";
 import { BiEdit } from "react-icons/bi";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../axios/axiosInstance";
-import { UserOutlined } from "@ant-design/icons";
-import CustomSelect from "../CustomSelect/CustomSelect";
-import { useState } from "react";
+
 import { MdOutlineEmail } from "react-icons/md";
+import { UserOutlined } from "@ant-design/icons";
+
+import CustomSelect from "../CustomSelect/CustomSelect";
+
+import { axiosInstance } from "../../axios/axiosInstance";
+
+import { useQuery } from "@tanstack/react-query";
 
 const LocationsTable = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -75,10 +78,12 @@ const LocationsTable = () => {
           pageNum: pageNum,
         },
       });
-      setTotalPages(response.data.meta.totalPages);
-      setRecordsPerPage(response.data.meta.recordsPerPage);
-      console.log({ totalPages });
-      return response.data;
+      if (response) {
+        setTotalPages(response.data.meta.totalPages);
+        setRecordsPerPage(response.data.meta.recordsPerPage);
+        console.log({ totalPages });
+        return response.data;
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -124,7 +129,7 @@ const LocationsTable = () => {
     e.preventDefault();
 
     try {
-      await axiosInstance.patch(`/locations/${locationId}`, {
+      const response = await axiosInstance.patch(`/locations/${locationId}`, {
         name,
         digitalAddress,
         town,
@@ -133,20 +138,22 @@ const LocationsTable = () => {
         long,
       });
 
-      success("Location updated successfully");
+      if (response) {
+        success("Location updated successfully");
 
-      clearInput();
-      handleCancel();
+        clearInput();
+        handleCancel();
+      }
     } catch (error) {
       errorMessage("Error updating location");
       throw new Error(`Error updating location ${error}`);
     }
   };
 
-  const clearInput = () => {
+  function clearInput() {
     setformFields({ name: "", divisionId: [] });
     form.resetFields();
-  };
+  }
 
   const columns = [
     {

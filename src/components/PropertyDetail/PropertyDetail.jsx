@@ -1,11 +1,14 @@
+import { useEffect, useRef, useState, useContext } from "react";
+
+import { NavLink } from "react-router-dom";
+
+import { MdChevronRight, MdChevronLeft } from "react-icons/md";
+
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
 import { SearchResultContext } from "../../context/searchResult.context";
-import { useContext } from "react";
-import { useEffect, useRef, useState } from "react";
-import { MdChevronRight, MdChevronLeft } from "react-icons/md";
+
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
-import { NavLink } from "react-router-dom";
 
 function PropertyDetail() {
   const sliderRef = useRef();

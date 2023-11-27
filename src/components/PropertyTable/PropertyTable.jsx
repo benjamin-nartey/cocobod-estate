@@ -1,15 +1,16 @@
-import React, { useEffect } from "react";
-import { Table, Tag } from "antd";
-import { Button, Modal, Form, Input } from "antd";
-import { message, Popconfirm } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+
+import { Button, Modal, Form, Input, Table, message, Popconfirm } from "antd";
+
+import { DeleteOutlined, UserOutlined } from "@ant-design/icons";
 import { BiEdit } from "react-icons/bi";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../axios/axiosInstance";
-import { UserOutlined } from "@ant-design/icons";
-import CustomSelect from "../CustomSelect/CustomSelect";
-import { useState } from "react";
 import { MdOutlineEmail } from "react-icons/md";
+
+import { axiosInstance } from "../../axios/axiosInstance";
+
+import CustomSelect from "../CustomSelect/CustomSelect";
+
+import { useQuery } from "@tanstack/react-query";
 
 const PropertyTable = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -129,7 +130,7 @@ const PropertyTable = () => {
     e.preventDefault();
 
     try {
-      await axiosInstance.patch(`/locations/${locationId}`, {
+      const response = await axiosInstance.patch(`/locations/${locationId}`, {
         name,
         digitalAddress,
         town,
@@ -138,20 +139,28 @@ const PropertyTable = () => {
         long,
       });
 
-      success("Location updated successfully");
-
-      clearInput();
-      handleCancel();
+      if (response) {
+        success("Location updated successfully");
+        clearInput();
+        handleCancel();
+      }
     } catch (error) {
       errorMessage("Error updating location");
       throw new Error(`Error updating location ${error}`);
     }
   };
 
-  const clearInput = () => {
-    setformFields({ name: "", divisionId: [] });
+  function clearInput() {
+    setformFields({
+      name: "",
+      description: "",
+      propertyNumber: "",
+      propertyTypeId: "",
+      locationId: "",
+      divisionId: "",
+    });
     form.resetFields();
-  };
+  }
 
   const columns = [
     {
@@ -183,7 +192,7 @@ const PropertyTable = () => {
     },
     {
       title: "Property Type",
-      dataIndex: ['propertyType', 'name'],
+      dataIndex: ["propertyType", "name"],
       key: "propertyType",
       filteredValue: [searchText],
     },

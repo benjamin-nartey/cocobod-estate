@@ -1,11 +1,7 @@
-import React from "react";
 import { NavLink } from "react-router-dom/dist";
-
-import { categories } from "../../utils/categories";
 import { Outlet } from "react-router-dom/dist";
 
-// const isNotActiveStyle = "hover:text-[#6e431d]";
-// const isActiveStyle = "text-[#6e431d] font-semibold";
+import { categories } from "../../utils/categories";
 
 function Home() {
   return (

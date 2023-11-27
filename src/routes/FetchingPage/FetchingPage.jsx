@@ -1,27 +1,23 @@
-import React from "react";
+import { useState } from "react";
+
 import Sidebar from "../../components/Sidebar/Sidebar";
 import logo from "../../assets/logo-cocobod.png";
 import navBg from "../../assets/navbg.png";
-import { HiArrowDown, HiMenu } from "react-icons/hi";
-import { useState } from "react";
-import {
-  AiFillCloseCircle,
-  AiOutlineDown,
-  AiOutlinePoweroff,
-} from "react-icons/ai";
-import { Outlet } from "react-router-dom/dist";
-
 import { Logout } from "../../utils/logout";
-
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import { useNavigate, useLocation } from "react-router-dom";
 import { getContrastingColor } from "../../config/helpers";
-import axios from "axios";
 import state from "../../store/store";
 
-import { useSnapshot } from "valtio";
-import { ArrowDownOutlined } from "@ant-design/icons";
+import { HiMenu } from "react-icons/hi";
+import { AiFillCloseCircle, AiOutlinePoweroff } from "react-icons/ai";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+
+import { Outlet } from "react-router-dom/dist";
+import { useNavigate, useLocation } from "react-router-dom";
+
+
+
+import { useSnapshot } from "valtio";
 
 function FetchingPage() {
   const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -72,17 +68,17 @@ function FetchingPage() {
             style={{ minWidth: "220px" }}
             className="flex flex-col justify-between bg-[#6E431D] h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
           >
-             <div className="w-full h-[18vh] bg-[#F4EDE7] grid place-items-center px-5">
-        <div className=" logo-box flex justify-center items-center gap-2 ">
-          <img className="w-[45px] h-auto " src={logo} alt="logo" />
-          <div className="line w-[1.2px] h-[25px] bg-[#6E431D] "></div>
-          <h4 className="">
-            <span className="block text-[12px] text-[#6E431D] font-semibold">
-              Ghana Cocoa Board
-            </span>
-          </h4>
-        </div>
-      </div>
+            <div className="w-full h-[18vh] bg-[#F4EDE7] grid place-items-center px-5">
+              <div className=" logo-box flex justify-center items-center gap-2 ">
+                <img className="w-[45px] h-auto " src={logo} alt="logo" />
+                <div className="line w-[1.2px] h-[25px] bg-[#6E431D] "></div>
+                <h4 className="">
+                  <span className="block text-[12px] text-[#6E431D] font-semibold">
+                    Ghana Cocoa Board
+                  </span>
+                </h4>
+              </div>
+            </div>
           </div>
         </div>
         <div className="main-content-column h-screen w-full overflow-y-auto overflow-x-hidden">

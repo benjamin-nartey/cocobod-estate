@@ -35,8 +35,6 @@ const refreshTokenFn = async () => {
 
     return refreshResponse;
   } catch (error) {
-    // localStorage.removeItem("accessToken");
-    // localStorage.removeItem("refreshToken");
     console.log(error);
   }
 };

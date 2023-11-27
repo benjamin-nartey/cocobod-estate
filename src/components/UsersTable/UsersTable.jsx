@@ -1,17 +1,25 @@
-import React, { useEffect } from "react";
-import { Table, Tag } from "antd";
-import { Button, Modal, Form, Input } from "antd";
-import { message, Popconfirm } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
-import { BiEdit } from "react-icons/bi";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../axios/axiosInstance";
-import { UserOutlined } from "@ant-design/icons";
-import DebounceSelect from "../DebounceSelect/DebounceSelect";
-import CustomSelect from "../CustomSelect/CustomSelect";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  message,
+  Popconfirm,
+  Table,
+  Tag,
+} from "antd";
+
+import { DeleteOutlined, UserOutlined } from "@ant-design/icons";
+import { BiEdit } from "react-icons/bi";
 import { MdOutlineEmail } from "react-icons/md";
+
+import { useQuery } from "@tanstack/react-query";
+
+import { axiosInstance } from "../../axios/axiosInstance";
+
+import CustomSelect from "../CustomSelect/CustomSelect";
 
 const UsersTable = () => {
   const [options, setOptions] = useState([]);

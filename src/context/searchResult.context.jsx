@@ -1,4 +1,5 @@
 import axiosFetch from "../axios/axios";
+
 import { createContext, useState, useEffect } from "react";
 
 export const SearchResultContext = createContext({

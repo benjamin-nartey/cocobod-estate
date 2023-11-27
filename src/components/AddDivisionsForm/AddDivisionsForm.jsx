@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { Button, Modal, Form, Input } from "antd";
-import { message } from "antd";
-import CustomSelect from "../CustomSelect/CustomSelect";
+import { Button, Modal, Form, Input, message } from "antd";
+
 import { UserOutlined } from "@ant-design/icons";
 
 import { axiosInstance } from "../../axios/axiosInstance";
@@ -14,17 +13,17 @@ const AddDivisionsForm = () => {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const success = () => {
+  const success = (content) => {
     messageApi.open({
       type: "success",
-      content: "User added successfully",
+      content: content,
     });
   };
 
-  const errorMessage = () => {
+  const errorMessage = (content) => {
     messageApi.open({
       type: "error",
-      content: "Error creating user",
+      content: content,
     });
   };
 
@@ -48,24 +47,26 @@ const AddDivisionsForm = () => {
     e.preventDefault();
 
     try {
-      await axiosInstance.post("/divisions", {
+      const response = await axiosInstance.post("/divisions", {
         name,
       });
 
-      success();
+      if (response) {
+        success("Division added successfuly");
 
-      clearInput();
-      handleCancel();
+        clearInput();
+        handleCancel();
+      }
     } catch (error) {
-      errorMessage();
+      errorMessage("Error in creating division");
       throw new Error(`Error in creating division ${error}`);
     }
   };
 
-  const clearInput = () => {
+  function clearInput() {
     setformFields({ name: "" });
     form.resetFields();
-  };
+  }
 
   const handleOk = () => {
     //an empty function to keep the modal working

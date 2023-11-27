@@ -1,4 +1,3 @@
-import React from "react";
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
 import MasonryLayout from "../../components/MasonryLayout/MasonryLayout";
 import { LazyLoadImage } from "react-lazy-load-image-component";

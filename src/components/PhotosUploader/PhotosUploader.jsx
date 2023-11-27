@@ -1,9 +1,10 @@
-import React from "react";
-import { InboxOutlined, PlusOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
-const { Dragger } = Upload;
+import { PlusOutlined } from "@ant-design/icons";
+import { Upload } from "antd";
+
+
 
 const PhotosUploader = ({ props, handleChange, fileList }) => {
+  const { Dragger } = Upload;
   return (
     <Dragger
       multiple

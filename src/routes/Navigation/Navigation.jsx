@@ -1,27 +1,26 @@
-import React from "react";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import navBg from "../../assets/navbg.png";
-import { HiArrowDown, HiMenu } from "react-icons/hi";
 import { useState } from "react";
+
+import { HiArrowDown, HiMenu } from "react-icons/hi";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import {
   AiFillCloseCircle,
   AiOutlineDown,
   AiOutlinePoweroff,
 } from "react-icons/ai";
-import { Outlet } from "react-router-dom/dist";
 
+
+import Sidebar from "../../components/Sidebar/Sidebar";
+import navBg from "../../assets/navbg.png";
 import { Logout } from "../../utils/logout";
-
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getContrastingColor } from "../../config/helpers";
-import axios from "axios";
 import state from "../../store/store";
+import Loader from "../../components/Loader/Loader";
 
 import { useSnapshot } from "valtio";
-import { ArrowDownOutlined } from "@ant-design/icons";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import Loader from "../../components/Loader/Loader";
+import { Outlet } from "react-router-dom/dist";
+
 
 function Navigation() {
   const [toggleSidebar, setToggleSidebar] = useState(false);

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Modal, Form, Input } from "antd";
-import { message } from "antd";
-import CustomSelect from "../CustomSelect/CustomSelect";
+import { Button, Modal, Form, Input, message } from "antd";
+
 import { UserOutlined } from "@ant-design/icons";
+
+import CustomSelect from "../CustomSelect/CustomSelect";
 
 import { axiosInstance } from "../../axios/axiosInstance";
 
@@ -16,17 +17,17 @@ const AddDepartmentsForm = () => {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const success = () => {
+  const success = (content) => {
     messageApi.open({
       type: "success",
-      content: "User added successfully",
+      content: content,
     });
   };
 
-  const errorMessage = () => {
+  const errorMessage = (content) => {
     messageApi.open({
       type: "error",
-      content: "Error creating user",
+      content: content,
     });
   };
 
@@ -58,20 +59,20 @@ const AddDepartmentsForm = () => {
         divisionId: divisions,
       });
 
-      success();
+      success("Department added successfully");
 
       clearInput();
       handleCancel();
     } catch (error) {
-      errorMessage();
+      errorMessage("Error in creating department");
       throw new Error(`Error in creating department ${error}`);
     }
   };
 
-  const clearInput = () => {
+  function clearInput() {
     setformFields({ name: "", divisionId: [] });
     form.resetFields();
-  };
+  }
 
   const handleOk = () => {
     //an empty function to keep the modal working

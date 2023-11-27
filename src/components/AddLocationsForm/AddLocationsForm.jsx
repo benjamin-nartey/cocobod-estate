@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Modal, Form, Input } from "antd";
-import { message } from "antd";
-import DebounceSelect from "../DebounceSelect/DebounceSelect";
-import CustomSelect from "../CustomSelect/CustomSelect";
-import { UserOutlined } from "@ant-design/icons";
+import { Button, Modal, Form, Input, message } from "antd";
 
+import { UserOutlined } from "@ant-design/icons";
 import { MdOutlineEmail } from "react-icons/md";
+
+import CustomSelect from "../CustomSelect/CustomSelect";
+
 import { axiosInstance } from "../../axios/axiosInstance";
+import { useAddLocationData } from "../../Hooks/useAddFetch";
 
 const AddLocationsForm = () => {
   const [open, setOpen] = useState(false);
@@ -17,6 +18,8 @@ const AddLocationsForm = () => {
   const [modalText, setModalText] = useState("Content of the modal");
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const { mutate } = useAddLocationData();
 
   const success = (content) => {
     messageApi.open({
@@ -57,26 +60,31 @@ const AddLocationsForm = () => {
     e.preventDefault();
 
     try {
-      await axiosInstance.post("/locations", {
+      const location = {
         name,
         digitalAddress,
         town,
         areaId,
         lat,
         long,
+      };
+
+      mutate(location, {
+        onSuccess: (data) => {
+          console.log({ data });
+          success("Location created successfully");
+
+          clearInput();
+          handleCancel();
+        },
       });
-
-      success("Location created successfully");
-
-      clearInput();
-      handleCancel();
     } catch (error) {
       errorMessage("Error creating location");
       throw new Error(`Error creating location ${error}`);
     }
   };
 
-  const clearInput = () => {
+  function clearInput() {
     setformFields({
       name: "",
       digitalAddress: "",
@@ -86,7 +94,7 @@ const AddLocationsForm = () => {
       long: "",
     });
     form.resetFields();
-  };
+  }
 
   const handleOk = () => {
     //an empty function to keep the modal working

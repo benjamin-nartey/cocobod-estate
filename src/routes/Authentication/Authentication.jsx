@@ -1,6 +1,6 @@
-import React from "react";
 import bgImage from "../../assets/bgImage.jpeg";
 import logo from "../../assets/logo-cocobod.png";
+
 import LoginForm from "../../components/LoginForm/LoginForm";
 
 function Authentication() {

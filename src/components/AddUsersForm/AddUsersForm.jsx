@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Modal, Form, Input } from "antd";
-import { message } from "antd";
-import DebounceSelect from "../DebounceSelect/DebounceSelect";
-import CustomSelect from "../CustomSelect/CustomSelect";
-import { UserOutlined } from "@ant-design/icons";
+import { Button, Modal, Form, Input, message } from "antd";
 
+import { UserOutlined } from "@ant-design/icons";
 import { MdOutlineEmail } from "react-icons/md";
+
+import CustomSelect from "../CustomSelect/CustomSelect";
+
 import { axiosInstance } from "../../axios/axiosInstance";
+import { useAddUserData } from "../../Hooks/useAddFetch";
 
 const AddUsersForm = () => {
   const [open, setOpen] = useState(false);
@@ -17,6 +18,8 @@ const AddUsersForm = () => {
   const [modalText, setModalText] = useState("Content of the modal");
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const { mutate } = useAddUserData();
 
   const success = (content) => {
     messageApi.open({
@@ -56,26 +59,30 @@ const AddUsersForm = () => {
     const roles = roleIds.map((role) => role.value);
 
     try {
-      await axiosInstance.post("/users", {
+      const user = {
         name,
         email,
         roleIds: roles,
+      };
+
+      mutate(user, {
+        onSuccess: () => {
+          success("User created successfully");
+
+          clearInput();
+          handleCancel();
+        },
       });
-
-      success('User created successfully');
-
-      clearInput();
-      handleCancel();
     } catch (error) {
-      errorMessage('Error creating user');
+      errorMessage("Error creating user");
       throw new Error(`Error creating user ${error}`);
     }
   };
 
-  const clearInput = () => {
+  function clearInput() {
     setformFields({ name: "", email: "", roleIds: [] });
     form.resetFields();
-  };
+  }
 
   const handleOk = () => {
     //an empty function to keep the modal working

@@ -1,15 +1,13 @@
-import React from "react";
 import { useState, useEffect } from "react";
+
 import { useNavigate, useLocation } from "react-router-dom";
 
-import axios from "axios";
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
-
-import { useSnapshot } from "valtio";
-
 import state from "../../store/store";
 
 import Loader from "../Loader/Loader";
+
+import axios from "axios";
 
 const defaultFormFields = {
   email: "",
@@ -23,11 +21,8 @@ const API = axios.create({
 function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);
   const { email, password } = formFields;
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [ipAddress, setIPAddress] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const snap = useSnapshot(state);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
     "accessToken",
@@ -55,12 +50,6 @@ function LoginForm() {
     setFormfields({ ...formFields, [name]: value });
   };
 
-  // useEffect(() => {
-  //   if (snap.currentUser) {
-  //     navigate(from, { replace: true });
-  //   }
-  // }, []);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -84,14 +73,15 @@ function LoginForm() {
         },
       });
 
-      const currentUser = userResponse?.data;
+      if (userResponse) {
+        const currentUser = userResponse?.data;
+        state.currentUser = { currentUser };
 
-      state.currentUser = { currentUser };
+        setAccessTokenAuth(response?.data?.accessToken);
+        setRefreshTokenAuth(response?.data?.refreshToken);
 
-      setAccessTokenAuth(response?.data?.accessToken);
-      setRefreshTokenAuth(response?.data?.refreshToken);
-
-      navigate(from, { replace: true });
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       console.log(error);
     } finally {

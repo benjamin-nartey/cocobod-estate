@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { Button, Modal, Form, Input } from "antd";
-import { message } from "antd";
+import { Button, Modal, Form, Input,message } from "antd";
+
 import { UserOutlined } from "@ant-design/icons";
 
-import { axiosInstance } from "../../axios/axiosInstance";
+import { useAddPropertyTypeData } from "../../Hooks/useAddFetch";
 
 const AddPropertyTypesForm = () => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const { mutate } = useAddPropertyTypeData();
 
   const success = (content) => {
     messageApi.open({
@@ -46,24 +48,29 @@ const AddPropertyTypesForm = () => {
     e.preventDefault();
 
     try {
-      await axiosInstance.post("/property-types", {
+      const propertyType = {
         name,
+      };
+
+      mutate(propertyType, {
+        onSuccess: (data) => {
+          console.log({ data });
+          success("Property type added successfully");
+
+          clearInput();
+          handleCancel();
+        },
       });
-
-      success('Property type added successfully');
-
-      clearInput();
-      handleCancel();
     } catch (error) {
-      errorMessage('Error adding property type');
+      errorMessage("Error adding property type");
       throw new Error(`Error in creating property type ${error}`);
     }
   };
 
-  function clearInput(){
+  function clearInput() {
     setformFields({ name: "" });
     form.resetFields();
-  };
+  }
 
   const handleOk = () => {
     //an empty function to keep the modal working

@@ -1,13 +1,13 @@
-import { Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
-import { axiosInstance } from "./axios/axiosInstance";
-import { useNavigate, useLocation } from "react-router-dom";
-import state from "./store/store";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
+
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+
 import FetchingPage from "./routes/FetchingPage/FetchingPage";
 import Navigation from "./routes/Navigation/Navigation";
 
-// const Navigation = lazy(() => import("./routes/Navigation/Navigation"));
+import { axiosInstance } from "./axios/axiosInstance";
+import state from "./store/store";
+
 const Authentication = lazy(() =>
   import("./routes/Authentication/Authentication")
 );

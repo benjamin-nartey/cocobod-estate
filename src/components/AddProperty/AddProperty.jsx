@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Modal, Form, Input } from "antd";
-import { message } from "antd";
-import CustomSelect from "../CustomSelect/CustomSelect";
-import { UserOutlined } from "@ant-design/icons";
-
-import { MdOutlineEmail } from "react-icons/md";
-import { axiosInstance } from "../../axios/axiosInstance";
-import PhotosUploader from "../PhotosUploader/PhotosUploader";
+import { Button, Modal, Form, Input, DatePicker, message } from "antd";
 import Upload from "antd/es/upload/Upload";
+
+import { UserOutlined } from "@ant-design/icons";
+import { MdOutlineEmail } from "react-icons/md";
+
+import CustomSelect from "../CustomSelect/CustomSelect";
+import PhotosUploader from "../PhotosUploader/PhotosUploader";
+
+import { axiosInstance } from "../../axios/axiosInstance";
+import { useAddPropertyData } from "../../Hooks/useAddFetch";
 
 const AddPropertyForm = () => {
   const [open, setOpen] = useState(false);
@@ -22,6 +24,9 @@ const AddPropertyForm = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [propertyResponse, setPropertyResponse] = useState("");
+
+  const { mutate } = useAddPropertyData();
 
   const props = {
     onRemove: (file) => {
@@ -69,8 +74,11 @@ const AddPropertyForm = () => {
   const [formFields, setformFields] = useState({
     name: "",
     description: "",
-    propertyNumber: "",
+    propertyCode: "",
     propertyTypeId: "",
+    lotNumber: "",
+    aquisitionDate: "",
+    arcGisUrl: "",
     locationId: "",
     divisionId: "",
   });
@@ -78,8 +86,11 @@ const AddPropertyForm = () => {
   const {
     name,
     description,
-    propertyNumber,
+    propertyCode,
     propertyTypeId,
+    lotNumber,
+    aquisitionDate,
+    arcGisUrl,
     locationId,
     divisionId,
   } = formFields;
@@ -98,37 +109,42 @@ const AddPropertyForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const roles = roleIds.map((role) => role.value);
-
     try {
-      const response = await axiosInstance.post("/properties", {
+      const property = {
         name,
         description,
-        propertyNumber,
+        propertyCode,
         propertyTypeId,
+        lotNumber,
+        aquisitionDate,
+        arcGisUrl,
         locationId,
         divisionId,
+      };
+
+      mutate(property, {
+        onSuccess: async (data) => {
+          setPropertyResponse(data);
+          console.log(data);
+          if (data && fileList.length !== 0) {
+            try {
+              const response = await axiosInstance.post(
+                `properties/${data.data.id}/photos`
+              );
+              if (response) {
+                success("Property images uploaded successfully");
+                console.log({ response });
+              }
+            } catch (error) {
+              console.log(error);
+              errorMessage("Error adding property images");
+            }
+          }
+          success("Property added successfully");
+          clearInput();
+          handleCancel();
+        },
       });
-
-      if (response && fileList.length !== 0) {
-        const propertyRecord = await response.data;
-
-        try {
-          const response = await axiosInstance.post(
-            `properties/${propertyRecord.record.id}/photos`
-          );
-          console.log(response);
-        } catch (error) {
-          console.log(error);
-        }
-
-        success("Property added successfully");
-      }
-
-      success("Property added successfully");
-
-      clearInput();
-      handleCancel();
     } catch (error) {
       errorMessage("Error adding property");
       throw new Error(`Error in creating user ${error}`);
@@ -139,8 +155,11 @@ const AddPropertyForm = () => {
     setformFields({
       name: "",
       description: "",
-      propertyNumber: "",
+      propertyCode: "",
       propertyTypeId: "",
+      lotNumber: "",
+      aquisitionDate: "",
+      arcGisUrl: "",
       locationId: "",
       divisionId: "",
     });
@@ -216,6 +235,10 @@ const AddPropertyForm = () => {
     fetchLocations(pageNum);
     fetchDivision(pageNum);
   }, []);
+
+  const handleDatePicker = (_, dateString) => {
+    setformFields({ ...formFields, aquisitionDate: dateString });
+  };
 
   return (
     <>
@@ -297,9 +320,10 @@ const AddPropertyForm = () => {
               prefix={<MdOutlineEmail />}
             />
           </Form.Item>
+
           <Form.Item
-            label="Property Number"
-            name="propertyNumber"
+            label="Property Code"
+            name="propertyCode"
             rules={[
               {
                 required: true,
@@ -307,37 +331,72 @@ const AddPropertyForm = () => {
             ]}
           >
             <Input
-              name="propertyNumber"
-              value={propertyNumber}
+              name="propertyCode"
+              value={propertyCode}
               onChange={(e) =>
-                setformFields({ ...formFields, propertyNumber: e.target.value })
+                setformFields({ ...formFields, propertyCode: e.target.value })
               }
               type="text"
-              placeholder="Enter property number"
+              placeholder="Enter property code"
               prefix={<MdOutlineEmail />}
             />
           </Form.Item>
 
           <Form.Item
-            label="Property Type"
-            name="propertyTypeId"
+            label="Lot Number"
+            name="lotNumber"
             rules={[
               {
                 required: true,
               },
             ]}
           >
-            <CustomSelect
-              mode="single"
-              value={propertyTypeId}
-              placeholder="Select property type"
-              options={optionsPropertyType}
+            <Input
+              name="lotNumber"
+              value={lotNumber}
               onChange={(e) =>
-                setformFields({ ...formFields, propertyTypeId: e })
+                setformFields({ ...formFields, lotNumber: e.target.value })
               }
-              style={{
-                width: "100%",
-              }}
+              type="text"
+              placeholder="Enter lot number"
+              prefix={<MdOutlineEmail />}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Aquisition Date"
+            name="aquisitionDate"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <DatePicker
+              name="aquisitionDate"
+              value={aquisitionDate}
+              onChange={handleDatePicker}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="ArcGIS url"
+            name="arcGisUrl"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input
+              name="arcGisUrl"
+              value={arcGisUrl}
+              onChange={(e) =>
+                setformFields({ ...formFields, arcGisUrl: e.target.value })
+              }
+              type="text"
+              placeholder="Enter ArcGIS url"
+              prefix={<MdOutlineEmail />}
             />
           </Form.Item>
 

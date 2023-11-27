@@ -1,8 +1,9 @@
-import React from "react";
 import { useState, useEffect } from "react";
-import axiosFetch from "../../axios/axios";
+
 import { useParams } from "react-router-dom/dist";
 import { useLocation } from "react-router-dom/dist";
+
+import axiosFetch from "../../axios/axios";
 import GridLayout from "../../components/GridLayout/GridLayout";
 import ShimmerGrid from "../../components/ShimmerGrid/ShimmerGrid";
 

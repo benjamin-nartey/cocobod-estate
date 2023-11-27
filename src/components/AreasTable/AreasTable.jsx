@@ -1,15 +1,16 @@
-import React, { useEffect } from "react";
-import { Table, Tag } from "antd";
-import { Button, Modal, Form, Input } from "antd";
-import { message, Popconfirm } from "antd";
+import { useState } from "react";
+
+import { Button, Modal, Form, Input, Table, message, Popconfirm } from "antd";
+
+import { UserOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { BiEdit } from "react-icons/bi";
-import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../axios/axiosInstance";
-import { UserOutlined } from "@ant-design/icons";
+
 import CustomSelect from "../CustomSelect/CustomSelect";
-import { useState } from "react";
-import { MdOutlineEmail } from "react-icons/md";
+
+import { useQuery } from "@tanstack/react-query";
+
+import { axiosInstance } from "../../axios/axiosInstance";
 
 const AreasTable = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -70,10 +71,12 @@ const AreasTable = () => {
           pageNum: pageNum,
         },
       });
-      setTotalPages(response.data.meta.totalPages);
-      setRecordsPerPage(response.data.meta.recordsPerPage);
-      console.log({ totalPages });
-      return response.data;
+      if (response) {
+        setTotalPages(response.data.meta.totalPages);
+        setRecordsPerPage(response.data.meta.recordsPerPage);
+        console.log({ totalPages });
+        return response.data;
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -93,7 +96,7 @@ const AreasTable = () => {
     e.preventDefault();
 
     try {
-      await axiosInstance.patch(`/areas/${areaId}`, {
+      const response = await axiosInstance.patch(`/areas/${areaId}`, {
         name,
         digitalAddress,
         town,
@@ -102,10 +105,12 @@ const AreasTable = () => {
         long,
       });
 
-      success("Location updated successfully");
+      if (response) {
+        success("Location updated successfully");
 
-      clearInput();
-      handleCancel();
+        clearInput();
+        handleCancel();
+      }
     } catch (error) {
       errorMessage("Error updating location");
       throw new Error(`Error updating location ${error}`);

@@ -1,14 +1,16 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
+
+import { NavLink } from "react-router-dom";
+
 import Map, { Marker, Popup } from "react-map-gl";
-import { useState } from "react";
-import { useContext } from "react";
-import { SearchResultContext } from "../../context/searchResult.context";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { getCenter } from "geolib";
-import { useEffect } from "react";
+
 import { MdLocationPin } from "react-icons/md";
+
+import { SearchResultContext } from "../../context/searchResult.context";
+
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import { NavLink } from "react-router-dom";
 
 function MapBox({}) {
   const { searchResult } = useContext(SearchResultContext);

@@ -1,5 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import { AiFillHome } from "react-icons/ai";
 import { AiFillCalendar } from "react-icons/ai";
 import { BiTimeFive } from "react-icons/bi";
@@ -15,20 +17,17 @@ import {
 } from "react-icons/md";
 import { IoMdMap } from "react-icons/io";
 import { BsFillBuildingsFill } from "react-icons/bs";
+import { PoweroffOutlined } from "@ant-design/icons";
+import { HiUsers } from "react-icons/hi";
+
 import logo from "../../assets/logo-cocobod.png";
 import { ReactComponent as SidebarImage } from "../../assets/sidebarImg.svg";
-import { PoweroffOutlined } from "@ant-design/icons";
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
-import axios from "axios";
+import { Logout } from "../../utils/logout";
+import Loader from "../Loader/Loader";
 
 import { useSnapshot } from "valtio";
 
 import state from "../../store/store";
-import { HiUsers } from "react-icons/hi";
-import { Logout } from "../../utils/logout";
-import Loader from "../Loader/Loader";
 
 function Sidebar({ closeToggle }) {
   const allowedRoles = ["Super Administrator", "Divisional Administrator"];
@@ -40,9 +39,8 @@ function Sidebar({ closeToggle }) {
 
   const handleLogout = async () => {
     const response = await Logout();
-    if (!response) {
-      return;
-    }
+    if (!response) return;
+
     navigate(from, { replace: true });
   };
 
@@ -54,11 +52,6 @@ function Sidebar({ closeToggle }) {
     "px-5 py-2 flex items-center text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize";
   const isActiveStyle =
     "px-5 py-2 flex items-center text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize";
-
-  // const isNotActiveStyle =
-  //   "px-5 py-2 flex items-start text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize";
-  // const isActiveStyle =
-  //   "px-5 py-2 flex items-start text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize";
 
   return (
     <div
