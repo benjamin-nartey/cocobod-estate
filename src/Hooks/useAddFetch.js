@@ -70,3 +70,16 @@ export const useAddUserData = () => {
     },
   });
 };
+
+const addRole = (role) => {
+  return axiosInstance.post("/roles", role);
+};
+
+export const useAddRoleData = () => {
+  const queryClient = useQueryClient();
+  return useMutation(addRole, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("roles");
+    },
+  });
+};
