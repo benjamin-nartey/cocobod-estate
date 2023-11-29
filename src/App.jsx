@@ -1,42 +1,44 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect } from 'react';
 
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 
-import FetchingPage from "./routes/FetchingPage/FetchingPage";
-import Navigation from "./routes/Navigation/Navigation";
+import FetchingPage from './routes/FetchingPage/FetchingPage';
+import Navigation from './routes/Navigation/Navigation';
 
-import { axiosInstance } from "./axios/axiosInstance";
-import state from "./store/store";
+import { axiosInstance } from './axios/axiosInstance';
+import state from './store/store';
+import Deployment from './routes/Deployment/Deployment';
+import PropertyMerge from './routes/PropertyMerge/PropertyMerge';
 
 const Authentication = lazy(() =>
-  import("./routes/Authentication/Authentication")
+  import('./routes/Authentication/Authentication')
 );
-const Home = lazy(() => import("./routes/Home/Home"));
-const Users = lazy(() => import("./routes/Users/Users"));
-const Departments = lazy(() => import("./routes/Departments/Departments"));
-const Divisions = lazy(() => import("./routes/Divisions/Divisions"));
-const Roles = lazy(() => import("./routes/Roles/Roles"));
-const Properties = lazy(() => import("./routes/Properties/Properties"));
-const Property = lazy(() => import("./routes/Property/Property"));
-const Locations = lazy(() => import("./routes/Locations/Locations"));
-const Areas = lazy(() => import("./routes/Areas/Areas"));
+const Home = lazy(() => import('./routes/Home/Home'));
+const Users = lazy(() => import('./routes/Users/Users'));
+const Departments = lazy(() => import('./routes/Departments/Departments'));
+const Divisions = lazy(() => import('./routes/Divisions/Divisions'));
+const Roles = lazy(() => import('./routes/Roles/Roles'));
+const Properties = lazy(() => import('./routes/Properties/Properties'));
+const Property = lazy(() => import('./routes/Property/Property'));
+const Locations = lazy(() => import('./routes/Locations/Locations'));
+const Areas = lazy(() => import('./routes/Areas/Areas'));
 const PropertyTypes = lazy(() =>
-  import("./routes/PropertyTypes/PropertyTypes")
+  import('./routes/PropertyTypes/PropertyTypes')
 );
 const PropertyDetailsPage = lazy(() =>
-  import("./routes/PropertyDetailsPage/PropertyDetailsPage")
+  import('./routes/PropertyDetailsPage/PropertyDetailsPage')
 );
 const PropertyDetail = lazy(() =>
-  import("./components/PropertyDetail/PropertyDetail")
+  import('./components/PropertyDetail/PropertyDetail')
 );
-const Gallery = lazy(() => import("./routes/Gallery/Gallery"));
-const PropertyMap = lazy(() => import("./routes/PropertyMap/PropertyMap"));
-const RequireAuth = lazy(() => import("./components/RequireAuth/RequireAuth"));
-const Dashboard = lazy(() => import("./routes/Dashboard/Dashboard"));
+const Gallery = lazy(() => import('./routes/Gallery/Gallery'));
+const PropertyMap = lazy(() => import('./routes/PropertyMap/PropertyMap'));
+const RequireAuth = lazy(() => import('./components/RequireAuth/RequireAuth'));
+const Dashboard = lazy(() => import('./routes/Dashboard/Dashboard'));
 
-const Unauthorized = lazy(() => import("./routes/Unauthorized/Unauthorized"));
+const Unauthorized = lazy(() => import('./routes/Unauthorized/Unauthorized'));
 
-const NotExistPage = lazy(() => import("./routes/NotExistPage/NotExistPage"));
+const NotExistPage = lazy(() => import('./routes/NotExistPage/NotExistPage'));
 
 function App() {
   const navigate = useNavigate();
@@ -46,19 +48,19 @@ function App() {
   const fetchUser = async () => {
     try {
       state.loadingState = true;
-      const response = await axiosInstance.get("/auth/user");
+      const response = await axiosInstance.get('/auth/user');
 
       if (response.status === 200) {
         const currentUser = response?.data;
 
-        state.currentUser = { currentUser };
+        state.auth.currentUser = currentUser;
 
         navigate(from, { replace: true });
       }
     } catch (error) {
       console.log(error);
     } finally {
-      state.loadingState = false;
+      state.auth.loadingState = false;
     }
   };
   useEffect(() => {
@@ -110,7 +112,7 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedRoles={["Super Administrator", "Divisional Administrator"]}
+              allowedRoles={['Super Administrator', 'Divisional Administrator']}
             />
           }
         >
@@ -193,7 +195,7 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedRoles={["Super Administrator", "Divisional Administrator"]}
+              allowedRoles={['Super Administrator', 'Divisional Administrator']}
             />
           }
         >
@@ -274,6 +276,22 @@ function App() {
             element={
               <Suspense>
                 <PropertyTypes />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/deployment"
+            element={
+              <Suspense>
+                <Deployment />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/merge"
+            element={
+              <Suspense>
+                <PropertyMerge />
               </Suspense>
             }
           />

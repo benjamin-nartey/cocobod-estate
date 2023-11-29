@@ -1,18 +1,18 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom";
+import { useLocation, Navigate, Outlet } from 'react-router-dom';
 
-import { useSnapshot } from "valtio";
+import { useSnapshot } from 'valtio';
 
-import state from "../../store/store";
+import state from '../../store/store';
 
 function RequireAuth({ allowedRoles }) {
   const snap = useSnapshot(state);
 
-  const auth = snap.currentUser;
+  const currentUser = snap.auth.currentUser;
 
   const location = useLocation();
 
   const areRolesAllowed = () => {
-    const result = auth?.currentUser?.roles?.find((role) =>
+    const result = currentUser?.roles?.find((role) =>
       allowedRoles.includes(role.name)
     )
       ? true
@@ -23,7 +23,7 @@ function RequireAuth({ allowedRoles }) {
 
   return areRolesAllowed() ? (
     <Outlet />
-  ) : auth?.currentUser?.staff?.name ? (
+  ) : currentUser?.staff?.name ? (
     <Navigate to="/unauthorized" state={{ from: location }} replace />
   ) : (
     <Navigate to="/login" state={{ from: location }} replace />

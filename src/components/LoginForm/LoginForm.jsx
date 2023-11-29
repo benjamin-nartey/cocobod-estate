@@ -1,45 +1,45 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import state from "../../store/store";
+import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import state from '../../store/store';
 
-import Loader from "../Loader/Loader";
+import Loader from '../Loader/Loader';
 
-import axios from "axios";
+import axios from 'axios';
 
 const defaultFormFields = {
-  email: "",
-  password: "",
+  email: '',
+  password: '',
 };
 
 const API = axios.create({
-  baseURL: "https://estate-api-2.onrender.com/api/v1/",
+  baseURL: 'http://localhost:9000/api/v1/',
 });
 
 function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);
   const { email, password } = formFields;
-  const [ipAddress, setIPAddress] = useState("");
+  const [ipAddress, setIPAddress] = useState('');
   const [loading, setLoading] = useState(false);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
-    "accessToken",
+    'accessToken',
     null
   );
   const [refreshTokenAuth, setRefreshTokenAuth] = useLocalStorage(
-    "refreshToken",
+    'refreshToken',
     null
   );
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/home";
+  const from = location.state?.from?.pathname || '/home';
 
   useEffect(() => {
     axios
-      .get("https://ipapi.co/json")
+      .get('https://ipapi.co/json')
       .then((response) => response.data)
       .then((data) => setIPAddress(data.ip))
       .catch((error) => console.log(error));
@@ -56,26 +56,27 @@ function LoginForm() {
     try {
       setLoading(true);
       const response = await API.post(
-        "/auth",
+        '/auth',
         { email, password },
         {
           headers: {
-            "Content-Type": "application/json",
-            "X-IP-Address": ipAddress,
+            'Content-Type': 'application/json',
+            'X-IP-Address': ipAddress,
           },
         }
       );
 
-      const userResponse = await API.get("/auth/user", {
+      const userResponse = await API.get('/auth/user', {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${response?.data?.accessToken}`,
         },
       });
 
       if (userResponse) {
+        console.log('I have a response');
         const currentUser = userResponse?.data;
-        state.currentUser = { currentUser };
+        state.auth.currentUser = currentUser;
 
         setAccessTokenAuth(response?.data?.accessToken);
         setRefreshTokenAuth(response?.data?.refreshToken);
@@ -113,7 +114,7 @@ function LoginForm() {
         {loading ? (
           <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
         ) : (
-          "Login"
+          'Login'
         )}
       </button>
       <div className="w-full">
