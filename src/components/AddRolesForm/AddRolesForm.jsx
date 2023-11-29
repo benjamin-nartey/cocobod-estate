@@ -4,6 +4,7 @@ import { Button, Modal, Form, Input, message } from "antd";
 
 import { UserOutlined } from "@ant-design/icons";
 
+import { useAddRoleData } from "../../Hooks/useAddFetch";
 import { axiosInstance } from "../../axios/axiosInstance";
 
 const AddRolesForm = () => {
@@ -12,6 +13,8 @@ const AddRolesForm = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const { mutate } = useAddRoleData();
 
   const success = (content) => {
     messageApi.open({
@@ -47,14 +50,15 @@ const AddRolesForm = () => {
     e.preventDefault();
 
     try {
-      await axiosInstance.post("/roles", {
-        name,
+      const role = name;
+      mutate(role, {
+        onSuccess: () => {
+          success("Role created successfuly");
+
+          clearInput();
+          handleCancel();
+        },
       });
-
-      success("Role created successfuly");
-
-      clearInput();
-      handleCancel();
     } catch (error) {
       errorMessage("Error creating role");
       throw new Error(`Error in creating role ${error}`);
