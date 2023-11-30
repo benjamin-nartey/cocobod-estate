@@ -8,15 +8,41 @@ export default defineConfig({
     svgr(),
     react(),
     VitePWA({
-      manifest: {
-        icons: [
+      registerType: "autoUpdate",
+      devOptions: {
+        enabled: true,
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+        runtimeCaching: [
           {
-            src: "/public/logo-cocobod.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
+            urlPattern: ({ url }) => {
+              return url.pathname.startsWith("/api");
+            },
+            handler: "CacheFirst",
+            options: {
+              cacheName: "api-cache",
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
           },
         ],
+      },
+      includeAssets: ["favicon.ico"],
+      manifest: {
+        name: "Cocobod Estate App",
+        short_name: "CocobodEstate",
+        description: "Estate management app for cocobod",
+        theme_color: "#ffffff",
+        icons: [
+          {
+            src: "/logo-cocobod.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+        registerType: "autoUpdate",
       },
     }),
   ],
