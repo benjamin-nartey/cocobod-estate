@@ -128,15 +128,16 @@ const AddDepartmentsForm = () => {
         <Form
           form={form}
           onSubmitCapture={handleSubmit}
+          layout="vertical"
           name="wrap"
-          labelCol={{
-            flex: "110px",
-          }}
+          // labelCol={{
+          //   flex: "110px",
+          // }}
           labelAlign="left"
           labelWrap
-          wrapperCol={{
-            flex: 1,
-          }}
+          // wrapperCol={{
+          //   flex: 1,
+          // }}
           colon={false}
           style={{
             maxWidth: 600,
@@ -185,6 +186,7 @@ const AddDepartmentsForm = () => {
 
           <Form.Item label=" ">
             <Button
+              className="w-full"
               type="primary"
               htmlType="submit"
               style={{ backgroundColor: "#6E431D", color: "#fff" }}

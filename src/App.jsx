@@ -29,6 +29,11 @@ const PropertyDetailsPage = lazy(() =>
 const PropertyDetail = lazy(() =>
   import("./components/PropertyDetail/PropertyDetail")
 );
+
+const AddPropertyForm = lazy(() =>
+  import("./routes/AddPropertyForm/AddPropertyForm")
+);
+
 const Gallery = lazy(() => import("./routes/Gallery/Gallery"));
 const PropertyMap = lazy(() => import("./routes/PropertyMap/PropertyMap"));
 const RequireAuth = lazy(() => import("./components/RequireAuth/RequireAuth"));
@@ -211,6 +216,15 @@ function App() {
             element={
               <Suspense>
                 <Users />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/property-capture"
+            element={
+              <Suspense>
+                <AddPropertyForm />
               </Suspense>
             }
           />

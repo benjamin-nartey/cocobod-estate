@@ -33,6 +33,7 @@ function Navigation() {
   );
 
   const snap = useSnapshot(state);
+  console.log({snap})
 
   const location = useLocation();
   const navigate = useNavigate();

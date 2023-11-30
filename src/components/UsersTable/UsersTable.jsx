@@ -286,14 +286,15 @@ const UsersTable = () => {
           form={form}
           onSubmitCapture={handleSubmit}
           name="useredit"
-          labelCol={{
-            flex: "110px",
-          }}
+          layout="vertical"
+          // labelCol={{
+          //   flex: "110px",
+          // }}
           labelAlign="left"
           labelWrap
-          wrapperCol={{
-            flex: 1,
-          }}
+          // wrapperCol={{
+          //   flex: 1,
+          // }}
           colon={false}
           style={{
             maxWidth: 600,
@@ -362,6 +363,7 @@ const UsersTable = () => {
 
           <Form.Item label=" ">
             <Button
+              className="w-full"
               type="primary"
               htmlType="submit"
               style={{ backgroundColor: "#6E431D", color: "#fff" }}

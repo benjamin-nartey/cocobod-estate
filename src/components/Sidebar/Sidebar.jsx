@@ -10,6 +10,7 @@ import {
   MdAreaChart,
   MdDashboard,
   MdLocationPin,
+  MdOutlineAddAPhoto,
   MdOutlineReceipt,
   MdOutlineSafetyDivider,
   MdProductionQuantityLimits,
@@ -105,6 +106,17 @@ function Sidebar({ closeToggle }) {
               >
                 <AiFillCalendar size={18} />
                 Properties
+              </NavLink>
+
+              <NavLink
+                to="/property-capture"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdOutlineAddAPhoto size={18} />
+                Property Capture
               </NavLink>
 
               <NavLink
