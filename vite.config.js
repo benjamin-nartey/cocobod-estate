@@ -29,7 +29,7 @@ export default defineConfig({
           },
         ],
       },
-      includeAssets: ["favicon.ico"],
+      includeAssets: ["apple-touch-icon-180x180.png", "pwa-512x512.png"],
       manifest: {
         name: "Cocobod Estate App",
         short_name: "CocobodEstate",
