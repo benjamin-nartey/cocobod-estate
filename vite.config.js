@@ -34,15 +34,25 @@ export default defineConfig({
         name: "Cocobod Estate App",
         short_name: "CocobodEstate",
         description: "Estate management app for cocobod",
-        theme_color: "#ffffff",
+        theme_color: "#6E431D",
         icons: [
           {
-            src: "/logo-cocobod.png",
+            src: "pwa-192x192.png", // <== don't add slash, for testing
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "/pwa-512x512.png", // <== don't remove slash, for testing
             sizes: "512x512",
             type: "image/png",
           },
+          {
+            src: "pwa-512x512.png", // <== don't add slash, for testing
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any ",
+          },
         ],
-        registerType: "autoUpdate",
       },
     }),
   ],
