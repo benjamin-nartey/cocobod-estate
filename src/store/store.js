@@ -4,7 +4,7 @@ const storedStateString = localStorage.getItem("currentUserState");
 
 const initialState = storedStateString
   ? JSON.parse(storedStateString)
-  : { currentUser: {}, loadingState: false };
+  : { currentUser: {}, loadingState: false, isOnLine: false };
 
 const state = proxy(initialState);
 

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
@@ -47,6 +47,23 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
+  // const [online, setonline] = useState(navigator.onLine);
+
+  window.addEventListener(
+    "online",
+    () => {
+      state.isOnLine = true;
+    },
+    false
+  );
+
+  window.addEventListener(
+    "offline",
+    () => {
+      state.isOnLine = false;
+    },
+    false
+  );
 
   const fetchUser = async () => {
     try {
@@ -66,6 +83,7 @@ function App() {
       state.loadingState = false;
     }
   };
+
   useEffect(() => {
     fetchUser();
   }, []);
