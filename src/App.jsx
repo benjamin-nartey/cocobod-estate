@@ -231,20 +231,20 @@ function App() {
             }
           />
 
-          <Route
+          {/* <Route
             path="/property-capture"
             element={
               <Suspense>
                 <AddPropertyForm />
               </Suspense>
             }
-          />
+          /> */}
 
           <Route
             path="/capture"
             element={
               <Suspense>
-                <Capture/>
+                <Capture />
               </Suspense>
             }
           />

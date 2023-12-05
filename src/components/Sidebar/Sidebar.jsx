@@ -100,7 +100,7 @@ function Sidebar({ closeToggle }) {
               </NavLink>
 
               <NavLink
-                to="/property-capture"
+                to="/capture"
                 className={({ isActive }) =>
                   isActive ? isActiveStyle : isNotActiveStyle
                 }
@@ -109,6 +109,17 @@ function Sidebar({ closeToggle }) {
                 <MdOutlineAddAPhoto size={18} />
                 Property Capture
               </NavLink>
+
+              {/* <NavLink
+                to="/property-capture"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdOutlineAddAPhoto size={18} />
+                Property Capture
+              </NavLink> */}
 
               <NavLink
                 to="/users"
