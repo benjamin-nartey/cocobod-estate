@@ -78,11 +78,8 @@ define(['./workbox-f4a68738'], (function (workbox) { 'use strict';
    * See https://goo.gl/S9QRab
    */
   workbox.precacheAndRoute([{
-    "url": "registerSW.js",
-    "revision": "3ca0b8505b4bec776b69afdba2768812"
-  }, {
     "url": "index.html",
-    "revision": "0.phcff5t0e08"
+    "revision": "0.ra9jjppdu6g"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
@@ -91,7 +88,7 @@ define(['./workbox-f4a68738'], (function (workbox) { 'use strict';
   workbox.registerRoute(({
     url
   }) => {
-    return url.pathname.startsWith("/api");
+    return url.pathname.startsWith("/api") && !url.pathname.includes("user");
   }, new workbox.CacheFirst({
     "cacheName": "api-cache",
     plugins: [new workbox.CacheableResponsePlugin({

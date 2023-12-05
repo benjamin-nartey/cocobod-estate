@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Accordion from "../Accordion/Accordion";
 
 import {
   Button,
@@ -23,33 +24,19 @@ import { useAddPropertyData } from "../../Hooks/useAddFetch";
 
 const defaultFormFields = {
   name: "",
+  propertyCode: "",
+  propertyTypeId: "",
   description: "",
   digitalAddress: "",
-  lotNumber: "",
-  plotSize: "",
-  floorArea: "",
-  condition: "",
-  divisionId: "",
-  region: "",
-  district: "",
-  town: "",
-  landmark: "",
-  propertyTypeId: "",
-  aquisitionDate: "",
-  occupant: "",
-  occupantType: "",
-  tenancyAgreeMentStartDate: "",
-  tenancyAgreeMentEndDate: "",
+  locationId: "",
+  propertyReferenceCategoryId: "",
+  arcGisLink: "",
   lat: "",
   long: "",
-  prevMarketValue: null,
-  variance: null,
-  currentMarketValue: null,
-  remarks: "",
-  currentUsefulLife: "",
+  landmark: "",
 };
 
-const AddPropertyForm = () => {
+const PropertyForm = () => {
   const [open, setOpen] = useState(false);
   const [pageNum, setpageNum] = useState(1);
   const [optionsPropertyType, setOptionsPropertyType] = useState([]);
@@ -73,6 +60,24 @@ const AddPropertyForm = () => {
       value: "NON LBC",
     },
   ]);
+  const [location, setLocation] = useState(null);
+
+  const handleLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation({ latitude, longitude });
+          console.log(longitude, latitude);
+        },
+        (error) => {
+          console.error("Error getting location", error.message);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser");
+    }
+  };
 
   const { mutate } = useAddPropertyData();
 
@@ -121,30 +126,16 @@ const AddPropertyForm = () => {
 
   const {
     name,
+    propertyCode,
+    propertyTypeId,
     description,
     digitalAddress,
-    lotNumber,
-    plotSize,
-    floorArea,
-    condition,
-    divisionId,
-    region,
-    district,
-    town,
-    landmark,
-    propertyTypeId,
-    aquisitionDate,
-    occupant,
-    occupantType,
-    tenancyAgreeMentStartDate,
-    tenancyAgreeMentEndDate,
+    locationId,
+    propertyReferenceCategoryId,
+    arcGisLink,
     lat,
     long,
-    prevMarketValue,
-    currentMarketValue,
-    variance,
-    remarks,
-    currentUsefulLife,
+    landmark,
   } = formFields;
 
   console.log({ formFields });
@@ -158,29 +149,13 @@ const AddPropertyForm = () => {
         // name,
         // description,
         // digitalAddress,
-        // lotNumber,
-        // plotSize,
-        // floorArea,
-        // condition,
-        // divisionId,
-        // region,
-        // district,
-        // town,
+        // locationId,
         // landmark,
         // propertyTypeId,
         // aquisitionDate,
-        // occupant,
-        //occupantType
-        // tenancyAgreeMentStartDate,
-        // tenancyAgreeMentEndDate,
         // lat,
         // long,
-        // prevMarketValue,
-        // currentMarketValue,
-        // variance,
         // photos,
-        // remarks,
-        // currentUsefulLife,
       };
 
       mutate(property, {
@@ -314,6 +289,7 @@ const AddPropertyForm = () => {
         }
       >
         <Divider orientation="left">Property Information</Divider>
+
         <Form.Item
           label="Name"
           name="name"
@@ -331,6 +307,27 @@ const AddPropertyForm = () => {
             }
             placeholder="Enter property name"
             prefix={<UserOutlined />}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Property Code"
+          name="propertyCode"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input
+            name="propertyCode"
+            value={propertyCode}
+            onChange={(e) =>
+              setformFields({ ...formFields, propertyCode: e.target.value })
+            }
+            type="text"
+            placeholder="Enter property code"
+            prefix={<MdOutlineEmail />}
           />
         </Form.Item>
 
@@ -379,27 +376,6 @@ const AddPropertyForm = () => {
         </Form.Item>
 
         <Form.Item
-          label="Lot Number"
-          name="lotNumber"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="lotNumber"
-            value={lotNumber}
-            onChange={(e) =>
-              setformFields({ ...formFields, lotNumber: e.target.value })
-            }
-            type="text"
-            placeholder="Enter lot number"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
           label="Ghana Post Address"
           name="digitalAdress"
           rules={[
@@ -420,153 +396,11 @@ const AddPropertyForm = () => {
           />
         </Form.Item>
 
-        <Form.Item
-          label="Plot Size"
-          name="plotSize"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="plotSize"
-            value={plotSize}
-            onChange={(e) =>
-              setformFields({ ...formFields, plotSize: e.target.value })
-            }
-            type="text"
-            placeholder="Enter Plot Size"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Floor Area"
-          name="floorArea"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="floorArea"
-            value={floorArea}
-            onChange={(e) =>
-              setformFields({ ...formFields, floorArea: e.target.value })
-            }
-            type="text"
-            placeholder=""
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Condition"
-          name="condition"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="condition"
-            value={condition}
-            onChange={(e) =>
-              setformFields({ ...formFields, condition: e.target.value })
-            }
-            type="text"
-            placeholder="Enter property condition"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Aquisition Date"
-          name="aquisitionDate"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <DatePicker
-            name="aquisitionDate"
-            value={aquisitionDate}
-            onChange={handleDatePicker}
-          />
-        </Form.Item>
-
         <Divider orientation="left">Location</Divider>
 
         <Form.Item
-          label="Division"
-          name="divisionId"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={divisionId}
-            placeholder="Select division"
-            options={optionsDivision}
-            onChange={(e) => setformFields({ ...formFields, divisionId: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Region"
-          name="region"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={region}
-            placeholder="Select Region"
-            options={optionsLocation}
-            onChange={(e) => setformFields({ ...formFields, region: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="District"
-          name="district"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={district}
-            placeholder="Select District"
-            options={optionsLocation}
-            onChange={(e) => setformFields({ ...formFields, district: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
           label="Town"
-          name="town"
+          name="locationId"
           rules={[
             {
               required: true,
@@ -575,10 +409,10 @@ const AddPropertyForm = () => {
         >
           <CustomSelect
             mode="single"
-            value={town}
+            value={locationId}
             placeholder="Select Town"
             options={optionsLocation}
-            onChange={(e) => setformFields({ ...formFields, town: e })}
+            onChange={(e) => setformFields({ ...formFields, locationId: e })}
             style={{
               width: "100%",
             }}
@@ -636,6 +470,7 @@ const AddPropertyForm = () => {
               type="primary"
               htmlType="button"
               style={{ backgroundColor: "#6E431D", color: "#fff" }}
+              onClick={handleLocation}
             >
               Generate
             </Button>
@@ -663,152 +498,6 @@ const AddPropertyForm = () => {
           />
         </Form.Item>
 
-        <Divider orientation="left">Occupancy</Divider>
-
-        <Form.Item
-          label="Occupant Name"
-          name="occupant"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="occupant"
-            value={occupant}
-            onChange={(e) =>
-              setformFields({ ...formFields, occupant: e.target.value })
-            }
-            type="text"
-            placeholder="Enter occupant name"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Occupant Type"
-          name="occupantType"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={occupantType}
-            placeholder="Select type of Occupant"
-            options={optionsOccupant}
-            onChange={(e) => setformFields({ ...formFields, occupantType: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Tenancy Agreement Start-date"
-          name="tenancyAgreeMentStartDate"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <DatePicker
-            name="tenancyAgreeMentStartDate"
-            value={tenancyAgreeMentStartDate}
-            onChange={handleDatePicker}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Tenancy Agreement End-date"
-          name="tenancyAgreeMentEndDate"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <DatePicker
-            name="tenancyAgreeMentEndDate"
-            value={tenancyAgreeMentEndDate}
-            onChange={handleDatePicker}
-          />
-        </Form.Item>
-
-        <Divider orientation="left"> Market Value</Divider>
-
-        <Form.Item
-          label="Current Market Value"
-          name="currentMarketValue"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="currentMarketValue"
-            value={currentMarketValue}
-            onChange={(e) =>
-              setformFields({
-                ...formFields,
-                currentMarketValue: e.target.value,
-              })
-            }
-            type="text"
-            placeholder=""
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Current Useful life"
-          name="currentUsefulLife"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="currentUsefulLife"
-            value={currentUsefulLife}
-            onChange={(e) =>
-              setformFields({
-                ...formFields,
-                currentUsefulLife: e.target.value,
-              })
-            }
-            type="text"
-            placeholder=""
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Remarks"
-          name="remarks"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="remarks"
-            value={remarks}
-            onChange={(e) =>
-              setformFields({ ...formFields, remarks: e.target.value })
-            }
-            type="text"
-            placeholder=""
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
         <Divider />
 
         <Form.Item label=" " name="uploadImages">
@@ -818,6 +507,10 @@ const AddPropertyForm = () => {
             fileList={fileList}
           />
         </Form.Item>
+
+        <Divider orientation="left">Property Units</Divider>
+
+        <Accordion />
 
         <Form.Item label=" ">
           <Button
@@ -833,4 +526,4 @@ const AddPropertyForm = () => {
     </div>
   );
 };
-export default AddPropertyForm;
+export default PropertyForm;

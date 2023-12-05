@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -23,7 +23,8 @@ import { HiUsers } from "react-icons/hi";
 
 import logo from "../../assets/logo-cocobod.png";
 import { ReactComponent as SidebarImage } from "../../assets/sidebarImg.svg";
-import { Logout } from "../../utils/logout";
+
+import { LogoutContext } from "../../context/logout.context";
 import Loader from "../Loader/Loader";
 
 import { useSnapshot } from "valtio";
@@ -33,17 +34,7 @@ import state from "../../store/store";
 function Sidebar({ closeToggle }) {
   const allowedRoles = ["Super Administrator", "Divisional Administrator"];
   const snap = useSnapshot(state);
-
-  const location = useLocation();
-  const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/login";
-
-  const handleLogout = async () => {
-    const response = await Logout();
-    if (!response) return;
-
-    navigate(from, { replace: true });
-  };
+  const { logout } = useContext(LogoutContext);
 
   const handleCloseSidebar = () => {
     if (closeToggle) closeToggle(false);
@@ -238,7 +229,7 @@ function Sidebar({ closeToggle }) {
             Map
           </NavLink>
           <button
-            onClick={handleLogout}
+            onClick={logout}
             className={`${isNotActiveStyle} hidden max-md:flex`}
           >
             {snap.loadingState ? (

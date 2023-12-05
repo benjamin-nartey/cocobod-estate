@@ -8,11 +8,11 @@ import {
   AiOutlinePoweroff,
 } from "react-icons/ai";
 
-
 import Sidebar from "../../components/Sidebar/Sidebar";
 import navBg from "../../assets/navbg.png";
-import { Logout } from "../../utils/logout";
+import { LogoutContext } from "../../context/logout.context";
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getContrastingColor } from "../../config/helpers";
 import state from "../../store/store";
@@ -20,7 +20,6 @@ import Loader from "../../components/Loader/Loader";
 
 import { useSnapshot } from "valtio";
 import { Outlet } from "react-router-dom/dist";
-
 
 function Navigation() {
   const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -32,20 +31,10 @@ function Navigation() {
     getContrastingColor(avatarBackground)
   );
 
+  const { logout } = useContext(LogoutContext);
+
   const snap = useSnapshot(state);
-  console.log({snap})
-
-  const location = useLocation();
-  const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/login";
-
-  const handleLogout = async () => {
-    const response = await Logout();
-    if (!response) {
-      return;
-    }
-    navigate(from, { replace: true });
-  };
+  console.log({ snap });
 
   function getRandomColor() {
     const letters = "0123456789ABCDEF";
@@ -61,7 +50,7 @@ function Navigation() {
       <div className="absolute right-8 top-16 z-[99]">
         {toggleLogout && (
           <button
-            onClick={handleLogout}
+            onClick={logout}
             className="px-4 py-2 bg-white rounded-md text-base font-medium flex items-center justify-center gap-2 max-md:hidden"
           >
             {snap.loadingState ? (

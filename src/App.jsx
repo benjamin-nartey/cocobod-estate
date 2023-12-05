@@ -8,40 +8,33 @@ import Navigation from "./routes/Navigation/Navigation";
 import { axiosInstance } from "./axios/axiosInstance";
 import state from "./store/store";
 
-const Authentication = lazy(() =>
-  import("./routes/Authentication/Authentication")
-);
-const Home = lazy(() => import("./routes/Home/Home"));
-const Users = lazy(() => import("./routes/Users/Users"));
-const Departments = lazy(() => import("./routes/Departments/Departments"));
-const Divisions = lazy(() => import("./routes/Divisions/Divisions"));
-const Roles = lazy(() => import("./routes/Roles/Roles"));
-const Properties = lazy(() => import("./routes/Properties/Properties"));
-const Property = lazy(() => import("./routes/Property/Property"));
-const Locations = lazy(() => import("./routes/Locations/Locations"));
-const Areas = lazy(() => import("./routes/Areas/Areas"));
-const PropertyTypes = lazy(() =>
-  import("./routes/PropertyTypes/PropertyTypes")
-);
-const PropertyDetailsPage = lazy(() =>
-  import("./routes/PropertyDetailsPage/PropertyDetailsPage")
-);
-const PropertyDetail = lazy(() =>
-  import("./components/PropertyDetail/PropertyDetail")
-);
+import Authentication from "./routes/Authentication/Authentication";
+import Capture from "./routes/Capture/capture";
 
-const AddPropertyForm = lazy(() =>
-  import("./routes/AddPropertyForm/AddPropertyForm")
-);
+import Home from "./routes/Home/Home";
+import Users from "./routes/Users/Users";
+import Departments from "./routes/Departments/Departments";
+import Divisions from "./routes/Divisions/Divisions";
+import Roles from "./routes/Roles/Roles";
+import Properties from "./routes/Properties/Properties";
+import Property from "./routes/Property/Property";
+import Locations from "./routes/Locations/Locations";
+import Areas from "./routes/Areas/Areas";
+import PropertyTypes from "./routes/PropertyTypes/PropertyTypes";
+import PropertyDetailsPage from "./routes/PropertyDetailsPage/PropertyDetailsPage";
 
-const Gallery = lazy(() => import("./routes/Gallery/Gallery"));
-const PropertyMap = lazy(() => import("./routes/PropertyMap/PropertyMap"));
-const RequireAuth = lazy(() => import("./components/RequireAuth/RequireAuth"));
-const Dashboard = lazy(() => import("./routes/Dashboard/Dashboard"));
+import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
 
-const Unauthorized = lazy(() => import("./routes/Unauthorized/Unauthorized"));
+import AddPropertyForm from "./routes/AddPropertyForm/AddPropertyForm";
 
-const NotExistPage = lazy(() => import("./routes/NotExistPage/NotExistPage"));
+import Gallery from "./routes/Gallery/Gallery";
+import PropertyMap from "./routes/PropertyMap/PropertyMap";
+import RequireAuth from "./components/RequireAuth/RequireAuth";
+import Dashboard from "./routes/Dashboard/Dashboard";
+
+import Unauthorized from "./routes/Unauthorized/Unauthorized";
+
+import NotExistPage from "./routes/NotExistPage/NotExistPage";
 
 function App() {
   const navigate = useNavigate();
@@ -243,6 +236,15 @@ function App() {
             element={
               <Suspense>
                 <AddPropertyForm />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/capture"
+            element={
+              <Suspense>
+                <Capture/>
               </Suspense>
             }
           />

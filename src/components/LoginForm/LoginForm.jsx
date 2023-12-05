@@ -1,18 +1,29 @@
 import { useState, useEffect } from "react";
 
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, json } from "react-router-dom";
 
 import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { useOnlineStatus } from "../../Hooks/useIsOnlineStatus";
 import state from "../../store/store";
 
 import Loader from "../Loader/Loader";
 
 import axios from "axios";
+// import { useSnapshot } from "valtio";
+import bcrypt from "bcryptjs";
+import { useCookies } from "react-cookie";
 
 const defaultFormFields = {
   email: "",
   password: "",
 };
+
+const defaultPassword = import.meta.env.VITE_APP_DEFAULT_PASSWORD;
+
+const hashedDefaultPassword = bcrypt.hashSync(
+  defaultPassword,
+  bcrypt.genSaltSync()
+);
 
 const API = axios.create({
   baseURL: "https://estate-api-2.onrender.com/api/v1/",
@@ -23,6 +34,8 @@ function LoginForm() {
   const { email, password } = formFields;
   const [ipAddress, setIPAddress] = useState("");
   const [loading, setLoading] = useState(false);
+  const isOnLine = useOnlineStatus();
+  const [cookies, setCookie] = useCookies(["name"]);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
     "accessToken",
@@ -32,6 +45,9 @@ function LoginForm() {
     "refreshToken",
     null
   );
+
+  // const snap = useSnapshot(state);
+  // console.log(snap.currentUser.currentUser.email);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,8 +61,6 @@ function LoginForm() {
       .catch((error) => console.log(error));
   }, []);
 
- 
-
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormfields({ ...formFields, [name]: value });
@@ -55,39 +69,68 @@ function LoginForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    try {
-      setLoading(true);
-      const response = await API.post(
-        "/auth",
-        { email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-IP-Address": ipAddress,
-          },
+    console.log(password, defaultPassword);
+
+    switch (isOnLine) {
+      case true:
+        try {
+          setLoading(true);
+          const response = await API.post(
+            "/auth",
+            { email, password },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "X-IP-Address": ipAddress,
+              },
+            }
+          );
+
+          const userResponse = await API.get("/auth/user", {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${response?.data?.accessToken}`,
+            },
+          });
+
+          if (userResponse) {
+            const currentUser = userResponse.data;
+            state.currentUser = { currentUser };
+            const offlineUser = JSON.stringify(currentUser);
+            console.log({offlineUser})
+            // setCookie("name", userResponse.data.name);
+            setCookie("currentUser", offlineUser);
+
+            setAccessTokenAuth(response?.data?.accessToken);
+            setRefreshTokenAuth(response?.data?.refreshToken);
+
+            navigate(from, { replace: true });
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoading(false);
         }
-      );
+        break;
 
-      const userResponse = await API.get("/auth/user", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${response?.data?.accessToken}`,
-        },
-      });
+      case false:
+        const isMatch = await bcrypt.compare(password, hashedDefaultPassword);
+        try {
+          if (!isMatch) {
+            console.log("wrong password");
+          } else if (isMatch && email === cookies?.email) {
+            console.log("success");
+            navigate(from, { replace: true });
+          } else {
+            console.log("wrong username or password");
+          }
+        } catch (error) {
+          throw error;
+        }
 
-      if (userResponse) {
-        const currentUser = userResponse?.data;
-        state.currentUser = { currentUser };
-
-        setAccessTokenAuth(response?.data?.accessToken);
-        setRefreshTokenAuth(response?.data?.refreshToken);
-
-        navigate(from, { replace: true });
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+      default:
+        console.log("Error signing in offline");
+        break;
     }
   };
 

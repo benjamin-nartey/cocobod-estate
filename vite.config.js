@@ -8,6 +8,7 @@ export default defineConfig({
     svgr(),
     react(),
     VitePWA({
+      injectRegister: "auto",
       registerType: "autoUpdate",
       devOptions: {
         enabled: true,
@@ -17,7 +18,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: ({ url }) => {
-              return url.pathname.startsWith("/api");
+              return url.pathname.startsWith("/api") && !url.pathname.includes('user');
             },
             handler: "CacheFirst",
             options: {
