@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import { HiArrowDown, HiMenu } from "react-icons/hi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
@@ -31,6 +31,8 @@ function Navigation() {
     getContrastingColor(avatarBackground)
   );
 
+  const location = useLocation();
+
   const { logout } = useContext(LogoutContext);
 
   const snap = useSnapshot(state);
@@ -46,12 +48,12 @@ function Navigation() {
   }
 
   return (
-    <>
+    <Fragment>
       <div className="absolute right-8 top-16 z-[99]">
         {toggleLogout && (
           <button
             onClick={logout}
-            className="px-4 py-2 bg-white rounded-md text-base font-medium flex items-center justify-center gap-2 max-md:hidden"
+            className="px-4 py-2 z-50 bg-white rounded-md text-base font-medium flex items-center justify-center gap-2 max-md:hidden"
           >
             {snap.loadingState ? (
               <>
@@ -135,7 +137,7 @@ function Navigation() {
           </div>
         )}
       </div>
-    </>
+    </Fragment>
   );
 }
 

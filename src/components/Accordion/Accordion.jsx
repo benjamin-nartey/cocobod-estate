@@ -1,10 +1,10 @@
 import { useState } from "react";
+import PropertyUnitForm from "../PropertyUnitForm/PropertyUnitForm";
 
 const data = [
   {
     title: "Header 1",
-    content:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi quibusdam unde cupiditate. Iste aut, repellat commodi illo labore consequatur facere doloremque, officia dolorum saepe iusto reiciendis non exercitationem. At, optio?",
+    content: <PropertyUnitForm />,
   },
   {
     title: "Header 2",
@@ -103,8 +103,8 @@ const Accordion = () => {
             <div
               className={
                 selected === idx
-                  ? "accordion-content show max-h-0  ease-in duration-500 overflow-hidden "
-                  : "accordion-content max-h-0 overflow-hidden  ease-out duration-500"
+                  ? "accordion-content show max-h-0  ease-in duration-300 overflow-hidden "
+                  : "accordion-content max-h-0 overflow-hidden  ease-out duration-300"
               }
             >
               {item.content}

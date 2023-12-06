@@ -24,32 +24,19 @@ import { useAddPropertyData } from "../../Hooks/useAddFetch";
 const defaultFormFields = {
   name: "",
   description: "",
-  digitalAddress: "",
-  lotNumber: "",
   plotSize: "",
   floorArea: "",
   condition: "",
-  divisionId: "",
-  region: "",
-  district: "",
-  town: "",
-  landmark: "",
+  propertyId: "",
   propertyTypeId: "",
-  aquisitionDate: "",
+  propertyReferenceId: "",
   occupant: "",
   occupantType: "",
   tenancyAgreeMentStartDate: "",
   tenancyAgreeMentEndDate: "",
-  lat: "",
-  long: "",
-  prevMarketValue: null,
-  variance: null,
-  currentMarketValue: null,
-  remarks: "",
-  currentUsefulLife: "",
 };
 
-const AddPropertyForm = () => {
+const PropertyUnitForm = () => {
   const [open, setOpen] = useState(false);
   const [pageNum, setpageNum] = useState(1);
   const [optionsPropertyType, setOptionsPropertyType] = useState([]);
@@ -122,29 +109,15 @@ const AddPropertyForm = () => {
   const {
     name,
     description,
-    digitalAddress,
-    lotNumber,
     plotSize,
     floorArea,
     condition,
-    divisionId,
-    region,
-    district,
-    town,
-    landmark,
     propertyTypeId,
-    aquisitionDate,
+    propertyReferenceId,
     occupant,
     occupantType,
     tenancyAgreeMentStartDate,
     tenancyAgreeMentEndDate,
-    lat,
-    long,
-    prevMarketValue,
-    currentMarketValue,
-    variance,
-    remarks,
-    currentUsefulLife,
   } = formFields;
 
   console.log({ formFields });
@@ -155,32 +128,17 @@ const AddPropertyForm = () => {
 
     try {
       const property = {
-        // name,
-        // description,
-        // digitalAddress,
-        // lotNumber,
-        // plotSize,
-        // floorArea,
-        // condition,
-        // divisionId,
-        // region,
-        // district,
-        // town,
-        // landmark,
-        // propertyTypeId,
-        // aquisitionDate,
-        // occupant,
-        //occupantType
-        // tenancyAgreeMentStartDate,
-        // tenancyAgreeMentEndDate,
-        // lat,
-        // long,
-        // prevMarketValue,
-        // currentMarketValue,
-        // variance,
-        // photos,
-        // remarks,
-        // currentUsefulLife,
+        name,
+        description,
+        plotSize,
+        floorArea,
+        condition,
+        propertyTypeId,
+        propertyReferenceId,
+        occupant,
+        occupantType,
+        tenancyAgreeMentStartDate,
+        tenancyAgreeMentEndDate,
       };
 
       mutate(property, {
@@ -291,7 +249,7 @@ const AddPropertyForm = () => {
   };
 
   return (
-    <div className="w-full p-6">
+    <div className="w-full bg-white p-3">
       <Form
         className="bg-white w-full"
         form={form}
@@ -313,7 +271,7 @@ const AddPropertyForm = () => {
           }
         }
       >
-        <Divider orientation="left">Property Information</Divider>
+        <Divider orientation="left">Property Unit Information</Divider>
         <Form.Item
           label="Name"
           name="name"
@@ -329,7 +287,7 @@ const AddPropertyForm = () => {
             onChange={(e) =>
               setformFields({ ...formFields, name: e.target.value })
             }
-            placeholder="Enter property name"
+            placeholder="Enter property unit name"
             prefix={<UserOutlined />}
           />
         </Form.Item>
@@ -350,7 +308,7 @@ const AddPropertyForm = () => {
               setformFields({ ...formFields, description: e.target.value })
             }
             type="text"
-            placeholder="Enter property description"
+            placeholder="Enter property unit description"
             prefix={<MdOutlineEmail />}
           />
         </Form.Item>
@@ -375,48 +333,6 @@ const AddPropertyForm = () => {
             style={{
               width: "100%",
             }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Lot Number"
-          name="lotNumber"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="lotNumber"
-            value={lotNumber}
-            onChange={(e) =>
-              setformFields({ ...formFields, lotNumber: e.target.value })
-            }
-            type="text"
-            placeholder="Enter lot number"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Ghana Post Address"
-          name="digitalAdress"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="digitalAddress"
-            value={digitalAddress}
-            onChange={(e) =>
-              setformFields({ ...formFields, digitalAddress: e.target.value })
-            }
-            type="text"
-            placeholder="Enter Ghana Post Address"
-            prefix={<MdOutlineEmail />}
           />
         </Form.Item>
 
@@ -478,187 +394,7 @@ const AddPropertyForm = () => {
               setformFields({ ...formFields, condition: e.target.value })
             }
             type="text"
-            placeholder="Enter property condition"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Aquisition Date"
-          name="aquisitionDate"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <DatePicker
-            name="aquisitionDate"
-            value={aquisitionDate}
-            onChange={handleDatePicker}
-          />
-        </Form.Item>
-
-        <Divider orientation="left">Location</Divider>
-
-        <Form.Item
-          label="Division"
-          name="divisionId"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={divisionId}
-            placeholder="Select division"
-            options={optionsDivision}
-            onChange={(e) => setformFields({ ...formFields, divisionId: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Region"
-          name="region"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={region}
-            placeholder="Select Region"
-            options={optionsLocation}
-            onChange={(e) => setformFields({ ...formFields, region: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="District"
-          name="district"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={district}
-            placeholder="Select District"
-            options={optionsLocation}
-            onChange={(e) => setformFields({ ...formFields, district: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Town"
-          name="town"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={town}
-            placeholder="Select Town"
-            options={optionsLocation}
-            onChange={(e) => setformFields({ ...formFields, town: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Space.Compact>
-          <Form.Item
-            label="Lattitude"
-            name="lat"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              name="lat"
-              readOnly
-              value={lat}
-              onChange={(e) =>
-                setformFields({ ...formFields, lat: e.target.value })
-              }
-              type="text"
-              placeholder="lattitude"
-              // prefix={<MdOutlineEmail />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Longitude"
-            name="long"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              name="long"
-              readOnly
-              value={long}
-              onChange={(e) =>
-                setformFields({ ...formFields, long: e.target.value })
-              }
-              type="text"
-              placeholder="longitude"
-              // prefix={<MdOutlineEmail />}
-            />
-          </Form.Item>
-
-          <Form.Item label=" ">
-            <Button
-              className=""
-              type="primary"
-              htmlType="button"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
-            >
-              Generate
-            </Button>
-          </Form.Item>
-        </Space.Compact>
-
-        <Form.Item
-          label="Landmark"
-          name="landmark"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="landmark"
-            value={landmark}
-            onChange={(e) =>
-              setformFields({ ...formFields, landmark: e.target.value })
-            }
-            type="text"
-            placeholder="Enter landmark"
+            placeholder="Enter property unit condition"
             prefix={<MdOutlineEmail />}
           />
         </Form.Item>
@@ -739,85 +475,7 @@ const AddPropertyForm = () => {
           />
         </Form.Item>
 
-        <Divider orientation="left"> Market Value</Divider>
-
-        <Form.Item
-          label="Current Market Value"
-          name="currentMarketValue"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="currentMarketValue"
-            value={currentMarketValue}
-            onChange={(e) =>
-              setformFields({
-                ...formFields,
-                currentMarketValue: e.target.value,
-              })
-            }
-            type="text"
-            placeholder=""
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Current Useful life"
-          name="currentUsefulLife"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="currentUsefulLife"
-            value={currentUsefulLife}
-            onChange={(e) =>
-              setformFields({
-                ...formFields,
-                currentUsefulLife: e.target.value,
-              })
-            }
-            type="text"
-            placeholder=""
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Remarks"
-          name="remarks"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="remarks"
-            value={remarks}
-            onChange={(e) =>
-              setformFields({ ...formFields, remarks: e.target.value })
-            }
-            type="text"
-            placeholder=""
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
         <Divider />
-
-        <Form.Item label=" " name="uploadImages">
-          <PhotosUploader
-            props={props}
-            handleChange={handleChange}
-            fileList={fileList}
-          />
-        </Form.Item>
 
         <Form.Item label=" ">
           <Button
@@ -833,4 +491,4 @@ const AddPropertyForm = () => {
     </div>
   );
 };
-export default AddPropertyForm;
+export default PropertyUnitForm;
