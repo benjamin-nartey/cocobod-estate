@@ -1,35 +1,35 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
-import FetchingPage from './routes/FetchingPage/FetchingPage';
-import Navigation from './routes/Navigation/Navigation';
+import FetchingPage from "./routes/FetchingPage/FetchingPage";
+import Navigation from "./routes/Navigation/Navigation";
 
-import { axiosInstance } from './axios/axiosInstance';
-import state from './store/store';
-const Deployment = lazy(() => import('./routes/Deployment/Deployment'));
+import { axiosInstance } from "./axios/axiosInstance";
+import state from "./store/store";
+const Deployment = lazy(() => import("./routes/Deployment/Deployment"));
 const PropertyMerge = lazy(() =>
-  import('./routes/PropertyMerge/PropertyMerge')
+  import("./routes/PropertyMerge/PropertyMerge")
 );
 const DeploymentDetail = lazy(() =>
-  import('./routes/Deployment/DeploymentDetail')
+  import("./routes/Deployment/DeploymentDetail")
 );
-const District = lazy(() => import('./routes/District/District'));
+const District = lazy(() => import("./routes/District/District"));
 const PropertyMergeIndex = lazy(() =>
-  import('./routes/PropertyMerge/PropertyMergeIndex')
+  import("./routes/PropertyMerge/PropertyMergeIndex")
 );
 
 const ModerationDetails = lazy(() =>
-  import('./routes/Moderation/ModerationDetails')
+  import("./routes/Moderation/ModerationDetails")
 );
 const ModerationDashboard = lazy(() =>
-  import('./routes/Moderation/ModerationDashboard')
+  import("./routes/Moderation/ModerationDashboard")
 );
 const ModerationPopertyUnitList = lazy(() =>
-  import('./routes/Moderation/ModerationPopertyUnitList')
+  import("./routes/Moderation/ModerationPopertyUnitList")
 );
 const ModerationPoperties = lazy(() =>
-  import('./routes/Moderation/ModerationProperties')
+  import("./routes/Moderation/ModerationProperties")
 );
 
 import Authentication from "./routes/Authentication/Authentication";
@@ -62,28 +62,11 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
-  // const [online, setonline] = useState(navigator.onLine);
-
-  window.addEventListener(
-    "online",
-    () => {
-      state.isOnLine = true;
-    },
-    false
-  );
-
-  window.addEventListener(
-    "offline",
-    () => {
-      state.isOnLine = false;
-    },
-    false
-  );
 
   const fetchUser = async () => {
     try {
       state.loadingState = true;
-      const response = await axiosInstance.get('/auth/user');
+      const response = await axiosInstance.get("/auth/user");
 
       if (response.status === 200) {
         const currentUser = response?.data;
@@ -148,7 +131,7 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedRoles={['Super Administrator', 'Divisional Administrator']}
+              allowedRoles={["Super Administrator", "Divisional Administrator"]}
             />
           }
         >
@@ -231,7 +214,7 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedRoles={['Super Administrator', 'Divisional Administrator']}
+              allowedRoles={["Super Administrator", "Divisional Administrator"]}
             />
           }
         >

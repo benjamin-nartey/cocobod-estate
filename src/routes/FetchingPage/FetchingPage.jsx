@@ -15,8 +15,6 @@ import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { Outlet } from "react-router-dom/dist";
 import { useNavigate, useLocation } from "react-router-dom";
 
-
-
 import { useSnapshot } from "valtio";
 
 function FetchingPage() {
@@ -31,6 +29,8 @@ function FetchingPage() {
   );
 
   const snap = useSnapshot(state);
+
+  const currentUser = snap.auth.currentUser;
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -106,14 +106,14 @@ function FetchingPage() {
                       }}
                       className={`w-10 h-10 text-center  text-white max-md:text-sm rounded-full grid place-items-center font-bold uppercase`}
                     >
-                      {snap?.currentUser?.currentUser?.name[0]}
+                      {currentUser?.name[0]}
                     </div>
                     <div className="flex flex-col ">
                       <div className="text-[14px] text-gray-200">
-                        {snap?.currentUser?.currentUser?.name}
+                        {currentUser?.name}
                       </div>
                       <div className="text-xs text-gray-300">
-                        {snap?.currentUser?.currentUser?.email}
+                        {currentUser?.email}
                       </div>
                     </div>
                     <div>

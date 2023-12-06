@@ -78,7 +78,7 @@ function Sidebar({ closeToggle }) {
             <AiFillHome size={18} />
             Home
           </NavLink>
-          {snap?.auth?.currentUser?.roles.find((role) =>
+          {snap?.auth?.currentUser?.roles?.find((role) =>
             allowedRoles.includes(role.name)
           ) && (
             <>

@@ -31,7 +31,7 @@ export const LogoutProvider = ({ children }) => {
 
     if (online) {
       try {
-        state.loadingState = true;
+        state.auth.loadingState = true;
         const response = await api.delete("/auth");
         if (!response) {
           return;
@@ -40,14 +40,14 @@ export const LogoutProvider = ({ children }) => {
           localStorage.removeItem("refreshToken");
           // localStorage.removeItem("currentUser");
           localStorage.removeItem("currentUserState");
-          state.currentUser = {};
+          state.auth.currentUser = {};
           navigate(from, { replace: true });
           return response;
         }
       } catch (error) {
         console.log(error);
       } finally {
-        state.loadingState = false;
+        state.auth.loadingState = false;
       }
     } else {
       navigate(from, { replace: true });
