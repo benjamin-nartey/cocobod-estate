@@ -1,12 +1,12 @@
 import { Fragment, useState } from "react";
 
-import { HiArrowDown, HiMenu } from "react-icons/hi";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { HiArrowDown, HiMenu } from 'react-icons/hi';
+import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import {
   AiFillCloseCircle,
   AiOutlineDown,
   AiOutlinePoweroff,
-} from "react-icons/ai";
+} from 'react-icons/ai';
 
 import Sidebar from "../../components/Sidebar/Sidebar";
 import navBg from "../../assets/navbg.png";
@@ -24,8 +24,8 @@ import { Outlet } from "react-router-dom/dist";
 function Navigation() {
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [toggleLogout, setToggleLogout] = useState(false);
-  const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", null);
-  const [accessToken, setAccessToken] = useLocalStorage("accessToken", null);
+  const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null);
+  const [accessToken, setAccessToken] = useLocalStorage('accessToken', null);
   const [avatarBackground, setAvatarBackground] = useState(getRandomColor());
   const [avatarText, setAvatarText] = useState(
     getContrastingColor(avatarBackground)
@@ -39,8 +39,8 @@ function Navigation() {
   console.log({ snap });
 
   function getRandomColor() {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
+    const letters = '0123456789ABCDEF';
+    let color = '#';
     for (let i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
@@ -55,14 +55,14 @@ function Navigation() {
             onClick={logout}
             className="px-4 py-2 z-50 bg-white rounded-md text-base font-medium flex items-center justify-center gap-2 max-md:hidden"
           >
-            {snap.loadingState ? (
+            {snap.auth.loadingState ? (
               <>
-                {" "}
+                {' '}
                 <Loader
                   width="w-5"
                   height="h-5"
                   fillColor="fill-[#6E431D]"
-                />{" "}
+                />{' '}
                 Loging...
               </>
             ) : (
@@ -85,7 +85,7 @@ function Navigation() {
             className="bg-cover navigation flex h-[18vh] w-full justify-between items-center shadow-md sticky top-0 z-10"
           >
             <div
-              style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+              style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
               className="w-full h-full p-5"
             >
               <div className="w-full flex justify-between items-center">
@@ -102,14 +102,14 @@ function Navigation() {
                       }}
                       className={`w-10 h-10 text-center  text-white max-md:text-sm rounded-full grid place-items-center font-bold uppercase`}
                     >
-                      {snap?.currentUser?.currentUser?.name[0]}
+                      {snap?.auth?.currentUser?.name[0]}
                     </div>
                     <div className="flex flex-col ">
                       <div className="text-[14px] text-gray-200">
-                        {snap?.currentUser?.currentUser?.name}
+                        {snap?.auth?.currentUser?.name}
                       </div>
                       <div className="text-xs text-gray-300">
-                        {snap?.currentUser?.currentUser?.email}
+                        {snap?.auth?.currentUser?.email}
                       </div>
                     </div>
                     <div>

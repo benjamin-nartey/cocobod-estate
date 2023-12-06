@@ -1,12 +1,36 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 
-import FetchingPage from "./routes/FetchingPage/FetchingPage";
-import Navigation from "./routes/Navigation/Navigation";
+import FetchingPage from './routes/FetchingPage/FetchingPage';
+import Navigation from './routes/Navigation/Navigation';
 
-import { axiosInstance } from "./axios/axiosInstance";
-import state from "./store/store";
+import { axiosInstance } from './axios/axiosInstance';
+import state from './store/store';
+const Deployment = lazy(() => import('./routes/Deployment/Deployment'));
+const PropertyMerge = lazy(() =>
+  import('./routes/PropertyMerge/PropertyMerge')
+);
+const DeploymentDetail = lazy(() =>
+  import('./routes/Deployment/DeploymentDetail')
+);
+const District = lazy(() => import('./routes/District/District'));
+const PropertyMergeIndex = lazy(() =>
+  import('./routes/PropertyMerge/PropertyMergeIndex')
+);
+
+const ModerationDetails = lazy(() =>
+  import('./routes/Moderation/ModerationDetails')
+);
+const ModerationDashboard = lazy(() =>
+  import('./routes/Moderation/ModerationDashboard')
+);
+const ModerationPopertyUnitList = lazy(() =>
+  import('./routes/Moderation/ModerationPopertyUnitList')
+);
+const ModerationPoperties = lazy(() =>
+  import('./routes/Moderation/ModerationProperties')
+);
 
 import Authentication from "./routes/Authentication/Authentication";
 
@@ -59,19 +83,19 @@ function App() {
   const fetchUser = async () => {
     try {
       state.loadingState = true;
-      const response = await axiosInstance.get("/auth/user");
+      const response = await axiosInstance.get('/auth/user');
 
       if (response.status === 200) {
         const currentUser = response?.data;
 
-        state.currentUser = { currentUser };
+        state.auth.currentUser = currentUser;
 
         navigate(from, { replace: true });
       }
     } catch (error) {
       console.log(error);
     } finally {
-      state.loadingState = false;
+      state.auth.loadingState = false;
     }
   };
 
@@ -124,7 +148,7 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedRoles={["Super Administrator", "Divisional Administrator"]}
+              allowedRoles={['Super Administrator', 'Divisional Administrator']}
             />
           }
         >
@@ -207,7 +231,7 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedRoles={["Super Administrator", "Divisional Administrator"]}
+              allowedRoles={['Super Administrator', 'Divisional Administrator']}
             />
           }
         >
@@ -291,6 +315,14 @@ function App() {
               </Suspense>
             }
           />
+          <Route
+            path="/district"
+            element={
+              <Suspense>
+                <District />
+              </Suspense>
+            }
+          />
 
           <Route
             path="/property-types"
@@ -300,6 +332,72 @@ function App() {
               </Suspense>
             }
           />
+          <Route path="moderation">
+            <Route
+              index
+              element={
+                <Suspense>
+                  <ModerationDashboard />
+                </Suspense>
+              }
+            />
+            <Route
+              path="properties/:regionId"
+              element={<ModerationPoperties />}
+            />
+            <Route
+              path="properties/:regionId/:propertyId"
+              element={
+                <Suspense>
+                  <ModerationPopertyUnitList />
+                </Suspense>
+              }
+            />
+            <Route
+              path="properties/review"
+              element={
+                <Suspense>
+                  <ModerationDetails />
+                </Suspense>
+              }
+            />
+          </Route>
+          <Route path="/deployment">
+            <Route
+              index
+              element={
+                <Suspense>
+                  <Deployment />
+                </Suspense>
+              }
+            />
+            <Route
+              path=":id"
+              element={
+                <Suspense>
+                  <DeploymentDetail />
+                </Suspense>
+              }
+            />
+          </Route>
+          <Route path="/merge">
+            <Route
+              index
+              element={
+                <Suspense>
+                  <PropertyMergeIndex />
+                </Suspense>
+              }
+            />
+            <Route
+              path="create"
+              element={
+                <Suspense>
+                  <PropertyMerge />
+                </Suspense>
+              }
+            />
+          </Route>
         </Route>
       </Route>
     </Routes>

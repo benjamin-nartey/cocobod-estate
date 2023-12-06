@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { AiFillHome } from "react-icons/ai";
-import { AiFillCalendar } from "react-icons/ai";
-import { BiTimeFive } from "react-icons/bi";
-import { GiAutoRepair } from "react-icons/gi";
+import { AiFillHome } from 'react-icons/ai';
+import { AiFillCalendar } from 'react-icons/ai';
+import { BiTimeFive } from 'react-icons/bi';
+import { GiAutoRepair } from 'react-icons/gi';
 import {
   MdAreaChart,
   MdDashboard,
@@ -15,11 +15,16 @@ import {
   MdOutlineSafetyDivider,
   MdProductionQuantityLimits,
   MdWorkspacePremium,
-} from "react-icons/md";
-import { IoMdMap } from "react-icons/io";
-import { BsFillBuildingsFill } from "react-icons/bs";
-import { PoweroffOutlined } from "@ant-design/icons";
-import { HiUsers } from "react-icons/hi";
+} from 'react-icons/md';
+import { IoMdMap } from 'react-icons/io';
+import { BsFillBuildingsFill } from 'react-icons/bs';
+import { PoweroffOutlined } from '@ant-design/icons';
+import {
+  HiArrowsExpand,
+  HiLightningBolt,
+  HiScissors,
+  HiUsers,
+} from 'react-icons/hi';
 
 import logo from "../../assets/logo-cocobod.png";
 import { ReactComponent as SidebarImage } from "../../assets/sidebarImg.svg";
@@ -27,12 +32,12 @@ import { ReactComponent as SidebarImage } from "../../assets/sidebarImg.svg";
 import { LogoutContext } from "../../context/logout.context";
 import Loader from "../Loader/Loader";
 
-import { useSnapshot } from "valtio";
+import { useSnapshot } from 'valtio';
 
-import state from "../../store/store";
+import state from '../../store/store';
 
 function Sidebar({ closeToggle }) {
-  const allowedRoles = ["Super Administrator", "Divisional Administrator"];
+  const allowedRoles = ['Super Administrator', 'Divisional Administrator'];
   const snap = useSnapshot(state);
   const { logout } = useContext(LogoutContext);
 
@@ -41,13 +46,13 @@ function Sidebar({ closeToggle }) {
   };
 
   const isNotActiveStyle =
-    "px-5 py-2 flex items-center text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize";
+    'px-5 py-2 flex items-center text-white gap-3 w-full hover:bg-[#c9976c] hover:font-semibold transition-all duration-200 ease-in-out capitalize';
   const isActiveStyle =
-    "px-5 py-2 flex items-center text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize";
+    'px-5 py-2 flex items-center text-white gap-3 bg-[#B67F4E] font-bold w-full transition-all duration-200 ease-in-out capitalize';
 
   return (
     <div
-      style={{ minWidth: "220px" }}
+      style={{ minWidth: '220px' }}
       className="flex flex-col justify-between bg-[#6E431D] h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']"
     >
       <div className="w-full h-[18vh] sticky top-0 z-10 bg-[#F4EDE7] grid place-items-center px-5">
@@ -73,7 +78,7 @@ function Sidebar({ closeToggle }) {
             <AiFillHome size={18} />
             Home
           </NavLink>
-          {snap?.currentUser?.currentUser?.roles.find((role) =>
+          {snap?.auth?.currentUser?.roles.find((role) =>
             allowedRoles.includes(role.name)
           ) && (
             <>
@@ -184,7 +189,27 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdAreaChart size={25} />
-                Areas
+                Region
+              </NavLink>
+              <NavLink
+                to="/district"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdAreaChart size={25} />
+                District
+              </NavLink>
+              <NavLink
+                to="/moderation"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <HiLightningBolt size={25} />
+                Moderation
               </NavLink>
 
               <NavLink
@@ -220,6 +245,26 @@ function Sidebar({ closeToggle }) {
             Maintenance
           </NavLink>
           <NavLink
+            to="/deployment"
+            className={({ isActive }) =>
+              isActive ? isActiveStyle : isNotActiveStyle
+            }
+            onClick={handleCloseSidebar}
+          >
+            <HiArrowsExpand size={18} />
+            Deployment
+          </NavLink>
+          <NavLink
+            to="/merge"
+            className={({ isActive }) =>
+              isActive ? isActiveStyle : isNotActiveStyle
+            }
+            onClick={handleCloseSidebar}
+          >
+            <HiScissors size={18} />
+            Property Merge
+          </NavLink>
+          <NavLink
             to="/reports"
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
@@ -243,7 +288,7 @@ function Sidebar({ closeToggle }) {
             onClick={logout}
             className={`${isNotActiveStyle} hidden max-md:flex`}
           >
-            {snap.loadingState ? (
+            {snap.auth?.loadingState ? (
               <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
             ) : (
               <>

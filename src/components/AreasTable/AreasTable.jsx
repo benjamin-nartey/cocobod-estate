@@ -1,40 +1,39 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { Button, Modal, Form, Input, Table, message, Popconfirm } from "antd";
+import { Button, Modal, Form, Input, Table, message, Popconfirm } from 'antd';
 
-import { UserOutlined } from "@ant-design/icons";
-import { DeleteOutlined } from "@ant-design/icons";
-import { BiEdit } from "react-icons/bi";
+import { UserOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
+import { BiEdit } from 'react-icons/bi';
 
-import CustomSelect from "../CustomSelect/CustomSelect";
+import CustomSelect from '../CustomSelect/CustomSelect';
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 
-import { axiosInstance } from "../../axios/axiosInstance";
+import { axiosInstance } from '../../axios/axiosInstance';
+import { useGetPaginatedDistricts } from '../../Hooks/query/district';
 
 const AreasTable = () => {
   const [pageNum, setPageNum] = useState(1);
-  const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
   const [recordsPerPage, setRecordsPerPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchText, setSearchText] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [formFields, setformFields] = useState({
-    name: "",
-    category: "",
-    areaId: "",
+    name: '',
+    category: '',
+    areaId: '',
   });
 
   const confirm = (e) => {
-    message.success("Click on Yes");
+    message.success('Click on Yes');
   };
   const cancel = (e) => {};
 
-  const { name, category, areaId } = formFields;
+  const { name, areaId } = formFields;
 
   const showModal = () => {
     setOpen(true);
@@ -47,14 +46,14 @@ const AreasTable = () => {
 
   const success = (content) => {
     messageApi.open({
-      type: "success",
+      type: 'success',
       content: content,
     });
   };
 
   const errorMessage = (content) => {
     messageApi.open({
-      type: "error",
+      type: 'error',
       content: content,
     });
   };
@@ -63,32 +62,30 @@ const AreasTable = () => {
     //an empty function to keep the modal working
   };
 
-  const fetchAreas = async (pageNum) => {
+  const fetchRegions = async (pageNum) => {
     try {
-      setLoading(true);
-      const response = await axiosInstance.get("/areas", {
+      const response = await axiosInstance.get('/region', {
         params: {
           pageNum: pageNum,
         },
       });
+
       if (response) {
-        setTotalPages(response.data.meta.totalPages);
+        setTotalPages(response.data.meta.totalRecords);
         setRecordsPerPage(response.data.meta.recordsPerPage);
-        console.log({ totalPages });
-        return response.data;
+
+        return response?.data;
       }
     } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+      throw new Error(error.message);
     }
   };
 
-  const { data, status, error } = useQuery(["areas"], () => fetchAreas(1));
+  const { data, status, error, loading } = useQuery(['regions', pageNum], () =>
+    fetchRegions(pageNum)
+  );
 
-  console.log(data);
-
-  if (status === "error") {
+  if (status === 'error') {
     console.log(error);
   }
 
@@ -96,37 +93,32 @@ const AreasTable = () => {
     e.preventDefault();
 
     try {
-      const response = await axiosInstance.patch(`/areas/${areaId}`, {
+      const response = await axiosInstance.patch(`/regions/${areaId}`, {
         name,
-        digitalAddress,
-        town,
-        areaId,
-        lat,
-        long,
       });
 
       if (response) {
-        success("Location updated successfully");
+        success('Region updated successfully');
 
         clearInput();
         handleCancel();
       }
     } catch (error) {
-      errorMessage("Error updating location");
-      throw new Error(`Error updating location ${error}`);
+      errorMessage('Error updating region');
+      throw new Error(`Error updating region ${error}`);
     }
   };
 
   function clearInput() {
-    setformFields({ name: "", category: "", areaId: "" });
+    setformFields({ name: '', category: '', areaId: '' });
     form.resetFields();
   }
 
   const columns = [
     {
-      title: "Area Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Area Name',
+      dataIndex: 'name',
+      key: 'name',
       filteredValue: [searchText],
       onFilter: (value, record) => {
         return (
@@ -136,25 +128,14 @@ const AreasTable = () => {
         );
       },
     },
-    {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
-      filteredValue: [searchText],
-    },
 
     {
-      title: " Status",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: "Action",
-      dataIndex: "",
-      key: "action",
+      title: 'Action',
+      dataIndex: '',
+      key: 'action',
       render: (value) => {
         return (
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center  gap-4">
             <button
               onClick={(e) => {
                 setformFields({
@@ -162,7 +143,7 @@ const AreasTable = () => {
                   name: value?.name,
                   areaId: value?.id,
                 });
-                console.log(value);
+
                 showModal();
               }}
             >
@@ -179,9 +160,9 @@ const AreasTable = () => {
               <span className="grid place-items-center">
                 <DeleteOutlined
                   style={{
-                    fontSize: "18px",
-                    color: " #FF6A74",
-                    cursor: "pointer",
+                    fontSize: '18px',
+                    color: ' #FF6A74',
+                    cursor: 'pointer',
                   }}
                 />
               </span>
@@ -191,8 +172,6 @@ const AreasTable = () => {
       },
     },
   ];
-
-  console.log(formFields);
 
   return (
     <>
@@ -249,33 +228,12 @@ const AreasTable = () => {
             />
           </Form.Item>
 
-          <Form.Item
-            label="Category"
-            name="category"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <CustomSelect
-              mode="single"
-              value={category}
-              placeholder="Select category"
-              options={options}
-              onChange={(e) => setformFields({ ...formFields, category: e })}
-              style={{
-                width: "100%",
-              }}
-            />
-          </Form.Item>
-
           <Form.Item label=" ">
             <Button
               className="w-full"
               type="primary"
               htmlType="submit"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
+              style={{ backgroundColor: '#6E431D', color: '#fff' }}
             >
               Submit
             </Button>
@@ -290,16 +248,16 @@ const AreasTable = () => {
       />
       <Table
         dataSource={data?.records}
-        loading={status === "loading" || loading}
+        loading={status === 'loading' || loading}
         pagination={{
           pageSize: recordsPerPage,
           total: totalPages,
-          onChange: (pageNum) => {
-            fetchAreas(pageNum);
-          },
         }}
-        style={{ width: "100%" }}
+        style={{ width: '100%' }}
         rowKey="id"
+        onChange={(pagination) => {
+          setPageNum(pagination.current);
+        }}
         columns={columns}
       ></Table>
     </>
