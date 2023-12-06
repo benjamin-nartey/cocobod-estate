@@ -1,19 +1,10 @@
 import React, { useState } from 'react';
 import { Button, message, Steps, theme } from 'antd';
-const steps = [
-  {
-    title: 'Create Property',
-    content: <p>First Content</p>,
-  },
-  {
-    title: 'Assign Property Unit to Property',
-    content: 'Second-content',
-  },
-  {
-    title: 'Last',
-    content: 'Last-content',
-  },
-];
+import PropertyCreateForm from './PropertyMergeForm';
+import PropertyUnitMerge from './PropertyUnitMerge';
+import { useSnapshot } from 'valtio';
+import state from '../../store/store';
+import { CRUDTYPES } from '../../store/modalSlice';
 
 const PropertyMerge = () => {
   const { token } = theme.useToken();
@@ -24,6 +15,32 @@ const PropertyMerge = () => {
   const prev = () => {
     setCurrent(current - 1);
   };
+
+  const snap = useSnapshot(state);
+  const { crudType } = snap.modalSlice;
+
+  const steps = [
+    {
+      title: crudType === CRUDTYPES.ADD ? 'Create Property' : 'Update Property',
+      content: (
+        <div className="w-[50%] mx-auto p-4 h-[260px] my-auto mt-10">
+          <PropertyCreateForm move={next} />
+        </div>
+      ),
+    },
+    {
+      title:
+        crudType === CRUDTYPES.ADD
+          ? 'Assign Property Unit to Property'
+          : 'Update Property Assignment',
+      content: (
+        <div className="w-[99%] mx-auto p-4  ">
+          <PropertyUnitMerge />
+        </div>
+      ),
+    },
+  ];
+
   const items = steps.map((item) => ({
     key: item.title,
     title: item.title,
@@ -45,31 +62,7 @@ const PropertyMerge = () => {
         style={{
           marginTop: 24,
         }}
-      >
-        {current < steps.length - 1 && (
-          <Button type="primary" onClick={() => next()}>
-            Next
-          </Button>
-        )}
-        {current === steps.length - 1 && (
-          <Button
-            type="primary"
-            onClick={() => message.success('Processing complete!')}
-          >
-            Done
-          </Button>
-        )}
-        {current > 0 && (
-          <Button
-            style={{
-              margin: '0 8px',
-            }}
-            onClick={() => prev()}
-          >
-            Previous
-          </Button>
-        )}
-      </div>
+      ></div>
     </div>
   );
 };

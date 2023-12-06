@@ -18,7 +18,12 @@ import {
 import { IoMdMap } from 'react-icons/io';
 import { BsFillBuildingsFill } from 'react-icons/bs';
 import { PoweroffOutlined } from '@ant-design/icons';
-import { HiArrowsExpand, HiScissors, HiUsers } from 'react-icons/hi';
+import {
+  HiArrowsExpand,
+  HiLightningBolt,
+  HiScissors,
+  HiUsers,
+} from 'react-icons/hi';
 
 import logo from '../../assets/logo-cocobod.png';
 import { ReactComponent as SidebarImage } from '../../assets/sidebarImg.svg';
@@ -170,7 +175,27 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdAreaChart size={25} />
-                Areas
+                Region
+              </NavLink>
+              <NavLink
+                to="/district"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdAreaChart size={25} />
+                District
+              </NavLink>
+              <NavLink
+                to="/moderation"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <HiLightningBolt size={25} />
+                Moderation
               </NavLink>
 
               <NavLink
