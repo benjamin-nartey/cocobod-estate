@@ -10,6 +10,7 @@ import state from "./store/store";
 
 import Authentication from "./routes/Authentication/Authentication";
 
+import PropertyCapture from "./routes/PropertyCapture/PropertyCapture";
 import Home from "./routes/Home/Home";
 import Users from "./routes/Users/Users";
 import Departments from "./routes/Departments/Departments";
@@ -23,8 +24,6 @@ import PropertyTypes from "./routes/PropertyTypes/PropertyTypes";
 import PropertyDetailsPage from "./routes/PropertyDetailsPage/PropertyDetailsPage";
 
 import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
-
-import AddPropertyForm from "./routes/AddPropertyForm/AddPropertyForm";
 
 import Gallery from "./routes/Gallery/Gallery";
 import PropertyMap from "./routes/PropertyMap/PropertyMap";
@@ -230,23 +229,14 @@ function App() {
             }
           />
 
-          {/* <Route
+          <Route
             path="/property-capture"
             element={
               <Suspense>
-                <AddPropertyForm />
+                <PropertyCapture />
               </Suspense>
             }
-          /> */}
-
-          {/* <Route
-            path="/capture"
-            element={
-              <Suspense>
-                <Capture />
-              </Suspense>
-            }
-          /> */}
+          />
 
           <Route
             path="/departments"

@@ -1,6 +1,6 @@
 import PropertyForm from "../../components/PropertyForm/PropertyForm";
 
-const Capture = () => {
+const PropertyCapture = () => {
   return (
     <div className="p-6 grid place-items-center">
       <div className="w-[600px] max-md:w-full bg-white">
@@ -10,4 +10,4 @@ const Capture = () => {
   );
 };
 
-export default Capture;
+export default PropertyCapture;
