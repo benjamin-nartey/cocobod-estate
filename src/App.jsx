@@ -9,7 +9,6 @@ import { axiosInstance } from "./axios/axiosInstance";
 import state from "./store/store";
 
 import Authentication from "./routes/Authentication/Authentication";
-import Capture from "./routes/Capture/capture";
 
 import Home from "./routes/Home/Home";
 import Users from "./routes/Users/Users";
@@ -240,14 +239,14 @@ function App() {
             }
           /> */}
 
-          <Route
+          {/* <Route
             path="/capture"
             element={
               <Suspense>
                 <Capture />
               </Suspense>
             }
-          />
+          /> */}
 
           <Route
             path="/departments"
