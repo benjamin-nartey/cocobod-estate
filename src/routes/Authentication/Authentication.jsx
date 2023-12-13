@@ -1,6 +1,6 @@
-import React from "react";
 import bgImage from "../../assets/bgImage.jpeg";
 import logo from "../../assets/logo-cocobod.png";
+
 import LoginForm from "../../components/LoginForm/LoginForm";
 
 function Authentication() {
@@ -41,7 +41,7 @@ function Authentication() {
                 </div>
               </div>
             </div>
-            <div className="w-[20rem] bg-[#F4EDE7] absolute left-[50%] translate-x-[75%] translate-y-[-50%] top-[40%] rounded-xl p-8 grid place-items-center max-md:translate-x-[-50%] max-md:w-screen max-md:bg-transparent max-md:top-[60%]">
+            <div className="w-[20rem] bg-[#F4EDE7] absolute right-[11%] top-[18%] rounded-xl p-8 grid place-items-center max-md:translate-x-[-50%] max-md:translate-y-[-50%] max-md:left-[50%] max-md:w-screen max-md:bg-transparent max-md:top-[60%]">
               <h2 className="text-base text-[#6E431D] mb-4 max-md:hidden">
                 WELCOME TO
               </h2>
@@ -61,11 +61,6 @@ function Authentication() {
                 Login to proceed to the homepage
               </h5>
               <LoginForm />
-              <div className="w-full">
-                <span className=" max-md:text-white text-xs font-thin text-[#B67F4E] cursor-pointer hover:font-semibold">
-                  Forgot password? Reset
-                </span>
-              </div>
             </div>
           </div>
         </div>

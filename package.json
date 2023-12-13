@@ -4,27 +4,43 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0 --port 5000",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal public/logo-cocobod.png"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.2.5",
+    "@reduxjs/toolkit": "^1.9.5",
+    "@tanstack/react-query": "^4.32.0",
     "antd": "^5.5.1",
     "axios": "^1.4.0",
+    "bcryptjs": "^2.4.3",
+    "clsx": "^2.0.0",
+    "dayjs": "^1.11.9",
+    "geolib": "^3.3.4",
+    "jwt-decode": "^3.1.2",
+    "lodash.debounce": "^4.0.8",
     "mapbox-gl": "^2.15.0",
+    "mem": "^9.0.2",
     "react": "^18.2.0",
+    "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.9.0",
     "react-lazy-load-image-component": "^1.6.0",
     "react-map-gl": "^7.0.25",
     "react-masonry-css": "^1.0.16",
+    "react-redux": "^8.1.1",
     "react-router-dom": "^6.11.2",
+    "tailwind-merge": "^1.14.0",
+    "valtio": "^1.11.2",
     "vite-plugin-svgr": "^3.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@vite-pwa/assets-generator": "^0.0.11",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.38.0",
@@ -33,6 +49,7 @@
     "eslint-plugin-react-refresh": "^0.3.4",
     "postcss": "^8.4.23",
     "tailwindcss": "^3.3.2",
-    "vite": "^4.3.2"
+    "vite": "^4.3.2",
+    "vite-plugin-pwa": "^0.17.2"
   }
 }

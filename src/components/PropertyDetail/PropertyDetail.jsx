@@ -1,15 +1,21 @@
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
+
+import { NavLink } from "react-router-dom";
+
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
+
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { SearchResultContext } from "../../context/searchResult.context";
+
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
-import { NavLink } from "react-router-dom";
 
 function PropertyDetail() {
   const sliderRef = useRef();
   const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
   const [endOfScroll, setEndOfScroll] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const { setSearchResult } = useContext(SearchResultContext);
 
   const onScroll = () => {
     if (sliderRef.current) {
@@ -28,7 +34,7 @@ function PropertyDetail() {
   };
 
   const showAllGallery = () => {
-    if (propertyData.gallery.length > 15 && endOfScroll === true) {
+    if (propertyData?.gallery.length > 15 && endOfScroll === true) {
       setShowAll(true);
     } else {
       setShowAll(false);
@@ -49,12 +55,14 @@ function PropertyDetail() {
     slider.scrollLeft = slider.scrollLeft + 200;
   };
 
+  // console.log(first)
+
   return (
     <div className="w-full h-auto ">
-      <div className="flex py-3 items-center mb-10 gap-8 text-[#6E431D] text-lg font-semibold w-full bg-[#F4EDE7] sticky top-[7.5rem] z-10">
+      <div className="flex py-3 items-center mb-10 gap-8 text-[#6E431D] text-lg font-semibold w-full bg-[#F4EDE7] sticky top-[18vh] z-10">
         <h3>Property Details</h3>
         <div className="line h-6 w-[1px] bg-[#6E431D]"></div>
-        <h3>Cocoa Village</h3>
+        <h3>{propertyData?.name}</h3>
       </div>
       <div className="w-full grid grid-cols-2 gap-4 max-md:flex max-md:flex-col ">
         <div className="description-column">
@@ -147,8 +155,8 @@ function PropertyDetail() {
                 id="slider"
                 onScroll={onScroll}
               >
-                {propertyData.gallery.length > 15
-                  ? propertyData.gallery
+                {propertyData?.gallery.length > 15
+                  ? propertyData?.gallery
                       .slice(0, 15)
                       .map((photo, id) => (
                         <LazyLoadImage
@@ -161,7 +169,7 @@ function PropertyDetail() {
                           width="100px"
                         />
                       ))
-                  : propertyData.gallery.map((photo, id) => (
+                  : propertyData?.gallery.map((photo, id) => (
                       <LazyLoadImage
                         effect="blur"
                         className="w-[100px] h-[90px] inline-block p-1 rounded-2xl cursor-pointer hover:scale-105 ease-in-out duration-300"
@@ -177,14 +185,14 @@ function PropertyDetail() {
                 <div
                   style={{
                     backgroundImage: `url(${
-                      propertyData.gallery[
-                        Math.floor(Math.random() * propertyData.gallery.length)
+                      propertyData?.gallery[
+                        Math.floor(Math.random() * propertyData?.gallery.length)
                       ].url
                     })`,
                   }}
                   className="w-[100px] h-[90px] rounded-2xl cursor-pointer absolute bg-cover right-0 hover:scale-105 ease-in-out duration-300 z-10"
                 >
-                  <NavLink to="/gallery">
+                  <NavLink className="outline-none" to="/gallery">
                     <div
                       style={{ backgroundColor: "rgba(0,0,0,0.05)" }}
                       className="w-full h-full rounded-2xl grid place-items-center backdrop-blur font-semibold"
@@ -239,7 +247,19 @@ function PropertyDetail() {
             Cocoa House, 41 Kwame Nkrumah Avenue. P.O. Box 933, Accra Telephone:
             0302661877 . 0302667416 Email Us: civilworks@cocobod.gh
           </p>
-          <div className="w-[18rem] h-[6rem] bg-blue-300 border-solid border-2 border-white rounded-2xl"></div>
+          <div className="w-[18rem] h-[6rem] hover:shadow-lg border-solid border-2 border-white rounded-2xl">
+            <NavLink onClick={() => setSearchResult([propertyData])} to="/map">
+              <img
+                className="inline-block w-full h-full object-cover rounded-2xl"
+                src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${
+                  propertyData?.location.long
+                },${propertyData?.location.lat},6,0/300x200@2x?access_token=${
+                  import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN
+                }`}
+                alt=""
+              />
+            </NavLink>
+          </div>
         </div>
       </div>
     </div>
