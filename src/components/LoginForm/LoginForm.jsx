@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import { useNavigate, useLocation, json } from "react-router-dom";
+import { useNavigate, useLocation, json } from 'react-router-dom';
 
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import { useOnlineStatus } from "../../Hooks/useIsOnlineStatus";
-import state from "../../store/store";
+import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import { useOnlineStatus } from '../../Hooks/useIsOnlineStatus';
+import state from '../../store/store';
 
-import Loader from "../Loader/Loader";
+import Loader from '../Loader/Loader';
 
-import axios from "axios";
+import axios from 'axios';
 // import { useSnapshot } from "valtio";
-import bcrypt from "bcryptjs";
-import { useCookies } from "react-cookie";
+import bcrypt from 'bcryptjs';
+import { useCookies } from 'react-cookie';
 
 const defaultFormFields = {
-  email: "",
-  password: "",
+  email: '',
+  password: '',
 };
 
 const defaultPassword = import.meta.env.VITE_APP_DEFAULT_PASSWORD;
@@ -26,23 +26,23 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  baseURL: "http://192.168.0.178:3000/api/v1/",
+  baseURL: 'http://192.168.0.178:3000/api/v1/',
 });
 
 function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);
   const { email, password } = formFields;
-  const [ipAddress, setIPAddress] = useState("");
+  const [ipAddress, setIPAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const isOnLine = useOnlineStatus();
-  const [cookies, setCookie] = useCookies(["name"]);
+  const [cookies, setCookie] = useCookies(['name']);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
-    "accessToken",
+    'accessToken',
     null
   );
   const [refreshTokenAuth, setRefreshTokenAuth] = useLocalStorage(
-    "refreshToken",
+    'refreshToken',
     null
   );
 
@@ -51,11 +51,11 @@ function LoginForm() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/home";
+  const from = location.state?.from?.pathname || '/home';
 
   useEffect(() => {
     axios
-      .get("https://ipapi.co/json")
+      .get('https://ipapi.co/json')
       .then((response) => response.data)
       .then((data) => setIPAddress(data.ip))
       .catch((error) => console.log(error));
@@ -76,19 +76,19 @@ function LoginForm() {
         try {
           setLoading(true);
           const response = await API.post(
-            "/auth",
+            '/auth',
             { email, password },
             {
               headers: {
-                "Content-Type": "application/json",
-                "X-IP-Address": ipAddress,
+                'Content-Type': 'application/json',
+                'X-IP-Address': ipAddress,
               },
             }
           );
 
-          const userResponse = await API.get("/auth/user", {
+          const userResponse = await API.get('/auth/user', {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
               Authorization: `Bearer ${response?.data?.accessToken}`,
             },
           });
@@ -99,7 +99,7 @@ function LoginForm() {
             const offlineUser = JSON.stringify(currentUser);
             console.log({ offlineUser });
             // setCookie("name", userResponse.data.name);
-            setCookie("currentUser", offlineUser);
+            setCookie('currentUser', offlineUser);
 
             setAccessTokenAuth(response?.data?.accessToken);
             setRefreshTokenAuth(response?.data?.refreshToken);
@@ -117,19 +117,19 @@ function LoginForm() {
         const isMatch = await bcrypt.compare(password, hashedDefaultPassword);
         try {
           if (!isMatch) {
-            console.log("wrong password");
+            console.log('wrong password');
           } else if (isMatch && email === cookies?.email) {
-            console.log("success");
+            console.log('success');
             navigate(from, { replace: true });
           } else {
-            console.log("wrong username or password");
+            console.log('wrong username or password');
           }
         } catch (error) {
           throw error;
         }
 
       default:
-        console.log("Error signing in offline");
+        console.log('Error signing in offline');
         break;
     }
   };
@@ -158,7 +158,7 @@ function LoginForm() {
         {loading ? (
           <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
         ) : (
-          "Login"
+          'Login'
         )}
       </button>
       <div className="w-full">
