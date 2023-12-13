@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
+import { PropertyPseudoContext } from "../../context/propertyPseudo.context";
 import Accordion from "../Accordion/Accordion";
 
 import {
@@ -22,34 +23,21 @@ import PhotosUploader from "../../components/PhotosUploader/PhotosUploader";
 import { axiosInstance } from "../../axios/axiosInstance";
 import { useAddPropertyData } from "../../Hooks/useAddFetch";
 
-const defaultFormFields = {
-  name: "",
-  propertyCode: "",
-  propertyTypeId: "",
-  description: "",
-  digitalAddress: "",
-  locationId: "",
-  propertyReferenceCategoryId: "",
-  arcGisLink: "",
-  lat: "",
-  long: "",
-  landmark: "",
-};
+import { useIndexedDB } from "react-indexed-db-hook";
+import Loader from "../Loader/Loader";
 
 const PropertyForm = () => {
-  const [open, setOpen] = useState(false);
-  const [pageNum, setpageNum] = useState(1);
+  const [propertyUnitReference, setPropertyUnitRefernce] = useState(null);
   const [optionsPropertyType, setOptionsPropertyType] = useState([]);
+  const [optionsDistrict, setOptionsDistrict] = useState([]);
   const [optionsLocation, setOptionsLocation] = useState([]);
-  const [optionsDivision, setOptionsDivision] = useState([]);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Content of the modal");
+  const [districtId, setDistrictId] = useState("");
+  const [propertyUnits, setPropertyUnits] = useState([]);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
-  const [propertyResponse, setPropertyResponse] = useState("");
-  const [formFields, setformFields] = useState(defaultFormFields);
+  const [loading, setLoading] = useState(false);
   const [optionsOccupant, setOptionsOccupant] = useState([
     {
       label: "LBC",
@@ -60,14 +48,106 @@ const PropertyForm = () => {
       value: "NON LBC",
     },
   ]);
+  const { propertyPseudo, setPropertyPseudo } = useContext(
+    PropertyPseudoContext
+  );
+
+  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
+  const { getAll: getAllDistricts } = useIndexedDB("districts");
+  const { getAll: getAllLocations } = useIndexedDB("locations");
+  const { getAll: getAllpropertyReferences } =
+    useIndexedDB("propertyReferences");
+
+  const { add: addProperty } = useIndexedDB("property");
+
+  const getAllPropertyUnits = (propertyPseudoId) => {
+    getAllpropertyReferences().then((propertyReferences) => {
+      const getPropertyUnitsByPropPseudoId = propertyReferences.filter(
+        (references) =>
+          references?.propertyReferenceCategory?.id === propertyPseudoId
+      );
+      setPropertyUnits(getPropertyUnitsByPropPseudoId);
+      console.log({ getPropertyUnitsByPropPseudoId });
+    });
+  };
+
+  useEffect(() => {
+    getAllPropertyUnits(propertyPseudo?.id);
+  }, [propertyPseudo]);
+
+  const getDomainDistricts = (regionId) => {
+    getAllDistricts().then((districts) => {
+      const getDistrictByRegionId = districts.filter(
+        (district) => district?.regionId === regionId
+      );
+      console.log({ getDistrictByRegionId });
+      const data = getDistrictByRegionId.map((record) => {
+        return {
+          label: record?.name,
+          value: record?.id,
+        };
+      });
+
+      setOptionsDistrict(data);
+    });
+  };
+
+  useEffect(() => {
+    getDomainDistricts(propertyPseudo?.region.id);
+  }, [propertyPseudo]);
+
+  const getDomainTowns = (districtId) => {
+    getAllLocations().then((locations) => {
+      const getTownsByRegionId = locations.filter(
+        (location) => location?.districtId === districtId
+      );
+      console.log({ getTownsByRegionId });
+
+      const data = getTownsByRegionId.map((record) => {
+        return {
+          label: record?.name,
+          value: record?.id,
+        };
+      });
+      setOptionsLocation(data);
+    });
+  };
+
+  useEffect(() => {
+    getDomainTowns(districtId);
+  }, [districtId]);
+
+  const fetchPropertyTypes = async () => {
+    getAllPropertyTypes().then((propertyType) => {
+      const data = propertyType.map((record) => {
+        return {
+          label: record?.name,
+          value: record?.id,
+        };
+      });
+      setOptionsPropertyType(data);
+    });
+  };
+
+  useEffect(() => {
+    fetchPropertyTypes();
+  }, []);
+
   const [location, setLocation] = useState(null);
 
+  useEffect(() => {
+    console.log({ propertyPseudo });
+  }, [propertyPseudo]);
+
   const handleLocation = () => {
+    setLoading(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           setLocation({ latitude, longitude });
+          form.setFieldValue("lat", latitude);
+          form.setFieldValue("long", longitude);
           console.log(longitude, latitude);
         },
         (error) => {
@@ -77,6 +157,7 @@ const PropertyForm = () => {
     } else {
       console.error("Geolocation is not supported by this browser");
     }
+    setLoading(false);
   };
 
   const { mutate } = useAddPropertyData();
@@ -124,406 +205,344 @@ const PropertyForm = () => {
     });
   };
 
-  const {
-    name,
-    propertyCode,
-    propertyTypeId,
-    description,
-    digitalAddress,
-    locationId,
-    propertyReferenceCategoryId,
-    arcGisLink,
-    lat,
-    long,
-    landmark,
-  } = formFields;
+  const handleSubmit = async (values) => {
+    // console.log(values);
+    const data = {
+      name: values?.name,
+      description: values?.description,
+      propertyCode: values?.propertyCode,
+      digitalAddress: values?.digitalAddress,
+      propertyTypeId: values?.propertyTypeId,
+      locationId: values?.locationId,
+      propertyReferenceCategoryId: propertyPseudo?.id,
+      lat: `${values?.lat}`,
+      long: `${values?.long}`,
+      landmark: values?.landmark,
+      propertyUnits: values?.propertyUnits.map((propertyUnit) => ({
+        description: propertyUnit.description,
+        propertyCode: propertyUnit.propertyCode,
+        plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
+        floorArea: propertyUnit.floorArea ? propertyUnit.floorArea : undefined,
+        propertyTypeId: propertyUnit.propertyTypeId,
+        propertyReferenceId: propertyUnit?.id,
+        propertyOccupancy: values?.occupants.map((occupant) => ({
+          leaseStartsOn: occupant?.tenancyAgreeMentStartDate.toISOString(),
+          leaseExpiresOn: occupant?.tenancyAgreeMentEndDate.toISOString(),
+          name: occupant?.occupantName,
+          category: occupant?.occupantType,
+          clientOccupantId: occupant?.occupantName,
+        })),
+        propertyUnitStates: [
+          {
+            condition: propertyUnit?.condition,
+            remarks: propertyUnit?.remarks,
+          },
+        ],
+      })),
+    };
 
-  console.log({ formFields });
+    addProperty(data).then(
+      () => {
+        // success(`${values.name} saved successfully`);
+        message.success(`${values.name} saved successfully`);
+        form.resetFields();
+        setPropertyPseudo(null);
+      },
+      (error) => {
+        console.log(error);
+        message.error(`Error saving ${values.name}`);
+      }
+    );
+  };
+
   console.log({ fileList });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const property = {
-        // name,
-        // description,
-        // digitalAddress,
-        // locationId,
-        // landmark,
-        // propertyTypeId,
-        // aquisitionDate,
-        // lat,
-        // long,
-        // photos,
-      };
-
-      mutate(property, {
-        onSuccess: async (data) => {
-          setPropertyResponse(data);
-          console.log(data);
-          if (data && fileList.length !== 0) {
-            try {
-              const response = await axiosInstance.post(
-                `properties/${data.data.id}/photos`
-              );
-              if (response) {
-                success("Property images uploaded successfully");
-                console.log({ response });
-              }
-            } catch (error) {
-              console.log(error);
-              errorMessage("Error adding property images");
-            }
-          }
-          success("Property added successfully");
-          clearInput();
-        },
-      });
-    } catch (error) {
-      errorMessage("Error adding property");
-      throw new Error(`Error in creating user ${error}`);
-    }
-  };
-
-  function clearInput() {
-    setformFields(defaultFormFields);
-    form.resetFields();
-  }
-
-  const handleOk = () => {
-    //an empty function to keep the modal working
-  };
-
-  async function fetchPropertyTypes(pageNum) {
-    const response = await axiosInstance.get("/property-types", {
-      params: {
-        pageNum: pageNum,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptionsPropertyType(...optionsPropertyType, dataRcord);
-
-    return optionsPropertyType;
-  }
-
-  async function fetchDivision(pageNum) {
-    const response = await axiosInstance.get("/divisions", {
-      params: {
-        pageNum: pageNum,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptionsDivision(...optionsDivision, dataRcord);
-
-    return optionsDivision;
-  }
-
-  async function fetchLocations(pageNum) {
-    const response = await axiosInstance.get("/locations", {
-      params: {
-        pageNum: pageNum,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptionsLocation(...optionsLocation, dataRcord);
-
-    return optionsLocation;
-  }
-
   useEffect(() => {
-    fetchPropertyTypes(pageNum);
-    fetchLocations(pageNum);
-    fetchDivision(pageNum);
-  }, []);
-
-  const handleDatePicker = (_, dateString) => {
-    setformFields({ ...formFields, aquisitionDate: dateString });
-  };
+    form.resetFields();
+    form.setFieldsValue({
+      name: propertyPseudo?.name,
+      propertyTypeId: propertyPseudo?.propertyTypeId,
+    });
+  }, [propertyPseudo]);
 
   return (
-    <div className="w-full p-6">
-      <Form
-        className="bg-white w-full"
-        form={form}
-        layout="vertical"
-        onSubmitCapture={handleSubmit}
-        name="wrap"
-        // labelCol={{
-        //   flex: "110px",
-        // }}
-        labelAlign="left"
-        labelWrap
-        // wrapperCol={{
-        //   flex: 1,
-        // }}
-        colon={false}
-        style={
-          {
-            // maxWidth: 600,
-          }
-        }
-      >
-        <Divider orientation="left">Property Information</Divider>
-
-        <Form.Item
-          label="Name"
-          name="name"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="name"
-            value={name}
-            onChange={(e) =>
-              setformFields({ ...formFields, name: e.target.value })
-            }
-            placeholder="Enter property name"
-            prefix={<UserOutlined />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Property Code"
-          name="propertyCode"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="propertyCode"
-            value={propertyCode}
-            onChange={(e) =>
-              setformFields({ ...formFields, propertyCode: e.target.value })
-            }
-            type="text"
-            placeholder="Enter property code"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="description"
-            value={description}
-            onChange={(e) =>
-              setformFields({ ...formFields, description: e.target.value })
-            }
-            type="text"
-            placeholder="Enter property description"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Category"
-          name="propertyTypeId"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={propertyTypeId}
-            placeholder="Select category"
-            options={optionsLocation}
-            onChange={(e) =>
-              setformFields({ ...formFields, propertyTypeId: e })
-            }
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Ghana Post Address"
-          name="digitalAdress"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="digitalAddress"
-            value={digitalAddress}
-            onChange={(e) =>
-              setformFields({ ...formFields, digitalAddress: e.target.value })
-            }
-            type="text"
-            placeholder="Enter Ghana Post Address"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Divider orientation="left">Location</Divider>
-
-        <Form.Item
-          label="Town"
-          name="locationId"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={locationId}
-            placeholder="Select Town"
-            options={optionsLocation}
-            onChange={(e) => setformFields({ ...formFields, locationId: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Space.Compact>
-          <Form.Item
-            label="Lattitude"
-            name="lat"
-            rules={[
+    <Fragment>
+      {propertyPseudo && (
+        <div className="w-full p-6">
+          <Form
+            className="bg-white w-full"
+            form={form}
+            layout="vertical"
+            onFinish={(values) => handleSubmit(values)}
+            // initialValues={propertyPseudo}
+            name="wrap"
+            // labelCol={{
+            //   flex: "110px",
+            // }}
+            labelAlign="left"
+            labelWrap
+            // wrapperCol={{
+            //   flex: 1,
+            // }}
+            colon={false}
+            style={
               {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              name="lat"
-              readOnly
-              value={lat}
-              onChange={(e) =>
-                setformFields({ ...formFields, lat: e.target.value })
+                // maxWidth: 600,
               }
-              type="text"
-              placeholder="lattitude"
-              // prefix={<MdOutlineEmail />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Longitude"
-            name="long"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
+            }
           >
-            <Input
-              name="long"
-              readOnly
-              value={long}
-              onChange={(e) =>
-                setformFields({ ...formFields, long: e.target.value })
-              }
-              type="text"
-              placeholder="longitude"
-              // prefix={<MdOutlineEmail />}
-            />
-          </Form.Item>
+            <Divider orientation="left">Property Information</Divider>
 
-          <Form.Item label=" ">
-            <Button
-              className=""
-              type="primary"
-              htmlType="button"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
-              onClick={handleLocation}
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
             >
-              Generate
+              <Input
+                name="name"
+                readOnly
+                placeholder="Enter property name"
+                prefix={<UserOutlined />}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Property Code"
+              name="propertyCode"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input
+                name="propertyCode"
+                type="text"
+                placeholder="Enter property code"
+                prefix={<MdOutlineEmail />}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Description"
+              name="description"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input
+                name="description"
+                type="text"
+                placeholder="Enter property description"
+                prefix={<MdOutlineEmail />}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Category"
+              name="propertyTypeId"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <CustomSelect
+                mode="single"
+                placeholder="Select category"
+                options={optionsPropertyType}
+                style={{
+                  width: "100%",
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Ghana Post Address"
+              name="digitalAddress"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input
+                name="digitalAddress"
+                type="text"
+                placeholder="Enter Ghana Post Address"
+                prefix={<MdOutlineEmail />}
+              />
+            </Form.Item>
+
+            <Divider orientation="left">Location</Divider>
+
+            <Form.Item
+              label="District"
+              name="districtId"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <CustomSelect
+                mode="single"
+                placeholder="Select District"
+                options={optionsDistrict}
+                style={{
+                  width: "100%",
+                }}
+                onChange={(e) => setDistrictId(e)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Town"
+              name="locationId"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <CustomSelect
+                mode="single"
+                placeholder="Select Town"
+                options={optionsLocation}
+                style={{
+                  width: "100%",
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="ArcGisUrl"
+              name="arcGisUrl"
+              // rules={[
+              //   {
+              //     required: true,
+              //   },
+              // ]}
+            >
+              <Input
+                name="arcGisUrl"
+                type="text"
+                placeholder="arcGisUrl"
+                // value={location?.latitude}
+              />
+            </Form.Item>
+
+            <Space.Compact>
+              <Form.Item
+                label="Latitude"
+                name="lat"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
+                <Input
+                  name="lat"
+                  readOnly
+                  type="text"
+                  placeholder="latitude"
+                  // value={location?.latitude}
+                />
+              </Form.Item>
+
+              <Form.Item
+                label="Longitude"
+                name="long"
+                // rules={[
+                //   {
+                //     required: true,
+                //   },
+                // ]}
+              >
+                <Input
+                  name="long"
+                  readOnly
+                  type="text"
+                  placeholder="longitude"
+                  // value={location?.longitude}
+                />
+              </Form.Item>
+
+              <Form.Item label=" ">
+                <Button
+                  className=""
+                  type="primary"
+                  htmlType="button"
+                  style={{ backgroundColor: "#6E431D", color: "#fff" }}
+                  onClick={handleLocation}
+                >
+                  {loading ? (
+                    <Loader
+                      width="w-5"
+                      height="h-5"
+                      fillColor="fill-[#6E431D]"
+                    />
+                  ) : (
+                    "Generate"
+                  )}
+                </Button>
+              </Form.Item>
+            </Space.Compact>
+
+            <Form.Item
+              label="Landmark"
+              name="landmark"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input
+                name="landmark"
+                type="text"
+                placeholder="Enter landmark"
+                prefix={<MdOutlineEmail />}
+              />
+            </Form.Item>
+
+            <Divider />
+
+            {/* <Form.Item label=" " name="uploadImages">
+              <PhotosUploader
+                props={props}
+                handleChange={handleChange}
+                fileList={fileList}
+              />
+            </Form.Item> */}
+
+            <Divider orientation="left">Property Units</Divider>
+
+            <Accordion
+              propertyUnits={propertyUnits}
+              form={form}
+              setPropertyUnitRefernce={setPropertyUnitRefernce}
+            />
+
+            <Button
+              className="w-full"
+              type="primary"
+              htmlType="submit"
+              style={{ backgroundColor: "#6E431D", color: "#fff" }}
+            >
+              Save
             </Button>
-          </Form.Item>
-        </Space.Compact>
-
-        <Form.Item
-          label="Landmark"
-          name="landmark"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="landmark"
-            value={landmark}
-            onChange={(e) =>
-              setformFields({ ...formFields, landmark: e.target.value })
-            }
-            type="text"
-            placeholder="Enter landmark"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Divider />
-
-        <Form.Item label=" " name="uploadImages">
-          <PhotosUploader
-            props={props}
-            handleChange={handleChange}
-            fileList={fileList}
-          />
-        </Form.Item>
-
-        <Divider orientation="left">Property Units</Divider>
-
-        <Accordion />
-
-        <Form.Item label=" ">
-          <Button
-            className="w-full"
-            type="primary"
-            htmlType="submit"
-            style={{ backgroundColor: "#6E431D", color: "#fff" }}
-          >
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
+          </Form>
+        </div>
+      )}
+    </Fragment>
   );
 };
 export default PropertyForm;

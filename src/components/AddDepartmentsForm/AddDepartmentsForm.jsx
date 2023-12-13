@@ -93,9 +93,7 @@ const AddDepartmentsForm = () => {
         value: record.id,
       };
     });
-    setOptions(...options, dataRcord);
-
-    return options;
+    setOptions(dataRcord);
   }
 
   useEffect(() => {

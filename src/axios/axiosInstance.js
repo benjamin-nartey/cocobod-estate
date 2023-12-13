@@ -3,7 +3,7 @@ import { memoizedRefreshToken } from "../utils/refreshToken";
 // import jwt_decode from "jwt-decode";
 // import dayjs from "dayjs";
 
-axios.defaults.baseURL = "https://estate-api-2.onrender.com/api/v1/";
+axios.defaults.baseURL = "http://192.168.0.178:3000/api/v1/";
 
 axios.interceptors.request.use(
   async (config) => {

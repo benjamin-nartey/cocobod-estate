@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 import {
   Button,
   Modal,
-  Form,
   Input,
   DatePicker,
   message,
   Space,
   Divider,
+  Form,
 } from "antd";
 import Upload from "antd/es/upload/Upload";
 
-import { UserOutlined } from "@ant-design/icons";
+import {
+  MinusCircleFilled,
+  MinusOutlined,
+  MinusSquareOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { MdOutlineEmail } from "react-icons/md";
 
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
@@ -21,22 +26,9 @@ import PhotosUploader from "../../components/PhotosUploader/PhotosUploader";
 import { axiosInstance } from "../../axios/axiosInstance";
 import { useAddPropertyData } from "../../Hooks/useAddFetch";
 
-const defaultFormFields = {
-  name: "",
-  description: "",
-  plotSize: "",
-  floorArea: "",
-  condition: "",
-  propertyId: "",
-  propertyTypeId: "",
-  propertyReferenceId: "",
-  occupant: "",
-  occupantType: "",
-  tenancyAgreeMentStartDate: "",
-  tenancyAgreeMentEndDate: "",
-};
+import { useIndexedDB } from "react-indexed-db-hook";
 
-const PropertyUnitForm = () => {
+const PropertyUnitForm = ({ name }) => {
   const [open, setOpen] = useState(false);
   const [pageNum, setpageNum] = useState(1);
   const [optionsPropertyType, setOptionsPropertyType] = useState([]);
@@ -44,12 +36,10 @@ const PropertyUnitForm = () => {
   const [optionsDivision, setOptionsDivision] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("Content of the modal");
-  const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [propertyResponse, setPropertyResponse] = useState("");
-  const [formFields, setformFields] = useState(defaultFormFields);
   const [optionsOccupant, setOptionsOccupant] = useState([
     {
       label: "LBC",
@@ -61,36 +51,69 @@ const PropertyUnitForm = () => {
     },
   ]);
 
+  // const form = Form.useFormInstance();
+
+  const [selectedPropType, setSelectedPropType] = useState("");
+
+  const [occupantType, setOccupantType] = useState("");
+  const [propType, setPropType] = useState(null);
+
+  const [occupantNames, setOccupantNames] = useState([]);
+
+  const { getAll: getAllClientOccupants } = useIndexedDB("clientOccupants");
+  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
+
+  const fetchPropertyTypes = async () => {
+    getAllPropertyTypes().then((propertyType) => {
+      const data = propertyType.map((record) => {
+        return {
+          label: record?.name,
+          value: record?.id,
+        };
+      });
+      setOptionsPropertyType(data);
+    });
+  };
+
+  useEffect(() => {
+    if (selectedPropType) {
+      getAllPropertyTypes().then((propertyType) => {
+        const s = propertyType.filter(
+          (propType) => propType?.id === selectedPropType
+        );
+        setPropType(s[0].attributes[0]);
+      });
+    }
+  }, [selectedPropType]);
+
+  console.log(propType);
+
+  useEffect(() => {
+    fetchPropertyTypes();
+  }, []);
+
+  const getNamesByTypeOfOccupant = (typeOfOccupant) => {
+    getAllClientOccupants().then((occupants) => {
+      const getFilteredNames = occupants.filter(
+        (occupant) => occupant?.category === typeOfOccupant
+      );
+      console.log({ getFilteredNames });
+      const data = getFilteredNames.map((record) => {
+        return {
+          label: record?.name,
+          value: record?.id,
+        };
+      });
+
+      setOccupantNames(data);
+    });
+  };
+
+  useEffect(() => {
+    getNamesByTypeOfOccupant(occupantType);
+  }, [occupantType]);
+
   const { mutate } = useAddPropertyData();
-
-  const props = {
-    onRemove: (file) => {
-      const index = fileList.indexOf(file);
-      const newFileList = fileList.slice();
-      newFileList.splice(index, 1);
-      setFileList(newFileList);
-    },
-
-    beforeUpload: (file) => {
-      const isJpgOrPng =
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg" ||
-        file.type === "image/png";
-      if (!isJpgOrPng) {
-        message.error("You can only upload JPG/PNG file!");
-        return Upload.LIST_IGNORE;
-      }
-
-      return false;
-
-      //   return isJpgOrPng || Upload.LIST_IGNORE;
-    },
-  };
-
-  const handleChange = (info) => {
-    let newFileList = [...info.fileList];
-    setFileList(newFileList);
-  };
 
   const success = (content) => {
     messageApi.open({
@@ -106,195 +129,18 @@ const PropertyUnitForm = () => {
     });
   };
 
-  const {
-    name,
-    description,
-    plotSize,
-    floorArea,
-    condition,
-    propertyTypeId,
-    propertyReferenceId,
-    occupant,
-    occupantType,
-    tenancyAgreeMentStartDate,
-    tenancyAgreeMentEndDate,
-  } = formFields;
-
-  console.log({ formFields });
-  console.log({ fileList });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const property = {
-        name,
-        description,
-        plotSize,
-        floorArea,
-        condition,
-        propertyTypeId,
-        propertyReferenceId,
-        occupant,
-        occupantType,
-        tenancyAgreeMentStartDate,
-        tenancyAgreeMentEndDate,
-      };
-
-      mutate(property, {
-        onSuccess: async (data) => {
-          setPropertyResponse(data);
-          console.log(data);
-          if (data && fileList.length !== 0) {
-            try {
-              const response = await axiosInstance.post(
-                `properties/${data.data.id}/photos`
-              );
-              if (response) {
-                success("Property images uploaded successfully");
-                console.log({ response });
-              }
-            } catch (error) {
-              console.log(error);
-              errorMessage("Error adding property images");
-            }
-          }
-          success("Property added successfully");
-          clearInput();
-        },
-      });
-    } catch (error) {
-      errorMessage("Error adding property");
-      throw new Error(`Error in creating user ${error}`);
-    }
-  };
-
-  function clearInput() {
-    setformFields(defaultFormFields);
-    form.resetFields();
-  }
-
-  const handleOk = () => {
-    //an empty function to keep the modal working
-  };
-
-  async function fetchPropertyTypes(pageNum) {
-    const response = await axiosInstance.get("/property-types", {
-      params: {
-        pageNum: pageNum,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptionsPropertyType(...optionsPropertyType, dataRcord);
-
-    return optionsPropertyType;
-  }
-
-  async function fetchDivision(pageNum) {
-    const response = await axiosInstance.get("/divisions", {
-      params: {
-        pageNum: pageNum,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptionsDivision(...optionsDivision, dataRcord);
-
-    return optionsDivision;
-  }
-
-  async function fetchLocations(pageNum) {
-    const response = await axiosInstance.get("/locations", {
-      params: {
-        pageNum: pageNum,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptionsLocation(...optionsLocation, dataRcord);
-
-    return optionsLocation;
-  }
-
-  useEffect(() => {
-    fetchPropertyTypes(pageNum);
-    fetchLocations(pageNum);
-    fetchDivision(pageNum);
-  }, []);
-
-  const handleDatePicker = (_, dateString) => {
-    setformFields({ ...formFields, aquisitionDate: dateString });
-  };
-
   return (
     <div className="w-full bg-white p-3">
-      <Form
-        className="bg-white w-full"
-        form={form}
-        layout="vertical"
-        onSubmitCapture={handleSubmit}
-        name="wrap"
-        // labelCol={{
-        //   flex: "110px",
-        // }}
-        labelAlign="left"
-        labelWrap
-        // wrapperCol={{
-        //   flex: 1,
-        // }}
-        colon={false}
-        style={
-          {
-            // maxWidth: 600,
-          }
-        }
-      >
+      <>
         <Divider orientation="left">Property Unit Information</Divider>
-        <Form.Item
-          label="Name"
-          name="name"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="name"
-            value={name}
-            onChange={(e) =>
-              setformFields({ ...formFields, name: e.target.value })
-            }
-            placeholder="Enter property unit name"
-            prefix={<UserOutlined />}
-          />
+
+        <Form.Item name={[name, "id"]}>
+          <Input type="hidden" />
         </Form.Item>
 
         <Form.Item
           label="Description"
-          name="description"
+          name={[name, "description"]}
           rules={[
             {
               required: true,
@@ -302,20 +148,32 @@ const PropertyUnitForm = () => {
           ]}
         >
           <Input
-            name="description"
-            value={description}
-            onChange={(e) =>
-              setformFields({ ...formFields, description: e.target.value })
-            }
+            readOnly
             type="text"
-            placeholder="Enter property unit description"
+            placeholder="Enter description"
+            prefix={<MdOutlineEmail />}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="PropertyCode"
+          name={[name, "propertyCode"]}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input
+            type="text"
+            placeholder="Enter property code"
             prefix={<MdOutlineEmail />}
           />
         </Form.Item>
 
         <Form.Item
           label="Category"
-          name="propertyTypeId"
+          name={[name, "propertyTypeId"]}
           rules={[
             {
               required: true,
@@ -324,160 +182,227 @@ const PropertyUnitForm = () => {
         >
           <CustomSelect
             mode="single"
-            value={propertyTypeId}
             placeholder="Select category"
-            options={optionsLocation}
-            onChange={(e) =>
-              setformFields({ ...formFields, propertyTypeId: e })
-            }
+            options={optionsPropertyType}
             style={{
               width: "100%",
             }}
+            onChange={(e) => setSelectedPropType(e)}
           />
         </Form.Item>
 
+        <>
+          {propType === "plotSize" ? (
+            <Form.Item
+              label="Plot Size"
+              name={[name, "plotSize"]}
+              rules={[
+                {
+                  // required: true,
+                },
+              ]}
+            >
+              <Input
+                readOnly
+                type="text"
+                placeholder="Enter Plot Size"
+                prefix={<MdOutlineEmail />}
+              />
+            </Form.Item>
+          ) : (
+            <Form.Item
+              label="Floor Area"
+              name={[name, "floorArea"]}
+              // rules={[
+              //   {
+              //     required: true,
+              //   },
+              // ]}
+            >
+              <Input
+                readOnly
+                type="text"
+                placeholder=""
+                prefix={<MdOutlineEmail />}
+              />
+            </Form.Item>
+          )}
+        </>
+
         <Form.Item
-          label="Plot Size"
-          name="plotSize"
+          name={[name, "condition"]}
+          label={"Condition"}
           rules={[
             {
               required: true,
             },
           ]}
         >
-          <Input
-            name="plotSize"
-            value={plotSize}
-            onChange={(e) =>
-              setformFields({ ...formFields, plotSize: e.target.value })
-            }
-            type="text"
-            placeholder="Enter Plot Size"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Floor Area"
-          name="floorArea"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="floorArea"
-            value={floorArea}
-            onChange={(e) =>
-              setformFields({ ...formFields, floorArea: e.target.value })
-            }
-            type="text"
-            placeholder=""
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Condition"
-          name="condition"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input
-            name="condition"
-            value={condition}
-            onChange={(e) =>
-              setformFields({ ...formFields, condition: e.target.value })
-            }
-            type="text"
-            placeholder="Enter property unit condition"
-            prefix={<MdOutlineEmail />}
+          <CustomSelect
+            mode="single"
+            placeholder="Select condition"
+            options={[
+              {
+                label: "NEW",
+                value: "NEW",
+              },
+              {
+                label: "VERY GOOD",
+                value: "VERY_GOOD",
+              },
+              {
+                label: "GOOD",
+                value: "GOOD",
+              },
+              {
+                label: "FAIRLY GOOD",
+                value: "FAIRLY_GOOD",
+              },
+              {
+                label: "FAIR",
+                value: "FAIR",
+              },
+              {
+                label: "FAIRLY POOR",
+                value: "FAIRLY_POOR",
+              },
+              {
+                label: "POOR",
+                value: "POOR",
+              },
+              {
+                label: "VERY POOR",
+                value: "VERY_POOR",
+              },
+              {
+                label: "DILAPIDATED",
+                value: "DILAPIDATED",
+              },
+              {
+                label: "RESIDUAL/DANGEROUS",
+                value: "RESIDUAL_DANGEROUS",
+              },
+            ]}
+            style={{
+              width: "100%",
+            }}
           />
         </Form.Item>
 
         <Divider orientation="left">Occupancy</Divider>
+        <Fragment>
+          <Form.List name="occupants">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map((key, name) => (
+                  <div key={key} className="border-solid border mb-6 relative ">
+                    <span className="font-semibold text-xl absolute grid place-items-center top-0 right-2 cursor-pointer ">
+                      <MinusOutlined size={14} />
+                    </span>
+                    <Form.Item
+                      label="Occupant Type"
+                      name={[name, "occupantType"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <CustomSelect
+                        mode="single"
+                        placeholder="Select type of Occupant"
+                        options={optionsOccupant}
+                        onChange={(e) => setOccupantType(e)}
+                        style={{
+                          width: "100%",
+                        }}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Occupant Name"
+                      name={[name, "occupantName"]}
+                      rules={[
+                        {
+                          // required: true,
+                        },
+                      ]}
+                    >
+                      <CustomSelect
+                        mode="single"
+                        placeholder="Select name of Occupant"
+                        options={occupantNames}
+                        style={{
+                          width: "100%",
+                        }}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Tenancy Agreement Start-date"
+                      name={[name, "tenancyAgreeMentStartDate"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        name="tenancyAgreeMentStartDate"
+                        // value={tenancyAgreeMentStartDate}
+                        // onChange={handleDatePicker}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Tenancy Agreement End-date"
+                      name={[name, "tenancyAgreeMentEndDate"]}
+                      rules={[
+                        {
+                          required: true,
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        name="tenancyAgreeMentEndDate"
+                        // value={tenancyAgreeMentEndDate}
+                        // onChange={handleDatePicker}
+                      />
+                    </Form.Item>
+                  </div>
+                ))}
+                <div className="h-[70px] w-full flex items-center mb-4 ">
+                  <span
+                    className="px-8 py-1 bg-white shadow-md font-semibold cursor-pointer rounded w-full text-center"
+                    onClick={() => add()}
+                  >
+                    Add Occupant
+                  </span>
+                </div>
+              </>
+            )}
+          </Form.List>
+        </Fragment>
+
+        <Divider />
 
         <Form.Item
-          label="Occupant Name"
-          name="occupant"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
+          label="Remarks"
+          name={[name, "remarks"]}
+          // rules={[
+          //   {
+          //     required: true,
+          //   },
+          // ]}
         >
           <Input
-            name="occupant"
-            value={occupant}
-            onChange={(e) =>
-              setformFields({ ...formFields, occupant: e.target.value })
-            }
             type="text"
-            placeholder="Enter occupant name"
+            placeholder="Enter remarks"
             prefix={<MdOutlineEmail />}
           />
         </Form.Item>
 
-        <Form.Item
-          label="Occupant Type"
-          name="occupantType"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <CustomSelect
-            mode="single"
-            value={occupantType}
-            placeholder="Select type of Occupant"
-            options={optionsOccupant}
-            onChange={(e) => setformFields({ ...formFields, occupantType: e })}
-            style={{
-              width: "100%",
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Tenancy Agreement Start-date"
-          name="tenancyAgreeMentStartDate"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <DatePicker
-            name="tenancyAgreeMentStartDate"
-            value={tenancyAgreeMentStartDate}
-            onChange={handleDatePicker}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Tenancy Agreement End-date"
-          name="tenancyAgreeMentEndDate"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <DatePicker
-            name="tenancyAgreeMentEndDate"
-            value={tenancyAgreeMentEndDate}
-            onChange={handleDatePicker}
-          />
-        </Form.Item>
-
-        <Divider />
-
-        <Form.Item label=" ">
+        {/* <Form.Item label=" ">
           <Button
             className="w-full"
             type="primary"
@@ -486,8 +411,8 @@ const PropertyUnitForm = () => {
           >
             Submit
           </Button>
-        </Form.Item>
-      </Form>
+        </Form.Item> */}
+      </>
     </div>
   );
 };

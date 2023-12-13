@@ -117,9 +117,9 @@ const PropertyTable = () => {
         value: record.id,
       };
     });
-    setOptions(...options, dataRcord);
+    setOptions( dataRcord);
 
-    return options;
+   
   }
 
   useEffect(() => {

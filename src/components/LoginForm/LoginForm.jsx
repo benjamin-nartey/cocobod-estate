@@ -26,7 +26,7 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  baseURL: "https://estate-api-2.onrender.com/api/v1/",
+  baseURL: "http://192.168.0.178:3000/api/v1/",
 });
 
 function LoginForm() {
@@ -97,7 +97,7 @@ function LoginForm() {
             const currentUser = userResponse.data;
             state.currentUser = { currentUser };
             const offlineUser = JSON.stringify(currentUser);
-            console.log({offlineUser})
+            console.log({ offlineUser });
             // setCookie("name", userResponse.data.name);
             setCookie("currentUser", offlineUser);
 

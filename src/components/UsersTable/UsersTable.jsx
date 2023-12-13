@@ -121,9 +121,7 @@ const UsersTable = () => {
         value: record.id,
       };
     });
-    setOptions(...options, dataRcord);
-
-    return options;
+    setOptions(dataRcord);
   }
 
   useEffect(() => {
