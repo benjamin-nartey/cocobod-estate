@@ -19,3 +19,9 @@ export const updateDistrict = (id, data) => {
 export const deleteDistrict = (id) => {
   return axiosInstance.delete(`/district/${id}`);
 };
+
+export const getDistrictsByRegionId = (id) => {
+  return axiosInstance.get('/district/all', {
+    params: { regionFilter: id },
+  });
+};

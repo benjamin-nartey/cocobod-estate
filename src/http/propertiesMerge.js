@@ -21,3 +21,7 @@ export const getPagionatedPropertyUnitReferenceList = (queryParams) => {
     params: { ...queryParams },
   });
 };
+
+export const deleteMerge = (id) => {
+  return axiosInstance.delete(`/property-reference-categories/${id}`);
+};

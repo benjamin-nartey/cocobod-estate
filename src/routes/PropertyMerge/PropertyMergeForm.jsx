@@ -9,8 +9,11 @@ import state from '../../store/store';
 import { useGetRegions } from '../../Hooks/query/regions';
 import { useSnapshot } from 'valtio';
 import { CRUDTYPES } from '../../store/modalSlice';
+import { useGetPropertyTypes } from '../../Hooks/query/propertyType';
 
 const PropertyCreateForm = ({ move }) => {
+  const { data } = useGetPropertyTypes();
+
   const { mutate, isLoading } = useMutation({
     mutationKey: 'saveProperty',
     mutationFn: (data) => {
@@ -52,11 +55,14 @@ const PropertyCreateForm = ({ move }) => {
   const snap = useSnapshot(state);
   const { selectedRecord, crudType } = snap.modalSlice;
 
+  console.log(selectedRecord);
+
   const initialValues =
     crudType === CRUDTYPES.EDIT
       ? {
           name: selectedRecord?.name,
           regionId: selectedRecord?.region?.id,
+          propertyTypeId: selectedRecord?.propertyType?.id,
         }
       : {};
 
@@ -70,6 +76,25 @@ const PropertyCreateForm = ({ move }) => {
       >
         <Form.Item label={'Name'} name={'name'} rules={[{ required: true }]}>
           <Input />
+        </Form.Item>
+        <Form.Item
+          name={'propertyTypeId'}
+          label={'Category'}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Select
+            placeholder={'Select category'}
+            showSearch
+            optionFilterProp="label"
+            options={data?.data.map((dat) => ({
+              label: dat?.name,
+              value: dat?.id,
+            }))}
+          />
         </Form.Item>
         <Form.Item
           name={'regionId'}

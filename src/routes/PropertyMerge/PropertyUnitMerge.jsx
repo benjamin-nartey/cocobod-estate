@@ -12,14 +12,14 @@ import { CRUDTYPES } from '../../store/modalSlice';
 
 const PropertyUnitMerge = () => {
   const [selectedRowsInTable, setSelectedRowsInTable] = useState([]);
-  // const [rowSelection, setRowSelection] = useState({})
   const [pageNum, setPageNum] = useState(1);
   const navigate = useNavigate();
 
   const snap = useSnapshot(state);
 
   const { addedProperty } = snap.mergeSlice;
-  const { crudType } = snap.modalSlice;
+
+  let data = [];
 
   const [paginatedData, props] = useGetPaginatedData(
     'properReferenceList',
@@ -28,32 +28,18 @@ const PropertyUnitMerge = () => {
     getPagionatedPropertyUnitReferenceList
   );
 
-  const [data, setData] = useState(props.data?.data?.records);
-
-  console.log({ selectedRowsInTable });
+  data = props.data?.data?.records?.map((rec) => ({
+    ...rec,
+    key: rec?.id,
+  }));
 
   useEffect(() => {
-    if (crudType === CRUDTYPES.EDIT) {
-      const _data = props.data?.data?.records?.map((rec) => ({
-        ...rec,
-        key: rec?.id,
-      }));
-      setData(_data);
-      const records = props.data?.data?.records
-        ?.filter((record) => record.propertyReferenceCategory !== null)
-        .map((r) => r.id);
-      console.log(records);
-      setSelectedRowsInTable(records);
-    } else {
-      const _data = props.data?.data?.records
-        ?.map((rec) => ({
-          ...rec,
-          key: rec?.id,
-        }))
-        .filter((r) => r.propertyReferenceCategory === null);
-      setData(_data);
-    }
-  }, []);
+    const records = props.data?.data?.records
+      ?.filter((record) => record.propertyReferenceCategory !== null)
+      .map((r) => r.id);
+
+    setSelectedRowsInTable(records);
+  }, [props.data?.data?.records]);
 
   const rowSelection = {
     selectedRowKeys: selectedRowsInTable,
@@ -70,6 +56,7 @@ const PropertyUnitMerge = () => {
         name: addedProperty?.name,
         regionId: addedProperty?.region?.id,
         propertyReferenceIds: selectedRowsInTable,
+        propertyTypeId: addedProperty?.propertyType?.id,
       });
     },
     onSuccess: (result) => {

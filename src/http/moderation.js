@@ -9,3 +9,10 @@ export const getModerationPopertyUnitList = (propertyId, queryParams) => {
 export const getRegionalPropertyCount = () => {
   return axiosInstance.get('/properties/moderation/region-count');
 };
+
+export const approveModeration = (propertyUnitId, data) => {
+  return axiosInstance.patch(
+    `/property-units/moderation/property-unit-details/${propertyUnitId}/approve`,
+    { ...data }
+  );
+};

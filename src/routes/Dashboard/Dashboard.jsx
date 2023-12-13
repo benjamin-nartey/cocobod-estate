@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useGetDashboard } from '../../Hooks/query/dashboard';
 import {
   propertiesIcon,
   propertiesThumbnail,
@@ -9,14 +11,18 @@ import {
   divisionsThumbnail,
   rolesIcon,
   rolesThumbnail,
-} from "../../assets/icons/icons";
-import { cn } from "../../utils/helper";
+} from '../../assets/icons/icons';
+import ReportLineChart from '../../components/charts/LineChart/ReportLineChart';
+import ReportPieChart from '../../components/charts/PieChart/ReportPieChart';
+import { cn } from '../../utils/helper';
+import nodata from '../../assets/nodata.json';
+import Lottie from 'lottie-react';
 
 const Card = ({ icon, thumbnail, alt, className, title, numberOfItems }) => {
   return (
     <div
       className={cn(
-        " flex flex-col justify-between w-full sm:w-full md:w-2/2 lg:w-1/4 xl:w-1/5 mb-4 shadow-md rounded-2xl h-[300px] sm:h-[300px] md:h-[250px] lg:h-[240px] xl:h-[240px] cursor-pointer hover:shadow-xl transition-all ",
+        ' flex flex-col justify-between w-full sm:w-full md:w-2/2 lg:w-1/4 xl:w-1/5 mb-4 shadow-md rounded-2xl h-[300px] sm:h-[300px] md:h-[250px] lg:h-[240px] xl:h-[240px] cursor-pointer hover:shadow-xl transition-all ',
         className
       )}
     >
@@ -43,50 +49,50 @@ const Card = ({ icon, thumbnail, alt, className, title, numberOfItems }) => {
 };
 
 const Dashboard = () => {
+  // const [total, setTotal] = useState(0);
+  const { data: dashboard, isLoading } = useGetDashboard();
+
+  let total = 0;
+
+  if (!isLoading) {
+    total = dashboard?.data?.pieChartData?.reduce((acc, item) => {
+      return item?.propertyCount + acc;
+    }, 0);
+  }
+
   return (
     <section className="w-full p-6">
-      <div className="flex justify-start items-center w-full flex-wrap gap-10">
-        <Card
-          title="Properties"
-          numberOfItems="21,000"
-          icon={propertiesIcon}
-          thumbnail={propertiesThumbnail}
-          alt="house"
-          className="bg-[rgba(160,82,45,.8)]"
-        />
-        <Card
-          title="Departments"
-          numberOfItems="300"
-          icon={departmentsIcon}
-          thumbnail={departmentThumbnail}
-          alt="department"
-          className="bg-[rgb(204,119,34,.8)]"
-        />
-        <Card
-          title="Divisions"
-          numberOfItems="8"
-          icon={divisionsIcon}
-          thumbnail={divisionsThumbnail}
-          alt="divisions"
-          className="bg-[rgb(129,65,65,.8)]"
-        />
-        <Card
-          title="Users"
-          numberOfItems="12"
-          icon={usersIcon}
-          thumbnail={usersThumbnail}
-          alt="users"
-          className="bg-[rgb(192,64,0,.8)]"
-        />
+      <div className=" grid grid-cols-2 w-full gap-10">
+        <div className="bg-white">
+          <div className="flex justify-between">
+            <div className="p-4">
+              <h2 className="text-[#af5c13] font-semibold">Property/Regions</h2>
+            </div>
+            <div className="p-4">
+              <h2 className="text-[#af5c13] font-semibold">Total : {total}</h2>
+            </div>
+          </div>
+          <div className="h-[30rem] w-full">
+            {dashboard?.data?.pieChartData.length ? (
+              <ReportPieChart data={dashboard?.data?.pieChartData} />
+            ) : (
+              <div className="flex items-center justify-center pt- pt-28">
+                <Lottie animationData={nodata} />
+              </div>
+            )}
+          </div>
+        </div>
 
-        <Card
-          title="Roles"
-          numberOfItems="10"
-          icon={rolesIcon}
-          thumbnail={rolesThumbnail}
-          alt="roles"
-          className="bg-[rgba(209,120,75,0.8)]"
-        />
+        <div className="bg-white ">
+          <div className="p-4">
+            <h2 className="text-[#af5c13] font-semibold">
+              Property/PropertyType
+            </h2>
+          </div>
+          <div className="h-[30rem] p-4">
+            <ReportLineChart data={dashboard?.data?.lineChartData} />
+          </div>
+        </div>
       </div>
     </section>
   );

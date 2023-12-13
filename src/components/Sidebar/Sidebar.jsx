@@ -12,6 +12,7 @@ import {
   MdLocationPin,
   MdOutlineReceipt,
   MdOutlineSafetyDivider,
+  MdPieChart,
   MdProductionQuantityLimits,
   MdWorkspacePremium,
 } from 'react-icons/md';
@@ -20,6 +21,7 @@ import { BsFillBuildingsFill } from 'react-icons/bs';
 import { PoweroffOutlined } from '@ant-design/icons';
 import {
   HiArrowsExpand,
+  HiInbox,
   HiLightningBolt,
   HiScissors,
   HiUsers,
@@ -100,9 +102,19 @@ function Sidebar({ closeToggle }) {
                 <MdDashboard size={18} />
                 Dasboard
               </NavLink>
+              <NavLink
+                to="/report"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdPieChart size={18} />
+                Report
+              </NavLink>
 
               <NavLink
-                to="/properties"
+                to="/properties-main"
                 className={({ isActive }) =>
                   isActive ? isActiveStyle : isNotActiveStyle
                 }
@@ -197,6 +209,16 @@ function Sidebar({ closeToggle }) {
                 <HiLightningBolt size={25} />
                 Moderation
               </NavLink>
+              <NavLink
+                to="property-references"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <HiInbox size={25} />
+                References
+              </NavLink>
 
               <NavLink
                 to="/property-types"
@@ -206,7 +228,7 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdProductionQuantityLimits size={25} />
-                Property types
+                Category
               </NavLink>
             </>
           )}
@@ -250,7 +272,7 @@ function Sidebar({ closeToggle }) {
             <HiScissors size={18} />
             Property Merge
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/reports"
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
@@ -259,7 +281,7 @@ function Sidebar({ closeToggle }) {
           >
             <MdOutlineReceipt size={18} />
             Reports
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/map"
             className={({ isActive }) =>

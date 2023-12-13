@@ -15,8 +15,24 @@ export const getPaginatedPropertiesForModeration = (regionId, queryParams) => {
   });
 };
 
+export const getPaginatedProperties = (queryParams) => {
+  return axiosInstance.get('/properties', { params: { ...queryParams } });
+};
+
 export const getPropertyUnitsForProperty = (propertyUnitId) => {
-  return axiosInstance.get(`/property-units/moderation/${propertyUnitId}`, {
-    params: { propertyFilter: id },
-  });
+  return axiosInstance.get(
+    `/property-units/moderation/property-unit-details/${propertyUnitId}`
+  );
+};
+
+export const getProperty = (id) => {
+  return axiosInstance.get(`/properties/${id}`);
+};
+
+export const updateProperty = (id, data) => {
+  return axiosInstance.patch(`/properties/${id}`, { ...data });
+};
+
+export const getReferences = () => {
+  return axiosInstance.get('/property-references/all');
 };

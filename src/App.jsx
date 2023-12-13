@@ -7,60 +7,52 @@ import Navigation from './routes/Navigation/Navigation';
 
 import { axiosInstance } from './axios/axiosInstance';
 import state from './store/store';
-const Deployment = lazy(() => import('./routes/Deployment/Deployment'));
-const PropertyMerge = lazy(() =>
-  import('./routes/PropertyMerge/PropertyMerge')
-);
-const DeploymentDetail = lazy(() =>
-  import('./routes/Deployment/DeploymentDetail')
-);
-const District = lazy(() => import('./routes/District/District'));
-const PropertyMergeIndex = lazy(() =>
-  import('./routes/PropertyMerge/PropertyMergeIndex')
-);
 
-const ModerationDetails = lazy(() =>
-  import('./routes/Moderation/ModerationDetails')
-);
-const ModerationDashboard = lazy(() =>
-  import('./routes/Moderation/ModerationDashboard')
-);
-const ModerationPopertyUnitList = lazy(() =>
-  import('./routes/Moderation/ModerationPopertyUnitList')
-);
-const ModerationPoperties = lazy(() =>
-  import('./routes/Moderation/ModerationProperties')
-);
+import Deployment from './routes/Deployment/Deployment';
 
-const Authentication = lazy(() =>
-  import('./routes/Authentication/Authentication')
-);
-const Home = lazy(() => import('./routes/Home/Home'));
-const Users = lazy(() => import('./routes/Users/Users'));
-const Departments = lazy(() => import('./routes/Departments/Departments'));
-const Divisions = lazy(() => import('./routes/Divisions/Divisions'));
-const Roles = lazy(() => import('./routes/Roles/Roles'));
-const Properties = lazy(() => import('./routes/Properties/Properties'));
-const Property = lazy(() => import('./routes/Property/Property'));
-const Locations = lazy(() => import('./routes/Locations/Locations'));
-const Areas = lazy(() => import('./routes/Areas/Areas'));
-const PropertyTypes = lazy(() =>
-  import('./routes/PropertyTypes/PropertyTypes')
-);
-const PropertyDetailsPage = lazy(() =>
-  import('./routes/PropertyDetailsPage/PropertyDetailsPage')
-);
-const PropertyDetail = lazy(() =>
-  import('./components/PropertyDetail/PropertyDetail')
-);
-const Gallery = lazy(() => import('./routes/Gallery/Gallery'));
-const PropertyMap = lazy(() => import('./routes/PropertyMap/PropertyMap'));
-const RequireAuth = lazy(() => import('./components/RequireAuth/RequireAuth'));
-const Dashboard = lazy(() => import('./routes/Dashboard/Dashboard'));
+import PropertyMerge from './routes/PropertyMerge/PropertyMerge';
 
-const Unauthorized = lazy(() => import('./routes/Unauthorized/Unauthorized'));
+import DeploymentDetail from './routes/Deployment/DeploymentDetail';
 
-const NotExistPage = lazy(() => import('./routes/NotExistPage/NotExistPage'));
+import District from './routes/District/District';
+
+import PropertyMergeIndex from './routes/PropertyMerge/PropertyMergeIndex';
+
+import ModerationDetails from './routes/Moderation/ModerationDetails';
+
+import ModerationDashboard from './routes/Moderation/ModerationDashboard';
+
+import ModerationPopertyUnitList from './routes/Moderation/ModerationPopertyUnitList';
+
+import ModerationPoperties from './routes/Moderation/ModerationProperties';
+
+import Authentication from './routes/Authentication/Authentication';
+import Home from './routes/Home/Home';
+
+import Users from './routes/Users/Users';
+import Departments from './routes/Departments/Departments';
+import Divisions from './routes/Divisions/Divisions';
+import Roles from './routes/Roles/Roles';
+import Properties from './routes/Properties/Properties';
+import Property from './components/Property/Property';
+import Locations from './routes/Locations/Locations';
+import Areas from './routes/Areas/Areas';
+import PropertyTypes from './routes/PropertyTypes/PropertyTypes';
+import PropertyDetailsPage from './routes/PropertyDetailsPage/PropertyDetailsPage';
+
+import PropertyDetail from './components/PropertyDetail/PropertyDetail';
+import Gallery from './routes/Gallery/Gallery';
+import PropertyMap from './routes/PropertyMap/PropertyMap';
+import RequireAuth from './components/RequireAuth/RequireAuth';
+import Dashboard from './routes/Dashboard/Dashboard';
+
+import Unauthorized from './routes/Unauthorized/Unauthorized';
+
+import NotExistPage from './routes/NotExistPage/NotExistPage';
+import PropertiesMain from './routes/PropertiesMain/PropertiesMain';
+import PropertyUnitsMain from './routes/PropertyUnitsMain/PropertUnitsMain';
+import Report from './routes/Report/report';
+import PropertyReferences from './routes/PropertyReferences/PropertyReferences';
 
 function App() {
   const navigate = useNavigate();
@@ -91,42 +83,14 @@ function App() {
 
   return (
     <Routes>
-      <Route
-        index
-        element={
-          <Suspense>
-            <Authentication />
-          </Suspense>
-        }
-      />
+      <Route index element={<Authentication />} />
 
-      <Route
-        path="login"
-        element={
-          <Suspense>
-            <Authentication />
-          </Suspense>
-        }
-      />
-      <Route
-        path="unauthorized"
-        element={
-          <Suspense>
-            <Unauthorized />
-          </Suspense>
-        }
-      />
+      <Route path="login" element={<Authentication />} />
+      <Route path="unauthorized" element={<Unauthorized />} />
 
       <Route path="fetching" element={<FetchingPage />} />
 
-      <Route
-        path="*"
-        element={
-          <Suspense>
-            <NotExistPage />
-          </Suspense>
-        }
-      />
+      <Route path="*" element={<NotExistPage />} />
 
       <Route element={<Navigation />}>
         {/*********  Public Routes **********/}
@@ -138,78 +102,20 @@ function App() {
             />
           }
         >
-          <Route
-            element={
-              <Suspense>
-                <Home />
-              </Suspense>
-            }
-          >
-            <Route
-              path="/home"
-              element={
-                <Suspense>
-                  <Properties />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/home/*"
-              element={
-                <Suspense>
-                  <NotExistPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="home/category/:categoryId"
-              element={
-                <Suspense>
-                  <Properties />
-                </Suspense>
-              }
-            />
-            <Route
-              path="home/category/*"
-              element={
-                <Suspense>
-                  <NotExistPage />
-                </Suspense>
-              }
-            />
+          <Route element={<Home />}>
+            <Route path="/home" element={<Properties />} />
+            <Route path="/home/*" element={<NotExistPage />} />
+            <Route path="home/category/:categoryId" element={<Properties />} />
+            <Route path="home/category/*" element={<NotExistPage />} />
           </Route>
-          <Route
-            element={
-              <Suspense>
-                <PropertyDetailsPage />
-              </Suspense>
-            }
-          >
+          <Route element={<PropertyDetailsPage />}>
             <Route
               path="property-detail/:propId"
-              element={
-                <Suspense>
-                  <PropertyDetail />
-                </Suspense>
-              }
+              element={<PropertyDetail />}
             />
           </Route>
-          <Route
-            path="gallery"
-            element={
-              <Suspense>
-                <Gallery />
-              </Suspense>
-            }
-          />
-          <Route
-            path="map"
-            element={
-              <Suspense>
-                <PropertyMap />
-              </Suspense>
-            }
-          />
+          <Route path="gallery" element={<Gallery />} />
+          <Route path="map" element={<PropertyMap />} />
         </Route>
 
         {/******* Private Routes ********/}
@@ -221,159 +127,52 @@ function App() {
             />
           }
         >
-          <Route
-            path="/dashboard"
-            element={
-              <Suspense>
-                <Dashboard />
-              </Suspense>
-            }
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/report" element={<Report />} />
 
-          <Route
-            path="/users"
-            element={
-              <Suspense>
-                <Users />
-              </Suspense>
-            }
-          />
+          <Route path="/users" element={<Users />} />
 
-          <Route
-            path="/departments"
-            element={
-              <Suspense>
-                <Departments />
-              </Suspense>
-            }
-          />
+          <Route path="/departments" element={<Departments />} />
 
-          <Route
-            path="/divisions"
-            element={
-              <Suspense>
-                <Divisions />
-              </Suspense>
-            }
-          />
+          <Route path="/divisions" element={<Divisions />} />
 
-          <Route
-            path="/roles"
-            element={
-              <Suspense>
-                <Roles />
-              </Suspense>
-            }
-          />
+          <Route path="/roles" element={<Roles />} />
 
-          <Route
-            path="/properties"
-            element={
-              <Suspense>
-                <Property />
-              </Suspense>
-            }
-          />
+          <Route path="/property-references" element={<PropertyReferences />} />
 
-          <Route
-            path="/locations"
-            element={
-              <Suspense>
-                <Locations />
-              </Suspense>
-            }
-          />
+          <Route path="/properties" element={<Property />} />
+          <Route path="/properties-main" element={<PropertiesMain />} />
+          <Route path="/property-units-main" element={<PropertyUnitsMain />} />
 
-          <Route
-            path="/areas"
-            element={
-              <Suspense>
-                <Areas />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/district"
-            element={
-              <Suspense>
-                <District />
-              </Suspense>
-            }
-          />
+          <Route path="/locations" element={<Locations />} />
 
-          <Route
-            path="/property-types"
-            element={
-              <Suspense>
-                <PropertyTypes />
-              </Suspense>
-            }
-          />
+          <Route path="/areas" element={<Areas />} />
+          <Route path="/district" element={<District />} />
+
+          <Route path="/property-types" element={<PropertyTypes />} />
+
           <Route path="moderation">
-            <Route
-              index
-              element={
-                <Suspense>
-                  <ModerationDashboard />
-                </Suspense>
-              }
-            />
+            <Route index element={<ModerationDashboard />} />
             <Route
               path="properties/:regionId"
               element={<ModerationPoperties />}
             />
             <Route
               path="properties/:regionId/:propertyId"
-              element={
-                <Suspense>
-                  <ModerationPopertyUnitList />
-                </Suspense>
-              }
+              element={<ModerationPopertyUnitList />}
             />
             <Route
-              path="properties/review"
-              element={
-                <Suspense>
-                  <ModerationDetails />
-                </Suspense>
-              }
+              path="properties/review/:propertyUnitId"
+              element={<ModerationDetails />}
             />
           </Route>
           <Route path="/deployment">
-            <Route
-              index
-              element={
-                <Suspense>
-                  <Deployment />
-                </Suspense>
-              }
-            />
-            <Route
-              path=":id"
-              element={
-                <Suspense>
-                  <DeploymentDetail />
-                </Suspense>
-              }
-            />
+            <Route index element={<Deployment />} />
+            <Route path=":id" element={<DeploymentDetail />} />
           </Route>
           <Route path="/merge">
-            <Route
-              index
-              element={
-                <Suspense>
-                  <PropertyMergeIndex />
-                </Suspense>
-              }
-            />
-            <Route
-              path="create"
-              element={
-                <Suspense>
-                  <PropertyMerge />
-                </Suspense>
-              }
-            />
+            <Route index element={<PropertyMergeIndex />} />
+            <Route path="create" element={<PropertyMerge />} />
           </Route>
         </Route>
       </Route>

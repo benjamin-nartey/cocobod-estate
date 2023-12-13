@@ -11,7 +11,7 @@ const initialState = storedStateString
 const state = proxy({ auth: initialState, modalSlice, mergeSlice });
 
 subscribe(state.auth, () => {
-  localStorage.setItem('currentUserState', JSON.stringify(state));
+  localStorage.setItem('currentUserState', JSON.stringify(state.auth));
 });
 
 export default state;

@@ -9,6 +9,10 @@ html {
   scroll-behavior: smooth;
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 .ant-btn-primary {
   background-color: #6e431d !important;
   color: #fff !important;

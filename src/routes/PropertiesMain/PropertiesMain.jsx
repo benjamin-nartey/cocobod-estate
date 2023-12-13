@@ -1,8 +1,8 @@
-import { Input, Popconfirm, Table, Tooltip } from 'antd';
+import { Input, Popconfirm, Table } from 'antd';
 import React, { useState } from 'react';
 import { BiEdit } from 'react-icons/bi';
 import { useGetPaginatedData } from '../../Hooks/query/generics';
-import { getPaginatedPropertiesForModeration } from '../../http/properties';
+import { getPaginatedProperties } from '../../http/properties';
 import { HiEye } from 'react-icons/hi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { capitalize } from '../../utils/typography';
@@ -10,15 +10,17 @@ import state from '../../store/store';
 import { useSnapshot } from 'valtio';
 import EditModerationProperties from '../../components/modals/moderation/properties/edit';
 
-const ModerationPoperties = () => {
+const PropertiesMain = () => {
   const { regionId } = useParams();
   const [pageNum, setPageNum] = useState(1);
   const [paginatedData, props] = useGetPaginatedData(
-    'propertiesPaginated',
-    regionId,
-    { pageNum },
-    getPaginatedPropertiesForModeration //TODO change url
+    'getAllProperties',
+    '',
+    { pageNum, statusFilter: 'ACTIVE' },
+    getPaginatedProperties //TODO change url
   );
+
+  console.log(props.data?.data?.records);
 
   const navigate = useNavigate();
 
@@ -26,8 +28,6 @@ const ModerationPoperties = () => {
     ...rec,
     key: rec?.id,
   }));
-
-  console.log(props.data?.data?.records);
 
   const snap = useSnapshot(state);
   const { showEditPropertyModal } = snap.modalSlice;
@@ -40,7 +40,7 @@ const ModerationPoperties = () => {
       title: 'Property Description',
       dataIndex: 'description',
       render: (value) => {
-        return <p>{capitalize(value?.toLowerCase())}</p>;
+        return <p>{capitalize(value.toLowerCase())}</p>;
       },
     },
 
@@ -58,30 +58,31 @@ const ModerationPoperties = () => {
       dataIndex: 'digitalAddress',
     },
     {
+      title: 'Property Code',
+      dataIndex: 'propertyCode',
+    },
+    {
       title: 'Actions',
       dataIndex: 'id',
       render: (value, record) => {
         return (
           <div className="flex items-center gap-4">
-            <Tooltip title={'View Property Units'}>
-              <HiEye
-                className="text-blue-500 cursor-pointer"
-                size={22}
-                onClick={() =>
-                  navigate(`/moderation/properties/${regionId}/${value}`)
-                }
-              />
-            </Tooltip>
-            <Tooltip title={'Edit Property'}>
-              <BiEdit
-                size={22}
-                className="cursor-pointer text-gray-600"
-                onClick={() => {
-                  state.modalSlice.selectedRecord = record;
-                  state.modalSlice.toggleshowEditPropertyModal();
-                }}
-              />
-            </Tooltip>
+            <HiEye
+              className="text-blue-500 cursor-pointer"
+              size={22}
+              onClick={() => {
+                state.modalSlice.selectedRecord = record;
+                navigate(`/property-units-main`);
+              }}
+            />
+            <BiEdit
+              size={22}
+              className="cursor-pointer text-gray-600"
+              onClick={() => {
+                state.modalSlice.selectedRecord = record;
+                state.modalSlice.toggleshowEditPropertyModal();
+              }}
+            />
           </div>
         );
       },
@@ -92,11 +93,7 @@ const ModerationPoperties = () => {
     <div className="w-[90%] mx-auto mt-8 flex flex-col  gap-3">
       <h3 className="font-semibold text-slate-500">PROPERTIES</h3>
       <div className="flex flex-col">
-        <Input.Search
-          placeholder="Search records..."
-          // onSearch={(value) => setSearchText(value)}
-          // onChange={(e) => setSearchText(e.target.value)}
-        />
+        <Input.Search placeholder="Search records..." />
         <Table
           loading={props?.isLoading}
           columns={columns}
@@ -115,4 +112,4 @@ const ModerationPoperties = () => {
   );
 };
 
-export default ModerationPoperties;
+export default PropertiesMain;

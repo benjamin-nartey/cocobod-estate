@@ -11,7 +11,7 @@ const ModerationDashboard = () => {
   console.log(regionalPropertyCount?.data);
   const navigate = useNavigate();
 
-  return regionalPropertyCount?.data.length > 0 ? (
+  return regionalPropertyCount?.data.length && !isLoading ? (
     <div>
       <div
         className="grid  grid-cols-3  gap-6 w-[80%] mx-auto mt-7 mb-10"
@@ -19,6 +19,7 @@ const ModerationDashboard = () => {
       >
         {regionalPropertyCount?.data.map((dat) => (
           <div
+            key={dat?.id}
             className="w-full h-full  border border-l-gray-300 border-r-gray-300 border-t-gray-300 rounded-md flex items-center cursor-pointer justify-center group hover:bg-[#c9976c] hover:text-white border-b-8 border-[#B67F4E]"
             onClick={() => navigate(`properties/${dat?.region?.id}`)}
           >
@@ -34,12 +35,12 @@ const ModerationDashboard = () => {
         ))}
       </div>
     </div>
-  ) : (
+  ) : !isLoading && regionalPropertyCount?.data.length == 0 ? (
     <div className="flex flex-col gap-y-6 justify-center items-center translate-y-[50%]">
       <Lottie animationData={waitingAnimation} style={{ width: '20%' }} />
       <p className="text-slate-500 font-semibold">No Pending Approvals</p>
     </div>
-  );
+  ) : null;
 };
 
 export default ModerationDashboard;

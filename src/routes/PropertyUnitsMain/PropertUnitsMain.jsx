@@ -5,17 +5,21 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useGetPaginatedData } from '../../Hooks/query/generics';
 import { getModerationPopertyUnitList } from '../../http/moderation';
 import state from '../../store/store';
+import { getPaginatedPropertyUnits } from '../../http/propertyUnits';
+import { useSnapshot } from 'valtio';
 
-const ModerationPopertyUnitList = () => {
-  const { propertyId } = useParams();
+const PropertyUnitsMain = () => {
   const [pageNum, setPageNum] = useState(1);
   const navigate = useNavigate();
 
+  const snap = useSnapshot(state);
+  const { selectedRecord } = snap.modalSlice;
+
   const [paginatedData, props] = useGetPaginatedData(
-    'moderationPopertyUnitList',
-    propertyId,
-    { pageNum },
-    getModerationPopertyUnitList
+    'property-units',
+    '',
+    { pageNum, propertyFilter: selectedRecord?.id, statusFilter: 'ACTIVE' },
+    getPaginatedPropertyUnits
   );
 
   const _data = props.data?.data?.records?.map((rec) => ({
@@ -28,6 +32,20 @@ const ModerationPopertyUnitList = () => {
       title: 'Property Description',
       dataIndex: 'description',
       key: 'description',
+    },
+    {
+      title: 'Property Code',
+      dataIndex: 'propertyCode',
+      key: 'propertyCode',
+    },
+
+    {
+      title: 'Current Condition',
+      key: 'currentCondition',
+    },
+    {
+      title: 'Property Type',
+      dataIndex: ['propertyType', 'name'],
     },
     {
       title: 'Action',
@@ -52,11 +70,7 @@ const ModerationPopertyUnitList = () => {
     <div className="w-[90%] mx-auto mt-8 flex flex-col  gap-3">
       <h3 className="font-semibold text-slate-500">PROPERTY UNITS</h3>
       <div className="flex flex-col">
-        <Input.Search
-          placeholder="Search records..."
-          // onSearch={(value) => setSearchText(value)}
-          // onChange={(e) => setSearchText(e.target.value)}
-        />
+        <Input.Search placeholder="Search records..." />
         <Table
           dataSource={_data}
           columns={columns}
@@ -73,4 +87,4 @@ const ModerationPopertyUnitList = () => {
   );
 };
 
-export default ModerationPopertyUnitList;
+export default PropertyUnitsMain;

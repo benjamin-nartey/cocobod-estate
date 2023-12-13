@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useGetPaginatedData } from '../../Hooks/query/generics';
-import { Button, Input, Popconfirm, Table } from 'antd';
-import { getPaginatedPropertyReferenceCategory } from '../../http/propertiesMerge';
+import { Button, Input, Popconfirm, Table, message } from 'antd';
+import {
+  deleteMerge,
+  getPaginatedPropertyReferenceCategory,
+} from '../../http/propertiesMerge';
 import { useNavigate } from 'react-router-dom';
 import { DeleteOutlined } from '@ant-design/icons';
 import { BiEdit } from 'react-icons/bi';
 import state from '../../store/store';
 import { CRUDTYPES } from '../../store/modalSlice';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const PropertyMergeIndex = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -22,6 +26,24 @@ const PropertyMergeIndex = () => {
     ...rec,
     key: rec?.id,
   }));
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationKey: 'deleteMerge',
+    mutationFn: (id) => {
+      return deleteMerge(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['propertyReferenceCategory'],
+      });
+      message.success('Property merge deleted successfully');
+    },
+    onError: (err) => {
+      message.error(err.response.data.message);
+    },
+  });
 
   const columns = [
     {
@@ -54,7 +76,9 @@ const PropertyMergeIndex = () => {
             <Popconfirm
               title="Delete"
               description="Are you sure to delete this?. Operation is irreversible"
-              onConfirm={() => {}}
+              onConfirm={() => {
+                mutate(value);
+              }}
               onCancel={() => {}}
               okText="Yes"
               cancelText="No"
