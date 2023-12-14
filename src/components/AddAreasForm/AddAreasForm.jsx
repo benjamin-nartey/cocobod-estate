@@ -1,61 +1,60 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import { Button, Modal, Form, Input, message } from "antd";
+import { Button, Modal, Form, Input, message } from 'antd';
 
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from '@ant-design/icons';
 
-import CustomSelect from "../CustomSelect/CustomSelect";
+import CustomSelect from '../CustomSelect/CustomSelect';
 
-import { useAddAreaData } from "../../Hooks/useAddFetch";
+import { useAddRegionData } from '../../Hooks/useAddFetch';
 
 const AddAreasForm = () => {
   const [open, setOpen] = useState(false);
   const [pageNum, setpageNum] = useState(1);
   const [options, setOptions] = useState([
     {
-      label: "REGION",
-      value: "REGION",
+      label: 'REGION',
+      value: 'REGION',
     },
     {
-      label: "METROPOLITAN",
-      value: "METROPOLITAN",
+      label: 'METROPOLITAN',
+      value: 'METROPOLITAN',
     },
     {
-      label: "MUNICIPAL",
-      value: "MUNICIPAL",
+      label: 'MUNICIPAL',
+      value: 'MUNICIPAL',
     },
     {
-      label: "DISTRICT",
-      value: "DISTRICT",
+      label: 'DISTRICT',
+      value: 'DISTRICT',
     },
   ]);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Content of the modal");
+  const [modalText, setModalText] = useState('Content of the modal');
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
-  const { mutate } = useAddAreaData();
+  const { mutate } = useAddRegionData();
 
   const success = (content) => {
     messageApi.open({
-      type: "success",
+      type: 'success',
       content: content,
     });
   };
 
   const errorMessage = (content) => {
     messageApi.open({
-      type: "error",
+      type: 'error',
       content: content,
     });
   };
 
   const [formFields, setformFields] = useState({
-    name: "",
-    category: "",
+    name: '',
   });
 
-  const { name, category } = formFields;
+  const { name } = formFields;
 
   const showModal = () => {
     setOpen(true);
@@ -65,35 +64,31 @@ const AddAreasForm = () => {
     setOpen(false);
   };
 
-  console.log(formFields);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const area = {
+      const region = {
         name,
-        category,
       };
 
-      mutate(area, {
+      mutate(region, {
         onSuccess: () => {
-          success("Area created successfully");
+          success('Region created successfully');
 
           clearInput();
           handleCancel();
         },
       });
     } catch (error) {
-      errorMessage("Error creating Area");
-      throw new Error(`Error creating Area ${error}`);
+      errorMessage('Error creating Region');
+      throw new Error(`Error creating Region ${error}`);
     }
   };
 
   function clearInput() {
     setformFields({
-      name: "",
-      category: "",
+      name: '',
     });
     form.resetFields();
   }
@@ -108,12 +103,12 @@ const AddAreasForm = () => {
       <Button
         type="primary"
         onClick={showModal}
-        style={{ backgroundColor: "#6E431D", color: "#fff" }}
+        style={{ backgroundColor: '#6E431D', color: '#fff' }}
       >
-        Add Area
+        Add Region
       </Button>
       <Modal
-        title="ADD AREA"
+        title="ADD REGION"
         open={open}
         onOk={handleOk}
         okButtonProps={{
@@ -130,9 +125,9 @@ const AddAreasForm = () => {
           onSubmitCapture={handleSubmit}
           layout="vertical"
           name="wrap"
-          // labelCol={{
-          //   flex: "110px",
-          // }}
+          labelCol={{
+            flex: '110px',
+          }}
           labelAlign="left"
           labelWrap
           // wrapperCol={{
@@ -142,6 +137,7 @@ const AddAreasForm = () => {
           style={{
             maxWidth: 600,
           }}
+          className="mt-5"
         >
           <Form.Item
             label="Name"
@@ -158,29 +154,8 @@ const AddAreasForm = () => {
               onChange={(e) =>
                 setformFields({ ...formFields, name: e.target.value })
               }
-              placeholder="Enter Area name"
+              placeholder="Enter Region name"
               prefix={<UserOutlined />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Category"
-            name="category"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <CustomSelect
-              mode="single"
-              value={category}
-              placeholder="Select category"
-              options={options}
-              onChange={(e) => setformFields({ ...formFields, category: e })}
-              style={{
-                width: "100%",
-              }}
             />
           </Form.Item>
 
@@ -189,7 +164,7 @@ const AddAreasForm = () => {
               className="w-full"
               type="primary"
               htmlType="submit"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
+              style={{ backgroundColor: '#6E431D', color: '#fff' }}
             >
               Submit
             </Button>

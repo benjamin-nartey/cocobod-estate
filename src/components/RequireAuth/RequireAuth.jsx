@@ -1,11 +1,11 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom";
-import { useOnlineStatus } from "../../Hooks/useIsOnlineStatus";
-import { useIndexedDB } from "react-indexed-db-hook";
+import { useLocation, Navigate, Outlet } from 'react-router-dom';
+import { useOnlineStatus } from '../../Hooks/useIsOnlineStatus';
+import { useIndexedDB } from 'react-indexed-db-hook';
 
-import { useSnapshot } from "valtio";
+import { useSnapshot } from 'valtio';
 
-import state from "../../store/store";
-import { useEffect, useState } from "react";
+import state from '../../store/store';
+import { useEffect, useState } from 'react';
 
 function RequireAuth({ allowedRoles }) {
   const isOnLine = useOnlineStatus();
