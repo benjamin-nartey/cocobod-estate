@@ -7,3 +7,16 @@ export const getPaginatedPropertyUnits = (queryParams) => {
     },
   });
 };
+
+export const getPropertyUnits = (queryParams) => {
+  return axiosInstance.get('/property-units/all', {
+    params: { ...queryParams },
+  });
+};
+
+export const getPropertyReferenceUnits = (queryParams) => {
+  console.log('Retrieving property');
+  return axiosInstance.get('/property-references/all', {
+    params: { ...queryParams },
+  });
+};

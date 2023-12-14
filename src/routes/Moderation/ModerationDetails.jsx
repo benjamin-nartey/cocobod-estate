@@ -20,6 +20,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useMutation } from '@tanstack/react-query';
 import { approveModeration } from '../../http/moderation';
+import { HiQuestionMarkCircle } from 'react-icons/hi';
 
 const ModerationDetails = () => {
   const { propertyUnitId } = useParams();
@@ -132,61 +133,128 @@ const ModerationDetails = () => {
         <Divider>
           <span className="text-[#af5c13]">Property State</span>
         </Divider>
-        <Form.Item
-          name={'condition'}
-          label={'Condition'}
-          initialValue={data?.data?.propertyStates[0]?.condition}
-        >
-          <Select
-            options={[
-              {
-                label: 'NEW',
-                value: 'NEW',
-              },
-              {
-                label: 'VERY GOOD',
-                value: 'VERY_GOOD',
-              },
-              {
-                label: 'GOOD',
-                value: 'GOOD',
-              },
-              {
-                label: 'FAIRLY GOOD',
-                value: 'FAIRLY_GOOD',
-              },
-              {
-                label: 'FAIR',
-                value: 'FAIR',
-              },
-              {
-                label: 'FAIRLY POOR',
-                value: 'FAIRLY_POOR',
-              },
-              {
-                label: 'POOR',
-                value: 'POOR',
-              },
-              {
-                label: 'VERY POOR',
-                value: 'VERY_POOR',
-              },
-              {
-                label: 'DILAPIDATED',
-                value: 'DILAPIDATED',
-              },
-              {
-                label: 'RESIDUAL/DANGEROUS',
-                value: 'RESIDUAL_DANGEROUS',
-              },
-            ]}
-          />
-        </Form.Item>
+        <div className="flex justify-between">
+          <Form.Item
+            name={'condition'}
+            label={'Condition'}
+            initialValue={data?.data?.propertyStates[0]?.condition}
+          >
+            <Select
+              options={[
+                {
+                  label: 'NEW',
+                  value: 'NEW',
+                },
+                {
+                  label: 'VERY GOOD',
+                  value: 'VERY_GOOD',
+                },
+                {
+                  label: 'GOOD',
+                  value: 'GOOD',
+                },
+                {
+                  label: 'FAIRLY GOOD',
+                  value: 'FAIRLY_GOOD',
+                },
+                {
+                  label: 'FAIR',
+                  value: 'FAIR',
+                },
+                {
+                  label: 'FAIRLY POOR',
+                  value: 'FAIRLY_POOR',
+                },
+                {
+                  label: 'POOR',
+                  value: 'POOR',
+                },
+                {
+                  label: 'VERY POOR',
+                  value: 'VERY_POOR',
+                },
+                {
+                  label: 'DILAPIDATED',
+                  value: 'DILAPIDATED',
+                },
+                {
+                  label: 'RESIDUAL/DANGEROUS',
+                  value: 'RESIDUAL_DANGEROUS',
+                },
+              ]}
+            />
+          </Form.Item>
+          <Tooltip
+            title={
+              <div className="grid grid-cols-2">
+                <span>New</span>
+                <span>
+                  Recently constructed buildings (1-2 years ago) with no visible
+                  physical deterioration.
+                </span>
+                <span>Very Good</span>
+                <span>
+                  Well maintained buildings/recently renovated buildings with no
+                  physical deterioration and does not require any redecoration
+                  or immediate repairs
+                </span>
+                <span>Good</span>
+                <span>
+                  Buildings having a good physical condition with minor physical
+                  deterioration. Requires periodic maintenance to prevent any
+                  major defect.
+                </span>
+                <span>Fairly Good</span>
+                <span>
+                  Buildings that are somehow in good condition or average (faded
+                  paints, minor fittings and fixtures defects etc.)
+                </span>
+                <span>Fair</span>
+                <span>
+                  Buildings slightly below the average in terms of their
+                  conditions. Example here may be broken aprons, gutters,
+                  defaced walls, rotten wooden fascia,
+                </span>
+                <span>Fairly Poor</span>
+                Buildings below the average in terms of their condition
+                (corroded roof and reinforcement, damaged ceiling and fascia
+                etc.)
+                <span>Poor</span>
+                <span>
+                  Buildings having low/poor physical condition (Roof leakage,
+                  spalling in concrete and masonry walls, damaged fittings &
+                  fixtures)
+                </span>
+                <span>Very Poor</span>
+                <span>
+                  Visible defects such as spalling in concrete and masonry
+                  walls, worn-out and removed fittings and fixtures, poor
+                  drainage/sewage system, roof leakage, broken walls among
+                  others.
+                </span>
+                <span>Dilapidated</span>
+                <span>
+                  Buildings with serious visible structural defects create
+                  serious health, safety and environmental situation to the
+                  extent that makes the property dangerous for rehabilitation.
+                </span>
+                <span> Residual/Dangerous</span>
+                <span>Buildings beyond repairs/ruined</span>
+              </div>
+            }
+          >
+            <HiQuestionMarkCircle size={22} />
+          </Tooltip>
+        </div>
+
         <Form.Item
           name={'remarks'}
           label={'Remarks'}
           initialValue={data?.data?.propertyStates[0]?.remarks}
         >
+          <TextArea rows={10} disabled />
+        </Form.Item>
+        <Form.Item name={'moderationRemarks'} label={'Moderators Remark'}>
           <TextArea rows={10} />
         </Form.Item>
 

@@ -53,12 +53,21 @@ import PropertiesMain from './routes/PropertiesMain/PropertiesMain';
 import PropertyUnitsMain from './routes/PropertyUnitsMain/PropertUnitsMain';
 import Report from './routes/Report/report';
 import PropertyReferences from './routes/PropertyReferences/PropertyReferences';
+import PropertyCapture from './routes/PropertyCapture/PropertyCapture';
+import { useSnapshot } from 'valtio';
 
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
   // const [online, setonline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    if (location.pathname !== '/merge/create') {
+      state.mergeSlice.selectedRowsInTable = [];
+      console.log('reset');
+    }
+  }, [location.pathname]);
 
   window.addEventListener(
     'online',
@@ -149,6 +158,7 @@ function App() {
           <Route path="/report" element={<Report />} />
 
           <Route path="/users" element={<Users />} />
+          <Route path="/property-capture" element={<PropertyCapture />} />
 
           <Route path="/departments" element={<Departments />} />
 

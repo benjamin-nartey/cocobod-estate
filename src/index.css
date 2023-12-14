@@ -80,7 +80,8 @@ html {
 .accordion-content.show {
   height: auto;
   max-height: 9999px;
-  /* transition: all 0.5s, cubic-bezier(0, 1, 0, 1); */
+}
+/* transition: all 0.5s, cubic-bezier(0, 1, 0, 1); */
 .ant-steps .ant-steps-item-process .ant-steps-item-icon {
   background-color: #af5c13 !important;
   border-color: #af5c13 !important;

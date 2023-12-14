@@ -1,10 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import {
+  getPUnitsReferences,
+  getPaginatedProperties,
   getProperty,
   getPropertyUnitsForProperty,
-  getReferences,
+  // getReferences,
 } from '../../http/properties';
-import { axiosInstance } from '../../axios/axiosInstance';
+import { getPropertyReferenceUnits } from '../../http/propertyUnits';
 
 export const useGetPropertyUnitsForProperty = (propertyUnitId) => {
   return useQuery({
@@ -31,9 +33,9 @@ export const useGetProperty = (id) => {
   });
 };
 
-export const useGetReferences = () => {
+export const useGetReferences = (queryParams) => {
   return useQuery({
-    queryKey: ['getReferences-all'],
-    queryFn: () => getReferences(),
+    queryKey: ['getPropertyUnitReferences', queryParams?.regionFilter],
+    queryFn: () => getPropertyReferenceUnits(queryParams),
   });
 };

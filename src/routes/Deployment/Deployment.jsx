@@ -83,7 +83,7 @@ const Deployment = () => {
     {
       title: 'Name',
       dataIndex: 'name',
-      key: 'id',
+      key: 'name',
     },
     {
       title: 'Start Date',

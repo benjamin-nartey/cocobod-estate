@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
 import FloatButtonComponent from '../../components/FloatButtonComponent/FloatButtonComponent';
 import { axiosInstance } from '../../axios/axiosInstance';
 import { useIndexedDB } from 'react-indexed-db-hook';
 import { BsBuildingFillCheck } from 'react-icons/bs';
 import { message } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetDashboard } from '../../Hooks/query/dashboard';
 import {
   propertiesIcon,

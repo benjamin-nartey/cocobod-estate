@@ -4,7 +4,7 @@ import { memoizedRefreshToken } from '../utils/refreshToken';
 // import dayjs from "dayjs";
 
 // axios.defaults.baseURL = "https://estate-api-2.onrender.com/api/v1/";
-axios.defaults.baseURL = 'http://localhost:3000/api/v1/';
+axios.defaults.baseURL = 'http://192.168.43.141:3000/api/v1/';
 // axios.defaults.baseURL = 'http://192.168.0.186:3000/api/v1/';
 // axios.defaults.baseURL = 'http://localhost:9000/api/v1/';
 

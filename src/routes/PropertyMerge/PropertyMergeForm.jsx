@@ -1,6 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button, Form, Input, Select, message } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   addPropertyReferenceCategory,
   updatePropertyReferenceCategory,
@@ -10,9 +10,11 @@ import { useGetRegions } from '../../Hooks/query/regions';
 import { useSnapshot } from 'valtio';
 import { CRUDTYPES } from '../../store/modalSlice';
 import { useGetPropertyTypes } from '../../Hooks/query/propertyType';
+import { getDistrictsByRegionId } from '../../http/district';
 
 const PropertyCreateForm = ({ move }) => {
   const { data } = useGetPropertyTypes();
+  const [selectedRegionId, setSelectedRegionId] = useState(null);
 
   const { mutate, isLoading } = useMutation({
     mutationKey: 'saveProperty',
@@ -21,13 +23,29 @@ const PropertyCreateForm = ({ move }) => {
     },
     onSuccess: (data) => {
       state.mergeSlice.addedProperty = data?.data;
-      message.success('Property added successfully');
+      message.success('Property Pending Merge');
       move();
     },
     onError: (e) => {
       message.error(e.response.data.message);
     },
   });
+
+  const {
+    data: district,
+    refetch: fetchDistricts,
+    isLoading: DistrictLoading,
+  } = useQuery({
+    queryKey: ['getDistrictByRegionId'],
+    queryFn: () => {
+      return getDistrictsByRegionId(selectedRegionId);
+    },
+    enabled: false,
+  });
+
+  useEffect(() => {
+    fetchDistricts();
+  }, [selectedRegionId]);
 
   const { mutate: updateReferenceFn, isLoading: updateLoading } = useMutation({
     mutationKey: 'updatePropertyFn',
@@ -61,7 +79,8 @@ const PropertyCreateForm = ({ move }) => {
     crudType === CRUDTYPES.EDIT
       ? {
           name: selectedRecord?.name,
-          regionId: selectedRecord?.region?.id,
+          regionId: selectedRecord?.district?.region?.id,
+          districtId: selectedRecord?.district?.id,
           propertyTypeId: selectedRecord?.propertyType?.id,
         }
       : {};
@@ -99,17 +118,32 @@ const PropertyCreateForm = ({ move }) => {
         <Form.Item
           name={'regionId'}
           label={'Region'}
-          rules={[{ required: true }]}
+          // rules={[{ required: true }]}
         >
           <Select
             placeholder={'Select Region'}
+            onChange={(value) => setSelectedRegionId(value)}
             options={regions?.data.map((reg) => ({
               label: reg.name,
               value: reg.id,
             }))}
           />
         </Form.Item>
-        <Button htmlType="submit" className="w-full" loading={isLoading}>
+        <Form.Item
+          name={'districtId'}
+          label={'District'}
+          rules={[{ required: true }]}
+        >
+          <Select
+            loading={DistrictLoading}
+            placeholder={'Select District'}
+            options={district?.data.map((dist) => ({
+              label: dist.name,
+              value: dist.id,
+            }))}
+          />
+        </Form.Item>
+        <Button htmlType="submit" className="w-full" loading={updateLoading}>
           <span>
             {crudType === CRUDTYPES.ADD ? `Save & Next` : 'Update & Next'}
           </span>

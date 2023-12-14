@@ -1,51 +1,83 @@
-import { Button, Form, Input, Select, Table, message } from 'antd';
+import { Button, Form, Input, Select, Spin, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { capitalize } from '../../utils/typography';
 import { useSnapshot } from 'valtio';
 import state from '../../store/store';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { mergePropertyToPropertyUnit } from '../../http/properties';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useGetPaginatedData } from '../../Hooks/query/generics';
 import { getPagionatedPropertyUnitReferenceList } from '../../http/propertiesMerge';
 import { CRUDTYPES } from '../../store/modalSlice';
+import { useGetReferences } from '../../Hooks/query/properties';
 
 const PropertyUnitMerge = () => {
-  const [selectedRowsInTable, setSelectedRowsInTable] = useState([]);
-  const [pageNum, setPageNum] = useState(1);
   const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [selectedRowsInTable, setSelectedRowsInTable] = useState([]);
 
   const snap = useSnapshot(state);
 
   const { addedProperty } = snap.mergeSlice;
+  const { data: references, isLoading: referenceLoading } = useGetReferences({
+    regionFilter: addedProperty?.district.region?.id,
+  });
+  const { crudType } = snap.modalSlice;
 
-  let data = [];
+  console.log(addedProperty);
 
-  const [paginatedData, props] = useGetPaginatedData(
-    'properReferenceList',
-    '',
-    { pageNum, regionFilter: addedProperty?.region?.id },
-    getPagionatedPropertyUnitReferenceList
-  );
-
-  data = props.data?.data?.records?.map((rec) => ({
-    ...rec,
-    key: rec?.id,
-  }));
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    const records = props.data?.data?.records
-      ?.filter((record) => record.propertyReferenceCategory !== null)
-      .map((r) => r.id);
+    if (!referenceLoading && references?.data?.length) {
+      const _data =
+        references &&
+        references?.data?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }));
 
-    setSelectedRowsInTable(records);
-  }, [props.data?.data?.records]);
+      setData(_data);
+
+      console.log({ references: references?.data });
+
+      const records =
+        references &&
+        references?.data
+          ?.filter(
+            (record) =>
+              record.propertyReferenceCategory?.id === addedProperty?.id
+          )
+
+          .map((r) => r.id);
+
+      if (records && crudType === CRUDTYPES.EDIT) {
+        setSelectedRowsInTable(records);
+      }
+    }
+  }, [references?.data?.length, referenceLoading]);
 
   const rowSelection = {
     selectedRowKeys: selectedRowsInTable,
     onChange: (selectedRowKeys, selectedRows) => {
-      setSelectedRowsInTable(selectedRows.map((row) => row.key));
+      const changedRows = selectedRows.map((row) => row.key);
+      setSelectedRowsInTable(changedRows);
+      // setSelectedRowsInTable(selectedRows.map((row) => row.key));
     },
+    getCheckboxProps: (record) =>
+      crudType === CRUDTYPES.ADD
+        ? {
+            disabled: record.propertyReferenceCategory !== null,
+
+            // Column configuration not to be checked
+            name: record.lot,
+          }
+        : {
+            disabled:
+              record.propertyReferenceCategory !== null &&
+              record.propertyReferenceCategory?.id !== addedProperty?.id,
+          },
   };
 
   const { mutate, isLoading } = useMutation({
@@ -55,12 +87,19 @@ const PropertyUnitMerge = () => {
         propertyId: addedProperty?.id,
         name: addedProperty?.name,
         regionId: addedProperty?.region?.id,
-        propertyReferenceIds: selectedRowsInTable,
+        propertyReferenceIds: Array.from(new Set(selectedRowsInTable)),
         propertyTypeId: addedProperty?.propertyType?.id,
       });
     },
     onSuccess: (result) => {
       message.success('Properties merged successfully');
+      // state.mergeSlice.selectedRowsInTable = [];
+
+      setSelectedRowsInTable([]);
+      queryClient.invalidateQueries({
+        queryKey: ['getPropertyUnitReferences'],
+      });
+      state.modalSlice.crudType = CRUDTYPES.RESET;
       navigate('/merge');
     },
 
@@ -77,6 +116,25 @@ const PropertyUnitMerge = () => {
     {
       title: 'Lot#',
       dataIndex: 'lot',
+      filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return (
+          String(record.locationOrTown)
+            .toLowerCase()
+            .includes(value.toLowerCase()) ||
+          String(record.description)
+            .toLowerCase()
+            .includes(value.toLowerCase()) ||
+          String(record.lot).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.plotSize).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.floorArea)
+            .toLowerCase()
+            .includes(value.toLowerCase()) ||
+          String(record.propertyType.name)
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        );
+      },
       render: (text) => <a>{text}</a>,
     },
     {
@@ -87,6 +145,11 @@ const PropertyUnitMerge = () => {
     {
       title: 'Description',
       dataIndex: 'description',
+      render: (value) => <p>{capitalize(value.toLowerCase())}</p>,
+    },
+    {
+      title: 'Category',
+      dataIndex: ['propertyType', 'name'],
       render: (value) => <p>{capitalize(value.toLowerCase())}</p>,
     },
     {
@@ -107,12 +170,12 @@ const PropertyUnitMerge = () => {
     },
   ];
 
-  return (
+  return !referenceLoading ? (
     <div className="flex flex-col gap-0">
       <Input.Search
         placeholder="Search records..."
-        // onSearch={(value) => setSearchText(value)}
-        // onChange={(e) => setSearchText(e.target.value)}
+        onSearch={(value) => setSearchText(value)}
+        onChange={(e) => setSearchText(e.target.value)}
       />
       <Table
         rowSelection={{
@@ -121,16 +184,25 @@ const PropertyUnitMerge = () => {
         }}
         columns={columns}
         dataSource={data}
-        pagination={{
-          pageSize: paginatedData?.pageSize,
-          total: paginatedData?.total,
-        }}
-        onChange={(pagination) => setPageNum(pagination.current)}
+        isLoading={referenceLoading}
+        // pagination={{
+        //   pageSize: paginatedData?.pageSize,
+        //   total: paginatedData?.total,
+        // }}
+        // onChange={(pagination) => setPageNum(pagination.current)}
+        rowClassName={(record) =>
+          record.propertyReferenceCategory !== null &&
+          record.propertyReferenceCategory?.id !== addedProperty?.id
+            ? 'line-through'
+            : ''
+        }
       />
-      <Button className="mt-10" onClick={submitData} loading={isLoading}>
+      <Button className="mt-10 " onClick={submitData} loading={isLoading}>
         Submit
       </Button>
     </div>
+  ) : (
+    <Spin />
   );
 };
 

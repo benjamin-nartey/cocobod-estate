@@ -33,6 +33,9 @@ export const updateProperty = (id, data) => {
   return axiosInstance.patch(`/properties/${id}`, { ...data });
 };
 
-export const getReferences = () => {
-  return axiosInstance.get('/property-references/all');
+export const getPUnitsReferences = (queryParams = {}) => {
+  console.log('running...');
+  return axiosInstance.get('/property-references/all', {
+    params: { ...queryParams },
+  });
 };
