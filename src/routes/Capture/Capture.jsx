@@ -67,7 +67,7 @@ const Capture = () => {
     },
     {
       title: "Region",
-      dataIndex: ["region", "name"],
+      dataIndex: ["district", "region", "name"],
     },
 
     {

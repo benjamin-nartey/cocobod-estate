@@ -35,27 +35,23 @@ import Unauthorized from "./routes/Unauthorized/Unauthorized";
 
 import NotExistPage from "./routes/NotExistPage/NotExistPage";
 
+
+// import state from "./store/store";
+import { useSnapshot } from "valtio";
+import { useLocalStorage } from "./Hooks/useLocalStorage";
+
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
   // const [online, setonline] = useState(navigator.onLine);
 
-  window.addEventListener(
-    "online",
-    () => {
-      state.isOnLine = true;
-    },
-    false
+  const [currentUserState, setCurrentUserState] = useLocalStorage(
+    "currentUserState",
+    null
   );
 
-  window.addEventListener(
-    "offline",
-    () => {
-      state.isOnLine = false;
-    },
-    false
-  );
+
 
   const fetchUser = async () => {
     try {
@@ -75,6 +71,8 @@ function App() {
       state.loadingState = false;
     }
   };
+
+  
 
   useEffect(() => {
     fetchUser();

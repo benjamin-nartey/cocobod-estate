@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useIndexedDB } from "react-indexed-db-hook";
 
 import { useNavigate, useLocation, json } from "react-router-dom";
 
@@ -37,6 +38,12 @@ function LoginForm() {
   const isOnLine = useOnlineStatus();
   const [cookies, setCookie] = useCookies(["name"]);
   const { add: addOfflineUser } = useIndexedDB("offlineUser");
+  const { getAll: getAllUser } = useIndexedDB("offlineUser");
+  const [authUser, sethAuthUser] = useState(null);
+
+  useEffect(() => {
+    getAllUser().then((user) => sethAuthUser(user));
+  }, []);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
     "accessToken",
@@ -96,9 +103,16 @@ function LoginForm() {
 
           if (userResponse) {
             const currentUser = userResponse.data;
+            console.log(currentUser);
             state.currentUser = { currentUser };
 
-            addOfflineUser(currentUser);
+            addOfflineUser({
+              id: currentUser.id,
+              name: currentUser.name,
+              email: currentUser.email,
+              roles: currentUser.roles,
+              staff: currentUser.staff,
+            });
 
             setAccessTokenAuth(response?.data?.accessToken);
             setRefreshTokenAuth(response?.data?.refreshToken);
@@ -115,12 +129,15 @@ function LoginForm() {
       case false:
         const isMatch = await bcrypt.compare(password, hashedDefaultPassword);
         try {
+          console.log({ authUser });
+
           if (!isMatch) {
             console.log("wrong password");
-          } else if (isMatch && email === cookies?.email) {
+          } else if (isMatch && email === authUser[0]?.email) {
             console.log("success");
             navigate(from, { replace: true });
           } else {
+            console.log({ auth });
             console.log("wrong username or password");
           }
         } catch (error) {

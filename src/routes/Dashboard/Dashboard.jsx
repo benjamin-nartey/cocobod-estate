@@ -6,6 +6,7 @@ import { BsBuildingFillCheck } from "react-icons/bs";
 import { message } from "antd";
 import Link from "antd/es/typography/Link";
 import { NavLink } from "react-router-dom";
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
 
 const Card = ({ allProperty }) => {
   return (
@@ -25,6 +26,8 @@ const Card = ({ allProperty }) => {
 
 const Dashboard = () => {
   const [allProperty, setAllProperty] = useState([]);
+  const [currentUserState, setCurrentUserState] = useState("currentUserState");
+  const [allocationData, setAllocationData] = useState(null);
 
   const { add: addPropertyReferenceCategories } = useIndexedDB(
     "propertyReferenceCategories"
@@ -42,18 +45,63 @@ const Dashboard = () => {
     getAllProperty().then((data) => setAllProperty(data));
   }, []);
 
+  const fetchUserAlocation = async () => {
+    try {
+      const response = await axiosInstance.get("/allocation/me");
+      console.log({ response });
+      console.log(response.data.region.id);
+
+      if (response.status === 200) {
+        setAllocationData(response.data.region);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserAlocation();
+  }, []);
+  console.log({ allocationData });
+
   const handleDownloadAllResources = async () => {
+    console.log(allocationData?.region?.id);
     await Promise.all([
-      axiosInstance.get("/property-reference-categories/all"),
+      axiosInstance.get("/property-reference-categories/all", {
+        params: {
+          regionFilter: allocationData?.region?.id,
+        },
+      }),
 
-      axiosInstance.get("/property-references/all"),
+      axiosInstance.get("/property-references/all", {
+        params: {
+          regionFilter: allocationData?.region?.id,
+        },
+      }),
 
-      axiosInstance.get("/district/all"),
+      axiosInstance.get("/district/all", {
+        params: {
+          regionFilter: allocationData?.region?.id,
+        },
+      }),
 
-      axiosInstance.get("/location/all"),
+      axiosInstance.get("/location/all", {
+        params: {
+          regionFilter: allocationData?.region?.id,
+        },
+      }),
 
-      axiosInstance.get("/property-types/all"),
-      axiosInstance.get("/client-occupants/all"),
+      axiosInstance.get("/property-types/all", {
+        params: {
+          regionFilter: allocationData?.region?.id,
+        },
+      }),
+
+      axiosInstance.get("/client-occupants/all", {
+        params: {
+          regionFilter: allocationData?.region?.id,
+        },
+      }),
     ])
       .then(
         ([
