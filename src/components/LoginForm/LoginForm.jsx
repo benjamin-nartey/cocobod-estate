@@ -36,6 +36,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const isOnLine = useOnlineStatus();
   const [cookies, setCookie] = useCookies(["name"]);
+  const { add: addOfflineUser } = useIndexedDB("offlineUser");
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
     "accessToken",
@@ -96,10 +97,8 @@ function LoginForm() {
           if (userResponse) {
             const currentUser = userResponse.data;
             state.currentUser = { currentUser };
-            const offlineUser = JSON.stringify(currentUser);
-            console.log({ offlineUser });
-            // setCookie("name", userResponse.data.name);
-            setCookie("currentUser", offlineUser);
+
+            addOfflineUser(currentUser);
 
             setAccessTokenAuth(response?.data?.accessToken);
             setRefreshTokenAuth(response?.data?.refreshToken);

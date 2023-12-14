@@ -73,13 +73,11 @@ const Property = () => {
     ])
       .then((response) =>
         response.forEach((result) => {
-          if (result.status === "rejected") {
-            return;
-          } else if (result.status === "fulfilled") {
-            console.log(result)
-            console.log(result.value.config)
-            return deletePropertyRecord().then(() => {
-              console.log("deleted");
+          if (result.value) {
+            data.map((property) => {
+              deletePropertyRecord(property.id).then(() =>
+                console.log("deleted")
+              );
             });
           }
         })

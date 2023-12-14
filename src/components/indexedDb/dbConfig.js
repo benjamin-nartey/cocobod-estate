@@ -146,6 +146,14 @@ export const ESTATE_DB_CONFIG = {
     },
 
     {
+      store: "offlineUser",
+      storeConfig: { keyPath: "auth" },
+      storeSchema: [
+        { name: "auth", keyPath: "auth", options: { unique: false } },
+      ],
+    },
+
+    {
       store: "property",
       storeConfig: { keyPath: "id", autoIncrement: true },
       storeSchema: [
