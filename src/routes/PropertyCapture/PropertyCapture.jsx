@@ -32,7 +32,7 @@ const PropertyCapture = () => {
 
   return (
     <>
-      <div className="  w-[100%] z-[10] translate-y-[-3rem] sticky top-[22vh] grid place-items-center px-2 ">
+      {/* <div className="  w-[100%] z-[10] translate-y-[-3rem] sticky top-[22vh] grid place-items-center px-2 ">
         <div className="searchbar-container w-[70%] max-md:w-full m-auto flex flex-col items-center ">
           <SearchBar setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
           <SearchResultList
@@ -41,7 +41,7 @@ const PropertyCapture = () => {
             setSearchTerm={setSearchTerm}
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="p-6 grid place-items-center">
         <div className="w-[600px] max-md:w-full bg-white">

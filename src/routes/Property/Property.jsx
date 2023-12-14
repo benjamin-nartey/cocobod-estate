@@ -1,4 +1,4 @@
-import { Button, Input, Popconfirm, Table } from "antd";
+import { Button, Input, Popconfirm, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { BiEdit } from "react-icons/bi";
 // import { useGetPaginatedData } from "../../Hooks/query/generics";
@@ -15,7 +15,13 @@ import { axiosInstance } from "../../axios/axiosInstance";
 
 const Property = () => {
   const { getAll: getAllProperty } = useIndexedDB("property");
+  const { deleteRecord: deletePropertyRecord } = useIndexedDB("property");
+  const { getAll: getAllLocations } = useIndexedDB("locations");
+  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
   const [data, setData] = useState([]);
+  const [location, setLocation] = useState("");
+  const [propertyType, setPropertyType] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { regionId } = useParams();
   const [pageNum, setPageNum] = useState(1);
@@ -29,13 +35,23 @@ const Property = () => {
   // const navigate = useNavigate();
 
   useEffect(() => {
-    getAllProperty().then((result) => {
-      console.log({ result });
-      setData(result);
-    });
+    getAllProperty()
+      .then((result) => {
+        console.log({ result });
+        setData(result);
+        return result;
+      })
+      .then((data) => {
+        const location = getAllLocations().then((locations) =>
+          locations.filter((location) => location === data)
+        );
+        setLocation(location);
+      });
   }, []);
 
   const handleUploadAll = () => {
+    setLoading(true);
+
     Promise.allSettled([
       data.map(async (property) => {
         const data = {
@@ -55,10 +71,21 @@ const Property = () => {
         return await axiosInstance.post("/properties/field-capture", data);
       }),
     ])
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => console.log(error));
+      .then((response) =>
+        response.forEach((result) => {
+          if (result.status === "rejected") {
+            return;
+          } else if (result.status === "fulfilled") {
+            console.log(result)
+            console.log(result.value.config)
+            return deletePropertyRecord().then(() => {
+              console.log("deleted");
+            });
+          }
+        })
+      )
+      .catch((error) => message.error(error))
+      .finally(setLoading(false));
   };
 
   const snap = useSnapshot(state);
@@ -122,7 +149,16 @@ const Property = () => {
     <div className="w-[90%] mx-auto mt-8 flex flex-col  gap-3">
       <div className="flex justify-between">
         <h3 className="font-semibold text-slate-500">PROPERTIES</h3>
-        <Button onClick={handleUploadAll}>Upload</Button>
+        <button
+          onClick={handleUploadAll}
+          className="px-3 py-1 max-md:bg-white max-md:text-[#6E431D] max-md:hover:bg-white outline-none bg-[#6E431D] text-white rounded mb-2 hover:bg-[#B67F4E] hover:font-black hover:translate-y-[-2px] active:translate-y-[3px] transition-all hover:shadow-md active:shadow-sm"
+        >
+          {loading ? (
+            <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
+          ) : (
+            "Upload"
+          )}
+        </button>
       </div>
 
       <div className="flex flex-col">

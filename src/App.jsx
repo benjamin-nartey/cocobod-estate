@@ -10,6 +10,7 @@ import state from "./store/store";
 
 import Authentication from "./routes/Authentication/Authentication";
 
+import Capture from "./routes/Capture/Capture";
 import PropertyCapture from "./routes/PropertyCapture/PropertyCapture";
 import Home from "./routes/Home/Home";
 import Users from "./routes/Users/Users";
@@ -234,6 +235,15 @@ function App() {
             element={
               <Suspense>
                 <PropertyCapture />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="/capture"
+            element={
+              <Suspense>
+                <Capture />
               </Suspense>
             }
           />

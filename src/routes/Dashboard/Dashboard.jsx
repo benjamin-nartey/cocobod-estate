@@ -4,6 +4,8 @@ import { axiosInstance } from "../../axios/axiosInstance";
 import { useIndexedDB } from "react-indexed-db-hook";
 import { BsBuildingFillCheck } from "react-icons/bs";
 import { message } from "antd";
+import Link from "antd/es/typography/Link";
+import { NavLink } from "react-router-dom";
 
 const Card = ({ allProperty }) => {
   return (
@@ -141,7 +143,9 @@ const Dashboard = () => {
     <section className="w-full p-6">
       <FloatButtonComponent handleClick={handleDownloadAllResources} />
       <div className="w-full grid max-[3000px]:grid-cols-4 max-[2000px]:grid-cols-3 max-[1200px]:grid-cols-3 max-[1000px]:grid-cols-2 max-[500px]:grid-cols-1 gap-8  h-auto p-3 ">
-        <Card allProperty={allProperty} />
+        <NavLink to="/properties">
+          <Card allProperty={allProperty} />
+        </NavLink>
       </div>
     </section>
   );

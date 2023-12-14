@@ -14,6 +14,7 @@ import Upload from "antd/es/upload/Upload";
 
 import {
   MinusCircleFilled,
+  MinusCircleOutlined,
   MinusOutlined,
   MinusSquareOutlined,
   UserOutlined,
@@ -295,10 +296,10 @@ const PropertyUnitForm = ({ name }) => {
             {(fields, { add, remove }) => (
               <>
                 {fields.map((key, name) => (
-                  <div key={key} className="border-solid border mb-6 relative ">
-                    <span className="font-semibold text-xl absolute grid place-items-center top-0 right-2 cursor-pointer ">
-                      <MinusOutlined size={14} />
-                    </span>
+                  <div
+                    key={key}
+                    className="border-solid border-b border-b-gray-200 pb-8 mb-6 relative w-full"
+                  >
                     <Form.Item
                       label="Occupant Type"
                       name={[name, "occupantType"]}
@@ -369,15 +370,26 @@ const PropertyUnitForm = ({ name }) => {
                         // onChange={handleDatePicker}
                       />
                     </Form.Item>
+                    {fields.length > 0 ? (
+                      <button
+                        type="button"
+                        className="dynamic-delete-button font-semibold bg-[#f0Ebe1] rounded  p-2 w-full"
+                        onClick={() => remove(name)}
+                      >
+                        Remove occupant
+                      </button>
+                    ) : null}
                   </div>
                 ))}
+
                 <div className="h-[70px] w-full flex items-center mb-4 ">
-                  <span
-                    className="px-8 py-1 bg-white shadow-md font-semibold cursor-pointer rounded w-full text-center"
+                  <button
+                    type="button"
+                    className="p-2 bg-[#f0Ebe1] border border-solid  font-semibold cursor-pointer rounded w-full text-center"
                     onClick={() => add()}
                   >
                     Add Occupant
-                  </span>
+                  </button>
                 </div>
               </>
             )}

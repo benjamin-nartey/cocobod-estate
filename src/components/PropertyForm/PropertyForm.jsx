@@ -207,6 +207,7 @@ const PropertyForm = () => {
 
   const handleSubmit = async (values) => {
     // console.log(values);
+
     const data = {
       name: values?.name,
       description: values?.description,
@@ -218,27 +219,37 @@ const PropertyForm = () => {
       lat: `${values?.lat}`,
       long: `${values?.long}`,
       landmark: values?.landmark,
-      propertyUnits: values?.propertyUnits.map((propertyUnit) => ({
-        description: propertyUnit.description,
-        propertyCode: propertyUnit.propertyCode,
-        plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
-        floorArea: propertyUnit.floorArea ? propertyUnit.floorArea : undefined,
-        propertyTypeId: propertyUnit.propertyTypeId,
-        propertyReferenceId: propertyUnit?.id,
-        propertyOccupancy: values?.occupants.map((occupant) => ({
-          leaseStartsOn: occupant?.tenancyAgreeMentStartDate.toISOString(),
-          leaseExpiresOn: occupant?.tenancyAgreeMentEndDate.toISOString(),
-          name: occupant?.occupantName,
-          category: occupant?.occupantType,
-          clientOccupantId: occupant?.occupantName,
-        })),
-        propertyUnitStates: [
-          {
-            condition: propertyUnit?.condition,
-            remarks: propertyUnit?.remarks,
-          },
-        ],
-      })),
+      propertyUnits: values?.propertyUnits?.length
+        ? values?.propertyUnits?.map((propertyUnit) => ({
+            description: propertyUnit.description,
+            propertyCode: propertyUnit.propertyCode,
+            plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
+            floorArea: propertyUnit.floorArea
+              ? propertyUnit.floorArea
+              : undefined,
+            propertyTypeId: propertyUnit.propertyTypeId,
+            propertyReferenceId: propertyUnit?.id,
+            propertyOccupancy: values.occupants.length
+              ? values?.occupants?.map((occupant) => ({
+                  leaseStartsOn:
+                    occupant?.tenancyAgreeMentStartDate.toISOString(),
+                  leaseExpiresOn:
+                    occupant?.tenancyAgreeMentEndDate.toISOString(),
+                  name: occupant?.occupantName,
+                  category: occupant?.occupantType,
+                  clientOccupantId: occupant?.occupantName,
+                }))
+              : [],
+            propertyUnitStates: [
+              {
+                condition: propertyUnit?.condition,
+                remarks: propertyUnit?.remarks,
+              },
+            ],
+          }))
+        : [],
+
+      photos: fileList,
     };
 
     addProperty(data).then(
@@ -515,13 +526,13 @@ const PropertyForm = () => {
 
             <Divider />
 
-            {/* <Form.Item label=" " name="uploadImages">
+            <Form.Item label=" " name="photos">
               <PhotosUploader
                 props={props}
                 handleChange={handleChange}
                 fileList={fileList}
               />
-            </Form.Item> */}
+            </Form.Item>
 
             <Divider orientation="left">Property Units</Divider>
 

@@ -47,6 +47,7 @@ const Accordion = ({ propertyUnits }) => {
                       <div className="accordion-item bg-[#f0Ebe1] mb-[5px] py-[10px] px-[20px]">
                         <div
                           onClick={() => toggle(key)}
+                          onDoubleClickCapture={() => remove(name)}
                           className="accordion-title flex justify-between items-center cursor-pointer"
                         >
                           <h2 className="text-base font-semibold">{`Property Unit ${
@@ -70,21 +71,18 @@ const Accordion = ({ propertyUnits }) => {
                   </div>
                 );
               })}
-              <div className="h-[70px] w-full flex items-center justify-between mb-4 ">
-                <span
-                  className="px-8 py-1 bg-white shadow-md font-semibold cursor-pointer rounded"
-                  onClick={() => add()}
-                >
-                  Add Unit
-                </span>
-
-                <span
-                  className="px-8 py-1 bg-white shadow-md font-semibold cursor-pointer rounded"
-                  onClick={() => remove()}
-                >
-                  Remove Unit
-                </span>
-              </div>
+              
+              {fields.length >= 0 && (
+                <div className="h-[70px] w-full flex items-center mb-4 ">
+                  <button
+                    type="button"
+                    className="p-2 bg-[#f0Ebe1] border border-solid  font-semibold cursor-pointer rounded w-full text-center"
+                    onClick={() => add()}
+                  >
+                    Add Unit
+                  </button>
+                </div>
+              )}
             </>
           )}
         </Form.List>
