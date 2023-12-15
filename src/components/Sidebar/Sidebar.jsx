@@ -111,7 +111,7 @@ function Sidebar({ closeToggle }) {
               </NavLink> */}
 
               <NavLink
-                to="/capture"
+                to="/property-capture"
                 className={({ isActive }) =>
                   isActive ? isActiveStyle : isNotActiveStyle
                 }

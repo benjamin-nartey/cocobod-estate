@@ -6,7 +6,9 @@ import { BsBuildingFillCheck } from "react-icons/bs";
 import { message } from "antd";
 import Link from "antd/es/typography/Link";
 import { NavLink } from "react-router-dom";
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
+
+import state from "../../store/store";
+import { useSnapshot } from "valtio";
 
 const Card = ({ allProperty }) => {
   return (
@@ -26,8 +28,9 @@ const Card = ({ allProperty }) => {
 
 const Dashboard = () => {
   const [allProperty, setAllProperty] = useState([]);
-  const [currentUserState, setCurrentUserState] = useState("currentUserState");
-  const [allocationData, setAllocationData] = useState(null);
+
+  const snap = useSnapshot(state);
+  const auth = snap.currentUser;
 
   const { add: addPropertyReferenceCategories } = useIndexedDB(
     "propertyReferenceCategories"
@@ -45,63 +48,32 @@ const Dashboard = () => {
     getAllProperty().then((data) => setAllProperty(data));
   }, []);
 
-  const fetchUserAlocation = async () => {
-    try {
-      const response = await axiosInstance.get("/allocation/me");
-      console.log({ response });
-      console.log(response.data.region.id);
-
-      if (response.status === 200) {
-        setAllocationData(response.data.region);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserAlocation();
-  }, []);
-  console.log({ allocationData });
-
   const handleDownloadAllResources = async () => {
-    console.log(allocationData?.region?.id);
+    // console.log(auth.currentUser)?.allocationData.id;
     await Promise.all([
       axiosInstance.get("/property-reference-categories/all", {
         params: {
-          regionFilter: allocationData?.region?.id,
+          regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
       axiosInstance.get("/property-references/all", {
         params: {
-          regionFilter: allocationData?.region?.id,
+          regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
       axiosInstance.get("/district/all", {
         params: {
-          regionFilter: allocationData?.region?.id,
+          regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
-      axiosInstance.get("/location/all", {
-        params: {
-          regionFilter: allocationData?.region?.id,
-        },
-      }),
+      axiosInstance.get("/location/all"),
 
-      axiosInstance.get("/property-types/all", {
-        params: {
-          regionFilter: allocationData?.region?.id,
-        },
-      }),
+      axiosInstance.get("/property-types/all"),
 
-      axiosInstance.get("/client-occupants/all", {
-        params: {
-          regionFilter: allocationData?.region?.id,
-        },
-      }),
+      axiosInstance.get("/client-occupants/all"),
     ])
       .then(
         ([
@@ -117,7 +89,7 @@ const Dashboard = () => {
               id: property?.id,
               name: property?.name,
               propertyType: property?.propertyType,
-              region: property?.region,
+              district: property?.district,
             }).then(() =>
               console.log("propertyReferenceCategories downloaded successfully")
             );
@@ -136,8 +108,8 @@ const Dashboard = () => {
               division: references?.division,
               propertyReferenceCategory: references?.propertyReferenceCategory,
               region: references?.region,
-              propertyUnit: references?.propertyUnit,
-              propertyUnitType: references?.propertyUnitType,
+              // propertyUnit: references?.propertyUnit,
+              propertyType: references?.propertyType,
             }).then(() =>
               console.log("propertyReferences downloaded successfully")
             );

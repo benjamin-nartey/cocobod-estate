@@ -71,17 +71,19 @@ const Property = () => {
         return await axiosInstance.post("/properties/field-capture", data);
       }),
     ])
-      .then((response) =>
-        response.forEach((result) => {
-          if (result.value) {
-            data.map((property) => {
-              deletePropertyRecord(property.id).then(() =>
-                console.log("deleted")
-              );
-            });
-          }
-        })
-      )
+      // .then((response) =>
+      //   response.forEach((result) => {
+      //     if (result.status === "fulfilled") {
+      //       data.map((property) => {
+      //         deletePropertyRecord(property.id).then(() =>
+      //           console.log("deleted")
+      //         );
+      //       });
+      //     } else if (result.status === "rejected") {
+      //       console.log(result.reason);
+      //     }
+      //   })
+      // )
       .catch((error) => message.error(error))
       .finally(setLoading(false));
   };

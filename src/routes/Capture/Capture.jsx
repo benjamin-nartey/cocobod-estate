@@ -86,7 +86,7 @@ const Capture = () => {
               size={22}
               onClick={() => {
                 handleSetPropertyPseudo(record);
-                navigate(`/property-capture`);
+                navigate(`/property-detail-capture`);
               }}
             />
           </div>

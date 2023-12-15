@@ -27,7 +27,7 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  baseURL: "http://192.168.43.141:3000/api/v1/",
+  baseURL: "http://192.168.0.178:3000/api/v1/",
 });
 
 function LoginForm() {
@@ -79,74 +79,53 @@ function LoginForm() {
 
     console.log(password, defaultPassword);
 
-    switch (isOnLine) {
-      case true:
-        try {
-          setLoading(true);
-          const response = await API.post(
-            "/auth",
-            { email, password },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                "X-IP-Address": ipAddress,
-              },
-            }
-          );
-
-          const userResponse = await API.get("/auth/user", {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${response?.data?.accessToken}`,
-            },
-          });
-
-          if (userResponse) {
-            const currentUser = userResponse.data;
-            console.log(currentUser);
-            state.currentUser = { currentUser };
-
-            addOfflineUser({
-              id: currentUser.id,
-              name: currentUser.name,
-              email: currentUser.email,
-              roles: currentUser.roles,
-              staff: currentUser.staff,
-            });
-
-            setAccessTokenAuth(response?.data?.accessToken);
-            setRefreshTokenAuth(response?.data?.refreshToken);
-
-            navigate(from, { replace: true });
-          }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          setLoading(false);
+    try {
+      setLoading(true);
+      const response = await API.post(
+        "/auth",
+        { email, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-IP-Address": ipAddress,
+          },
         }
-        break;
+      );
 
-      case false:
-        const isMatch = await bcrypt.compare(password, hashedDefaultPassword);
-        try {
-          console.log({ authUser });
+      const userResponse = await API.get("/auth/user", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${response?.data?.accessToken}`,
+        },
+      });
 
-          if (!isMatch) {
-            console.log("wrong password");
-          } else if (isMatch && email === authUser[0]?.email) {
-            console.log("success");
-            navigate(from, { replace: true });
-          } else {
-            console.log({ auth });
-            console.log("wrong username or password");
-          }
-        } catch (error) {
-          throw error;
-        }
+      const allocationResponse = await API.get("/allocation/me", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${response?.data?.accessToken}`,
+        },
+      });
 
-      default:
-        console.log("Error signing in offline");
-        break;
+      if (userResponse && allocationResponse) {
+        const currentUser = {
+          name: userResponse.data.name,
+          email: userResponse.data.email,
+          staff: userResponse.data.staff,
+          roles: userResponse.data.roles,
+          allocationData: allocationResponse.data.region,
+        };
+        console.log(currentUser);
+        state.currentUser = { currentUser };
+
+        setAccessTokenAuth(response?.data?.accessToken);
+        setRefreshTokenAuth(response?.data?.refreshToken);
+
+        navigate(from, { replace: true });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 

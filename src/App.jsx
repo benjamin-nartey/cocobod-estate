@@ -35,7 +35,6 @@ import Unauthorized from "./routes/Unauthorized/Unauthorized";
 
 import NotExistPage from "./routes/NotExistPage/NotExistPage";
 
-
 // import state from "./store/store";
 import { useSnapshot } from "valtio";
 import { useLocalStorage } from "./Hooks/useLocalStorage";
@@ -51,15 +50,20 @@ function App() {
     null
   );
 
-
-
   const fetchUser = async () => {
     try {
       state.loadingState = true;
       const response = await axiosInstance.get("/auth/user");
+      const allocationResponse = await axiosInstance.get("/allocation/me");
 
-      if (response.status === 200) {
-        const currentUser = response?.data;
+      if (response.status === 200 && allocationResponse.status === 200) {
+        const currentUser = {
+          name: response.data.name,
+          email: response.data.email,
+          staff: response.data.staff,
+          roles: response.data.roles,
+          allocationData: allocationResponse.data.region,
+        };
 
         state.currentUser = { currentUser };
 
@@ -71,8 +75,6 @@ function App() {
       state.loadingState = false;
     }
   };
-
-  
 
   useEffect(() => {
     fetchUser();
@@ -229,7 +231,7 @@ function App() {
           />
 
           <Route
-            path="/property-capture"
+            path="/property-detail-capture"
             element={
               <Suspense>
                 <PropertyCapture />
@@ -238,7 +240,7 @@ function App() {
           />
 
           <Route
-            path="/capture"
+            path="/property-capture"
             element={
               <Suspense>
                 <Capture />

@@ -28,6 +28,7 @@ import { axiosInstance } from "../../axios/axiosInstance";
 import { useAddPropertyData } from "../../Hooks/useAddFetch";
 
 import { useIndexedDB } from "react-indexed-db-hook";
+import TextArea from "antd/es/input/TextArea";
 
 const PropertyUnitForm = ({ name }) => {
   const [open, setOpen] = useState(false);
@@ -52,7 +53,8 @@ const PropertyUnitForm = ({ name }) => {
     },
   ]);
 
-  // const form = Form.useFormInstance();
+  const form = Form.useFormInstance();
+  const propertyUnits = Form.useWatch("propertyUnits", form);
 
   const [selectedPropType, setSelectedPropType] = useState("");
 
@@ -85,9 +87,7 @@ const PropertyUnitForm = ({ name }) => {
         setPropType(s[0].attributes[0]);
       });
     }
-  }, [selectedPropType]);
-
-  console.log(propType);
+  }, []);
 
   useEffect(() => {
     fetchPropertyTypes();
@@ -129,6 +129,8 @@ const PropertyUnitForm = ({ name }) => {
       content: content,
     });
   };
+
+  console.log(  );
 
   return (
     <div className="w-full bg-white p-3">
@@ -290,9 +292,25 @@ const PropertyUnitForm = ({ name }) => {
           />
         </Form.Item>
 
+        <Form.Item
+          label="Remarks"
+          name={[name, "remarks"]}
+          // rules={[
+          //   {
+          //     required: true,
+          //   },
+          // ]}
+        >
+          <TextArea
+            rows={12}
+            placeholder="Enter remarks"
+            prefix={<MdOutlineEmail />}
+          />
+        </Form.Item>
+
         <Divider orientation="left">Occupancy</Divider>
         <Fragment>
-          <Form.List name="occupants">
+          <Form.List name={[name, "occupants"]}>
             {(fields, { add, remove }) => (
               <>
                 {fields.map((key, name) => (
@@ -397,22 +415,6 @@ const PropertyUnitForm = ({ name }) => {
         </Fragment>
 
         <Divider />
-
-        <Form.Item
-          label="Remarks"
-          name={[name, "remarks"]}
-          // rules={[
-          //   {
-          //     required: true,
-          //   },
-          // ]}
-        >
-          <Input
-            type="text"
-            placeholder="Enter remarks"
-            prefix={<MdOutlineEmail />}
-          />
-        </Form.Item>
 
         {/* <Form.Item label=" ">
           <Button
