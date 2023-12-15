@@ -75,13 +75,9 @@ const PropertyForm = () => {
     getAllPropertyUnits(propertyPseudo?.id);
   }, [propertyPseudo]);
 
-  const getDomainDistricts = (regionId) => {
+  const getDomainDistricts = () => {
     getAllDistricts().then((districts) => {
-      const getDistrictByRegionId = districts.filter(
-        (district) => district?.regionId === regionId
-      );
-      console.log({ getDistrictByRegionId });
-      const data = getDistrictByRegionId.map((record) => {
+      const data = districts.map((record) => {
         return {
           label: record?.name,
           value: record?.id,
@@ -93,7 +89,7 @@ const PropertyForm = () => {
   };
 
   useEffect(() => {
-    getDomainDistricts(propertyPseudo?.region.id);
+    getDomainDistricts();
   }, [propertyPseudo]);
 
   const getDomainTowns = (districtId) => {
@@ -113,8 +109,10 @@ const PropertyForm = () => {
     });
   };
 
+  console.log({ propertyUnits });
+
   useEffect(() => {
-    getDomainTowns(districtId);
+    getDomainTowns(districtId || propertyPseudo?.district?.id);
   }, [districtId]);
 
   const fetchPropertyTypes = async () => {
@@ -229,8 +227,8 @@ const PropertyForm = () => {
               : undefined,
             propertyTypeId: propertyUnit.propertyTypeId,
             propertyReferenceId: propertyUnit?.id,
-            propertyOccupancy: values.occupants.length
-              ? values?.occupants?.map((occupant) => ({
+            propertyOccupancy: propertyUnit.occupants?.length
+              ? propertyUnit.occupants?.map((occupant) => ({
                   leaseStartsOn:
                     occupant?.tenancyAgreeMentStartDate.toISOString(),
                   leaseExpiresOn:
@@ -256,8 +254,8 @@ const PropertyForm = () => {
       () => {
         // success(`${values.name} saved successfully`);
         message.success(`${values.name} saved successfully`);
-        form.resetFields();
-        setPropertyPseudo(null);
+        // form.resetFields();
+        // setPropertyPseudo(null);
       },
       (error) => {
         console.log(error);
@@ -272,7 +270,8 @@ const PropertyForm = () => {
     form.resetFields();
     form.setFieldsValue({
       name: propertyPseudo?.name,
-      propertyTypeId: propertyPseudo?.propertyTypeId,
+      propertyTypeId: propertyPseudo?.propertyType?.id,
+      districtId: propertyPseudo?.district?.id,
     });
   }, [propertyPseudo]);
 
@@ -429,23 +428,6 @@ const PropertyForm = () => {
                 style={{
                   width: "100%",
                 }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="ArcGisUrl"
-              name="arcGisUrl"
-              // rules={[
-              //   {
-              //     required: true,
-              //   },
-              // ]}
-            >
-              <Input
-                name="arcGisUrl"
-                type="text"
-                placeholder="arcGisUrl"
-                // value={location?.latitude}
               />
             </Form.Item>
 

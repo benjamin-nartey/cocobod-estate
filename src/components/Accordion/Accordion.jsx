@@ -20,7 +20,8 @@ const Accordion = ({ propertyUnits }) => {
         description: propertyUnit?.description,
         floorArea: propertyUnit?.floorArea,
         plotSize: propertyUnit?.plotSize,
-        propertyType: propertyUnit?.propertyType,
+        propertyTypeId: propertyUnit?.propertyType?.id,
+        occupants: [],
       }));
 
       form.setFieldsValue({
@@ -29,7 +30,7 @@ const Accordion = ({ propertyUnits }) => {
     }
   }, [propertyUnits.length]);
 
-  // console.log(propertyUnits);
+  console.log(propertyUnits);
 
   return (
     <Fragment>
@@ -71,7 +72,7 @@ const Accordion = ({ propertyUnits }) => {
                   </div>
                 );
               })}
-              
+
               {fields.length >= 0 && (
                 <div className="h-[70px] w-full flex items-center mb-4 ">
                   <button

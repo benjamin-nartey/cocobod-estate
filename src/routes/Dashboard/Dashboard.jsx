@@ -93,23 +93,23 @@ const Dashboard = () => {
   console.log({ allocationData });
 
   const handleDownloadAllResources = async () => {
-    console.log(allocationData?.region?.id);
+    // console.log(auth.currentUser)?.allocationData.id;
     await Promise.all([
       axiosInstance.get('/property-reference-categories/all', {
         params: {
-          regionFilter: allocationData?.region?.id,
+          regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
       axiosInstance.get('/property-references/all', {
         params: {
-          regionFilter: allocationData?.region?.id,
+          regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
       axiosInstance.get('/district/all', {
         params: {
-          regionFilter: allocationData?.region?.id,
+          regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
@@ -145,7 +145,7 @@ const Dashboard = () => {
               id: property?.id,
               name: property?.name,
               propertyType: property?.propertyType,
-              region: property?.region,
+              district: property?.district,
             }).then(() =>
               console.log('propertyReferenceCategories downloaded successfully')
             );
@@ -164,8 +164,8 @@ const Dashboard = () => {
               division: references?.division,
               propertyReferenceCategory: references?.propertyReferenceCategory,
               region: references?.region,
-              propertyUnit: references?.propertyUnit,
-              propertyUnitType: references?.propertyUnitType,
+              // propertyUnit: references?.propertyUnit,
+              propertyType: references?.propertyType,
             }).then(() =>
               console.log('propertyReferences downloaded successfully')
             );
