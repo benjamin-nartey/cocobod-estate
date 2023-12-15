@@ -66,6 +66,7 @@ const ReportFilter = () => {
         footer={false}
         open={showReportModal}
         onCancel={() => state.modalSlice.toggleshowReportModal()}
+        maskClosable={false}
       >
         <div className="mt-8">
           <Form

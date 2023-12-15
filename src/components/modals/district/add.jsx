@@ -68,6 +68,7 @@ const AddDistrict = () => {
         open={showAddDistrictModal}
         onCancel={() => state.modalSlice.toggleShowAddDistrictModal()}
         footer={false}
+        maskClosable={false}
       >
         <div className="mt-9">
           <Form

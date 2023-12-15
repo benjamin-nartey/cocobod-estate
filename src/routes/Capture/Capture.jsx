@@ -1,27 +1,27 @@
-import { Button, Input, Popconfirm, Table } from "antd";
-import React, { useEffect, useState, useContext } from "react";
-import { PropertyPseudoContext } from "../../context/propertyPseudo.context";
+import { Button, Input, Popconfirm, Table } from 'antd';
+import React, { useEffect, useState, useContext } from 'react';
+import { PropertyPseudoContext } from '../../context/propertyPseudo.context';
 
-import { BiEdit } from "react-icons/bi";
+import { BiEdit } from 'react-icons/bi';
 // import { useGetPaginatedData } from "../../Hooks/query/generics";
 // import { getPaginatedProperties } from "../../http/properties";
-import { HiEye } from "react-icons/hi";
-import { useNavigate, useParams } from "react-router-dom";
+import { HiEye } from 'react-icons/hi';
+import { useNavigate, useParams } from 'react-router-dom';
 // import { capitalize } from "../../utils/typography";
-import state from "../../store/store";
-import { useSnapshot } from "valtio";
-import { useIndexedDB } from "react-indexed-db-hook";
-import { axiosInstance } from "../../axios/axiosInstance";
+import state from '../../store/store';
+import { useSnapshot } from 'valtio';
+import { useIndexedDB } from 'react-indexed-db-hook';
+import { axiosInstance } from '../../axios/axiosInstance';
 
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
 
 const Capture = () => {
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
 
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
-    "propertyReferenceCategories"
+    'propertyReferenceCategories'
   );
   const { handleSetPropertyPseudo } = useContext(PropertyPseudoContext);
 
@@ -52,13 +52,15 @@ const Capture = () => {
   // const { showEditPropertyModal } = snap.modalSlice;
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: 'Name',
+      dataIndex: 'name',
       filteredValue: [searchText],
       onFilter: (value, record) => {
         return (
           String(record.name).toLowerCase().includes(value.toLowerCase()) ||
-          String(record.region.name).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.region.name)
+            .toLowerCase()
+            .includes(value.toLowerCase()) ||
           String(record.propertyType.name)
             .toLowerCase()
             .includes(value.toLowerCase())
@@ -66,18 +68,18 @@ const Capture = () => {
       },
     },
     {
-      title: "Region",
-      dataIndex: ["district", "region", "name"],
+      title: 'Region',
+      dataIndex: ['district', 'region', 'name'],
     },
 
     {
-      title: "Property Type",
-      dataIndex: ["propertyType", "name"],
+      title: 'Property Type',
+      dataIndex: ['propertyType', 'name'],
     },
 
     {
-      title: "Actions",
-      dataIndex: "id",
+      title: 'Actions',
+      dataIndex: 'id',
       render: (value, record) => {
         return (
           <div className="flex items-center gap-4">
@@ -86,7 +88,7 @@ const Capture = () => {
               size={22}
               onClick={() => {
                 handleSetPropertyPseudo(record);
-                navigate(`/property-capture`);
+                navigate(`/property-detail-capture`);
               }}
             />
           </div>

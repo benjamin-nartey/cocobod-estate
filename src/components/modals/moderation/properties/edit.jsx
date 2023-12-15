@@ -47,6 +47,7 @@ const EditModerationProperties = () => {
         footer={false}
         open={showEditPropertyModal}
         onCancel={() => state.modalSlice.toggleshowEditPropertyModal()}
+        maskClosable={false}
       >
         <div className="mt-6">
           <Form

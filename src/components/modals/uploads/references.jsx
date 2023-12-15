@@ -64,6 +64,7 @@ const ReferencesUpload = () => {
         open={showReferencesUploadModal}
         footer={false}
         onCancel={() => state.modalSlice.toggleshowReferencesUploadModal()}
+        maskClosable={false}
       >
         <div className="pt-9 mx-auto w-[90%]">
           <h2 className="py-4 text-primary text-xl font-semibold text-center">

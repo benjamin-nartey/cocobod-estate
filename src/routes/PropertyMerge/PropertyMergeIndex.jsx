@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGetPaginatedData } from '../../Hooks/query/generics';
-import { Button, Input, Popconfirm, Table, message } from 'antd';
+import { Button, Input, Popconfirm, Spin, Table, message } from 'antd';
 import {
   deleteMerge,
   getPaginatedPropertyReferenceCategory,
@@ -29,7 +29,7 @@ const PropertyMergeIndex = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isLoading: deleteLoading } = useMutation({
     mutationKey: 'deleteMerge',
     mutationFn: (id) => {
       return deleteMerge(id);
@@ -109,6 +109,14 @@ const PropertyMergeIndex = () => {
     },
   ];
 
+  if (deleteLoading) {
+    return (
+      <div className="absolute translate-x-[55%] translate-y-[50%] top-[50%] right-[50%]">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
     <div className="w-[90%] mx-auto mt-4">
       <div className="flex justify-end mb-4">
@@ -137,6 +145,7 @@ const PropertyMergeIndex = () => {
           total: paginatedData?.total,
         }}
         onChange={(pagination) => setPageNum(pagination.current)}
+        loading={props?.isLoading}
       />
     </div>
   );

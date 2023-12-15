@@ -143,7 +143,11 @@ const PropertyCreateForm = ({ move }) => {
             }))}
           />
         </Form.Item>
-        <Button htmlType="submit" className="w-full" loading={updateLoading}>
+        <Button
+          htmlType="submit"
+          className="w-full"
+          loading={crudType === CRUDTYPES.EDIT ? updateLoading : isLoading}
+        >
           <span>
             {crudType === CRUDTYPES.ADD ? `Save & Next` : 'Update & Next'}
           </span>

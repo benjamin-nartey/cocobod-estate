@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useIndexedDB } from 'react-indexed-db-hook';
 
-import { useNavigate, useLocation, json } from 'react-router-dom';
+import { useOnlineStatus } from '../../Hooks/useIsOnlineStatus';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useLocalStorage } from '../../Hooks/useLocalStorage';
-import { useOnlineStatus } from '../../Hooks/useIsOnlineStatus';
 import state from '../../store/store';
 
 import Loader from '../Loader/Loader';
 
-import axios from 'axios';
 // import { useSnapshot } from "valtio";
 import bcrypt from 'bcryptjs';
 import { useCookies } from 'react-cookie';
+import axios from 'axios';
 
 const defaultFormFields = {
   email: '',
@@ -27,7 +26,7 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  baseURL: 'http://192.168.43.141:3000/api/v1/',
+  baseURL: 'http://192.168.0.178:3000/api/v1/',
 });
 
 function LoginForm() {
@@ -37,13 +36,6 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const isOnLine = useOnlineStatus();
   const [cookies, setCookie] = useCookies(['name']);
-  const { add: addOfflineUser } = useIndexedDB('offlineUser');
-  const { getAll: getAllUser } = useIndexedDB('offlineUser');
-  const [authUser, sethAuthUser] = useState(null);
-
-  useEffect(() => {
-    getAllUser().then((user) => sethAuthUser(user));
-  }, []);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
     'accessToken',
@@ -103,16 +95,11 @@ function LoginForm() {
 
           if (userResponse) {
             const currentUser = userResponse.data;
-            console.log(currentUser);
-            state.currentUser = { currentUser };
-
-            addOfflineUser({
-              id: currentUser.id,
-              name: currentUser.name,
-              email: currentUser.email,
-              roles: currentUser.roles,
-              staff: currentUser.staff,
-            });
+            state.auth.currentUser = currentUser;
+            const offlineUser = JSON.stringify(currentUser);
+            console.log({ offlineUser });
+            // setCookie("name", userResponse.data.name);
+            setCookie('currentUser', offlineUser);
 
             setAccessTokenAuth(response?.data?.accessToken);
             setRefreshTokenAuth(response?.data?.refreshToken);
@@ -129,15 +116,12 @@ function LoginForm() {
       case false:
         const isMatch = await bcrypt.compare(password, hashedDefaultPassword);
         try {
-          console.log({ authUser });
-
           if (!isMatch) {
             console.log('wrong password');
-          } else if (isMatch && email === authUser[0]?.email) {
+          } else if (isMatch && email === cookies?.email) {
             console.log('success');
             navigate(from, { replace: true });
           } else {
-            console.log({ auth });
             console.log('wrong username or password');
           }
         } catch (error) {

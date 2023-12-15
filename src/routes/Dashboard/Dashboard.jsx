@@ -7,12 +7,6 @@ import { message } from 'antd';
 import Link from 'antd/es/typography/Link';
 import { NavLink } from 'react-router-dom';
 import { useLocalStorage } from '../../Hooks/useLocalStorage';
-import FloatButtonComponent from '../../components/FloatButtonComponent/FloatButtonComponent';
-import { axiosInstance } from '../../axios/axiosInstance';
-import { useIndexedDB } from 'react-indexed-db-hook';
-import { BsBuildingFillCheck } from 'react-icons/bs';
-import { message } from 'antd';
-import { useEffect, useState } from 'react';
 import { useGetDashboard } from '../../Hooks/query/dashboard';
 import {
   propertiesIcon,
@@ -38,20 +32,10 @@ const Card = ({ allProperty }) => {
       <div className="flex items-center gap-4">
         <div className="rounded-full p-4 border">
           <BsBuildingFillCheck size={20} />
-
-          <div className="w-full flex justify-center items-start bg-transparent h-1/2 rounded-2xl">
-            <div className=" flex justify-center items-center w-2/4 h-5/6 bg-[#F4EDE7] bg-opacity-40 backdrop-blur rounded-3xl border border-solid border-white border-opacity-50">
-              <img
-                className="w-1/3 sm:aspect-video md:aspect-video lg:aspect-square xl:aspect-square object-contain"
-                src={icon}
-                alt={alt}
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-4xl">{allProperty?.length}</span>
-              <p className="text-sm">Properties</p>
-            </div>
-          </div>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-4xl">{allProperty?.length}</span>
+          <p className="text-sm">Properties</p>
         </div>
       </div>
     </div>
@@ -231,19 +215,36 @@ const Dashboard = () => {
       });
   };
 
-  // return (
-  //   <section className="w-full p-6">
-  //     <FloatButtonComponent handleClick={handleDownloadAllResources} />
-  //     <div className="w-full grid max-[3000px]:grid-cols-4 max-[2000px]:grid-cols-3 max-[1200px]:grid-cols-3 max-[1000px]:grid-cols-2 max-[500px]:grid-cols-1 gap-8  h-auto p-3 ">
-  //       <Card allProperty={allProperty} />
+  const cardItems = [
+    {
+      name: 'Properties',
+      value: allProperty.length,
+      icon: <BsBuildingFillCheck size={20} />,
+      link: '/properties',
+    },
+    {
+      name: 'Users',
+      value: 0,
+      icon: <BsBuildingFillCheck size={20} />,
+      link: '/users',
+    },
+    {
+      name: 'Users',
+      value: 0,
+      icon: <BsBuildingFillCheck size={20} />,
+      link: '/users',
+    },
+  ];
 
   return (
-    <section className="w-full p-6">
+    <section className="w-full flex flex-col gap-8 p-6">
       <FloatButtonComponent handleClick={handleDownloadAllResources} />
-      <div className="w-full grid max-[3000px]:grid-cols-4 max-[2000px]:grid-cols-3 max-[1200px]:grid-cols-3 max-[1000px]:grid-cols-2 max-[500px]:grid-cols-1 gap-8  h-auto p-3 ">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-auto">
         <NavLink to="/properties">
           <Card allProperty={allProperty} />
         </NavLink>
+        {/* <Card allProperty={allProperty} />
+        <Card allProperty={allProperty} /> */}
       </div>
       <div className=" grid grid-cols-2 w-full gap-10">
         <div className="bg-white">

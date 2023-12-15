@@ -6,7 +6,7 @@ export const useLogout = async () => {
   const [logoutResponse, setLogoutResponse] = useState('');
   const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
   const api = axios.create({
-    baseURL: 'http://192.168.43.141:3000/api/v1/',
+    baseURL: 'http://192.168.0.178:3000/api/v1/',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${refreshToken}`,
