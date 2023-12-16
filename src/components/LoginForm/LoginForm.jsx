@@ -26,7 +26,7 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  baseURL: 'http://192.168.0.178:3000/api/v1/',
+  baseURL: 'http://localhost:3000/api/v1/',
 });
 
 function LoginForm() {
@@ -71,66 +71,55 @@ function LoginForm() {
 
     console.log(password, defaultPassword);
 
-    switch (isOnLine) {
-      case true:
-        try {
-          setLoading(true);
-          const response = await API.post(
-            '/auth',
-            { email, password },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'X-IP-Address': ipAddress,
-              },
-            }
-          );
-
-          const userResponse = await API.get('/auth/user', {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${response?.data?.accessToken}`,
-            },
-          });
-
-          if (userResponse) {
-            const currentUser = userResponse.data;
-            state.auth.currentUser = currentUser;
-            const offlineUser = JSON.stringify(currentUser);
-            console.log({ offlineUser });
-            // setCookie("name", userResponse.data.name);
-            setCookie('currentUser', offlineUser);
-
-            setAccessTokenAuth(response?.data?.accessToken);
-            setRefreshTokenAuth(response?.data?.refreshToken);
-
-            navigate(from, { replace: true });
-          }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          setLoading(false);
+    try {
+      setLoading(true);
+      const response = await API.post(
+        '/auth',
+        { email, password },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-IP-Address': ipAddress,
+          },
         }
-        break;
+      );
 
-      case false:
-        const isMatch = await bcrypt.compare(password, hashedDefaultPassword);
-        try {
-          if (!isMatch) {
-            console.log('wrong password');
-          } else if (isMatch && email === cookies?.email) {
-            console.log('success');
-            navigate(from, { replace: true });
-          } else {
-            console.log('wrong username or password');
-          }
-        } catch (error) {
-          throw error;
-        }
+      const userResponse = await API.get('/auth/user', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${response?.data?.accessToken}`,
+        },
+      });
 
-      default:
-        console.log('Error signing in offline');
-        break;
+      const allocationResponse = await API.get('/allocation/me', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${response?.data?.accessToken}`,
+        },
+      });
+      if (userResponse && allocationResponse) {
+        const currentUser = {
+          name: userResponse.data.name,
+          email: userResponse.data.email,
+          staff: userResponse.data.staff,
+          roles: userResponse.data.roles,
+          allocationData: allocationResponse.data.region,
+        };
+
+        state.auth.currentUser = currentUser;
+
+        // setCookie("name", userResponse.data.name);
+        // setCookie('currentUser', offlineUser);
+
+        setAccessTokenAuth(response?.data?.accessToken);
+        setRefreshTokenAuth(response?.data?.refreshToken);
+
+        navigate(from, { replace: true });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 

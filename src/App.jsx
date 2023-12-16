@@ -59,6 +59,7 @@ import PropertyCapture from './routes/PropertyCapture/PropertyCapture';
 import { useSnapshot } from 'valtio';
 import { useLocalStorage } from './Hooks/useLocalStorage';
 import Property from './components/Property/Property';
+import PropertyUpload from './routes/PropertyUpload/PropertyUpload';
 
 function App() {
   const navigate = useNavigate();
@@ -167,6 +168,7 @@ function App() {
           <Route path="/roles" element={<Roles />} />
 
           <Route path="/property-references" element={<PropertyReferences />} />
+          <Route path="/property-upload" element={<PropertyUpload />} />
 
           <Route path="/property-capture" element={<Capture />} />
           <Route

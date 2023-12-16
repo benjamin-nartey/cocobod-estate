@@ -25,6 +25,8 @@ import ReportPieChart from '../../components/charts/PieChart/ReportPieChart';
 import { cn } from '../../utils/helper';
 import nodata from '../../assets/nodata.json';
 import Lottie from 'lottie-react';
+import { useSnapshot } from 'valtio';
+import state from '../../store/store';
 
 const Card = ({ allProperty }) => {
   return (
@@ -86,6 +88,9 @@ const Dashboard = () => {
       console.log(error);
     }
   };
+
+  const snap = useSnapshot(state);
+  const auth = snap.auth;
 
   useEffect(() => {
     fetchUserAlocation();

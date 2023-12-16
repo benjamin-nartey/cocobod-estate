@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from 'react';
 
 import {
   Button,
@@ -9,8 +9,8 @@ import {
   Space,
   Divider,
   Form,
-} from "antd";
-import Upload from "antd/es/upload/Upload";
+} from 'antd';
+import Upload from 'antd/es/upload/Upload';
 
 import {
   MinusCircleFilled,
@@ -18,17 +18,17 @@ import {
   MinusOutlined,
   MinusSquareOutlined,
   UserOutlined,
-} from "@ant-design/icons";
-import { MdOutlineEmail } from "react-icons/md";
+} from '@ant-design/icons';
+import { MdOutlineEmail } from 'react-icons/md';
 
-import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import PhotosUploader from "../../components/PhotosUploader/PhotosUploader";
+import CustomSelect from '../../components/CustomSelect/CustomSelect';
+import PhotosUploader from '../../components/PhotosUploader/PhotosUploader';
 
-import { axiosInstance } from "../../axios/axiosInstance";
-import { useAddPropertyData } from "../../Hooks/useAddFetch";
+import { axiosInstance } from '../../axios/axiosInstance';
+import { useAddPropertyData } from '../../Hooks/useAddFetch';
 
-import { useIndexedDB } from "react-indexed-db-hook";
-import TextArea from "antd/es/input/TextArea";
+import { useIndexedDB } from 'react-indexed-db-hook';
+import TextArea from 'antd/es/input/TextArea';
 
 const PropertyUnitForm = ({ name }) => {
   const [open, setOpen] = useState(false);
@@ -37,34 +37,34 @@ const PropertyUnitForm = ({ name }) => {
   const [optionsLocation, setOptionsLocation] = useState([]);
   const [optionsDivision, setOptionsDivision] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Content of the modal");
+  const [modalText, setModalText] = useState('Content of the modal');
   const [messageApi, contextHolder] = message.useMessage();
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
-  const [propertyResponse, setPropertyResponse] = useState("");
+  const [propertyResponse, setPropertyResponse] = useState('');
   const [optionsOccupant, setOptionsOccupant] = useState([
     {
-      label: "LBC",
-      value: "LBC",
+      label: 'LBC',
+      value: 'LBC',
     },
     {
-      label: "NON LBC",
-      value: "NON LBC",
+      label: 'NON LBC',
+      value: 'NON LBC',
     },
   ]);
 
   const form = Form.useFormInstance();
-  const propertyUnits = Form.useWatch("propertyUnits", form);
+  const propertyUnits = Form.useWatch('propertyUnits', form);
 
-  const [selectedPropType, setSelectedPropType] = useState("");
+  const [selectedPropType, setSelectedPropType] = useState('');
 
-  const [occupantType, setOccupantType] = useState("");
+  const [occupantType, setOccupantType] = useState('');
   const [propType, setPropType] = useState(null);
 
   const [occupantNames, setOccupantNames] = useState([]);
 
-  const { getAll: getAllClientOccupants } = useIndexedDB("clientOccupants");
-  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
+  const { getAll: getAllClientOccupants } = useIndexedDB('clientOccupants');
+  const { getAll: getAllPropertyTypes } = useIndexedDB('propertyTypes');
 
   const fetchPropertyTypes = async () => {
     getAllPropertyTypes().then((propertyType) => {
@@ -118,32 +118,32 @@ const PropertyUnitForm = ({ name }) => {
 
   const success = (content) => {
     messageApi.open({
-      type: "success",
+      type: 'success',
       content: content,
     });
   };
 
   const errorMessage = (content) => {
     messageApi.open({
-      type: "error",
+      type: 'error',
       content: content,
     });
   };
 
-  console.log(  );
+  console.log();
 
   return (
     <div className="w-full bg-white p-3">
       <>
         <Divider orientation="left">Property Unit Information</Divider>
 
-        <Form.Item name={[name, "id"]}>
+        <Form.Item name={[name, 'id']}>
           <Input type="hidden" />
         </Form.Item>
 
         <Form.Item
           label="Description"
-          name={[name, "description"]}
+          name={[name, 'description']}
           rules={[
             {
               required: true,
@@ -160,7 +160,7 @@ const PropertyUnitForm = ({ name }) => {
 
         <Form.Item
           label="PropertyCode"
-          name={[name, "propertyCode"]}
+          name={[name, 'propertyCode']}
           rules={[
             {
               required: true,
@@ -176,7 +176,7 @@ const PropertyUnitForm = ({ name }) => {
 
         <Form.Item
           label="Category"
-          name={[name, "propertyTypeId"]}
+          name={[name, 'propertyTypeId']}
           rules={[
             {
               required: true,
@@ -188,17 +188,17 @@ const PropertyUnitForm = ({ name }) => {
             placeholder="Select category"
             options={optionsPropertyType}
             style={{
-              width: "100%",
+              width: '100%',
             }}
             onChange={(e) => setSelectedPropType(e)}
           />
         </Form.Item>
 
         <>
-          {propType === "plotSize" ? (
+          {propType === 'plotSize' ? (
             <Form.Item
               label="Plot Size"
-              name={[name, "plotSize"]}
+              name={[name, 'plotSize']}
               rules={[
                 {
                   // required: true,
@@ -215,7 +215,7 @@ const PropertyUnitForm = ({ name }) => {
           ) : (
             <Form.Item
               label="Floor Area"
-              name={[name, "floorArea"]}
+              name={[name, 'floorArea']}
               // rules={[
               //   {
               //     required: true,
@@ -233,8 +233,8 @@ const PropertyUnitForm = ({ name }) => {
         </>
 
         <Form.Item
-          name={[name, "condition"]}
-          label={"Condition"}
+          name={[name, 'condition']}
+          label={'Condition'}
           rules={[
             {
               required: true,
@@ -246,55 +246,55 @@ const PropertyUnitForm = ({ name }) => {
             placeholder="Select condition"
             options={[
               {
-                label: "NEW",
-                value: "NEW",
+                label: 'NEW',
+                value: 'NEW',
               },
               {
-                label: "VERY GOOD",
-                value: "VERY_GOOD",
+                label: 'VERY GOOD',
+                value: 'VERY_GOOD',
               },
               {
-                label: "GOOD",
-                value: "GOOD",
+                label: 'GOOD',
+                value: 'GOOD',
               },
               {
-                label: "FAIRLY GOOD",
-                value: "FAIRLY_GOOD",
+                label: 'FAIRLY GOOD',
+                value: 'FAIRLY_GOOD',
               },
               {
-                label: "FAIR",
-                value: "FAIR",
+                label: 'FAIR',
+                value: 'FAIR',
               },
               {
-                label: "FAIRLY POOR",
-                value: "FAIRLY_POOR",
+                label: 'FAIRLY POOR',
+                value: 'FAIRLY_POOR',
               },
               {
-                label: "POOR",
-                value: "POOR",
+                label: 'POOR',
+                value: 'POOR',
               },
               {
-                label: "VERY POOR",
-                value: "VERY_POOR",
+                label: 'VERY POOR',
+                value: 'VERY_POOR',
               },
               {
-                label: "DILAPIDATED",
-                value: "DILAPIDATED",
+                label: 'DILAPIDATED',
+                value: 'DILAPIDATED',
               },
               {
-                label: "RESIDUAL/DANGEROUS",
-                value: "RESIDUAL_DANGEROUS",
+                label: 'RESIDUAL/DANGEROUS',
+                value: 'RESIDUAL_DANGEROUS',
               },
             ]}
             style={{
-              width: "100%",
+              width: '100%',
             }}
           />
         </Form.Item>
 
         <Form.Item
           label="Remarks"
-          name={[name, "remarks"]}
+          name={[name, 'remarks']}
           // rules={[
           //   {
           //     required: true,
@@ -310,7 +310,7 @@ const PropertyUnitForm = ({ name }) => {
 
         <Divider orientation="left">Occupancy</Divider>
         <Fragment>
-          <Form.List name={[name, "occupants"]}>
+          <Form.List name={[name, 'occupants']}>
             {(fields, { add, remove }) => (
               <>
                 {fields.map((key, name) => (
@@ -320,7 +320,7 @@ const PropertyUnitForm = ({ name }) => {
                   >
                     <Form.Item
                       label="Occupant Type"
-                      name={[name, "occupantType"]}
+                      name={[name, 'occupantType']}
                       rules={[
                         {
                           required: true,
@@ -333,14 +333,14 @@ const PropertyUnitForm = ({ name }) => {
                         options={optionsOccupant}
                         onChange={(e) => setOccupantType(e)}
                         style={{
-                          width: "100%",
+                          width: '100%',
                         }}
                       />
                     </Form.Item>
 
                     <Form.Item
                       label="Occupant Name"
-                      name={[name, "occupantName"]}
+                      name={[name, 'occupantName']}
                       rules={[
                         {
                           // required: true,
@@ -352,14 +352,14 @@ const PropertyUnitForm = ({ name }) => {
                         placeholder="Select name of Occupant"
                         options={occupantNames}
                         style={{
-                          width: "100%",
+                          width: '100%',
                         }}
                       />
                     </Form.Item>
 
                     <Form.Item
                       label="Tenancy Agreement Start-date"
-                      name={[name, "tenancyAgreeMentStartDate"]}
+                      name={[name, 'tenancyAgreeMentStartDate']}
                       rules={[
                         {
                           required: true,
@@ -375,7 +375,7 @@ const PropertyUnitForm = ({ name }) => {
 
                     <Form.Item
                       label="Tenancy Agreement End-date"
-                      name={[name, "tenancyAgreeMentEndDate"]}
+                      name={[name, 'tenancyAgreeMentEndDate']}
                       rules={[
                         {
                           required: true,

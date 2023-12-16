@@ -15,6 +15,7 @@ import {
   MdOutlineSafetyDivider,
   MdPieChart,
   MdProductionQuantityLimits,
+  MdUpload,
   MdWorkspacePremium,
 } from 'react-icons/md';
 import { IoMdMap } from 'react-icons/io';
@@ -145,8 +146,18 @@ function Sidebar({ closeToggle }) {
                 }
                 onClick={handleCloseSidebar}
               >
-                <MdOutlineAddAPhoto size={18} />
+                <MdUpload size={18} />
                 Property Capture
+              </NavLink>
+              <NavLink
+                to="/property-upload"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdOutlineAddAPhoto size={18} />
+                Property Upload
               </NavLink>
 
               {/* <NavLink
