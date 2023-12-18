@@ -217,6 +217,8 @@ const PropertyForm = () => {
       landmark: values?.landmark,
       propertyUnits: values?.propertyUnits?.length
         ? values?.propertyUnits?.map((propertyUnit) => ({
+            descriptionPerFixedAssetReport:
+              propertyUnit.descriptionPerFixedAssetReport,
             description: propertyUnit.description,
             propertyCode: propertyUnit.propertyCode,
             plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,

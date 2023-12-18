@@ -150,6 +150,24 @@ const PropertyUnitForm = ({ name, unitFormKey }) => {
         </Form.Item>
 
         <Form.Item
+          label="Discription Per FAR"
+          name={[name, "descriptionPerFixedAssetReport"]}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input
+            disabled
+            readOnly
+            type="text"
+            placeholder=""
+            prefix={<MdOutlineEmail />}
+          />
+        </Form.Item>
+
+        <Form.Item
           label="Description"
           name={[name, "description"]}
           rules={[

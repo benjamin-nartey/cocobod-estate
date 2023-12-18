@@ -20,6 +20,8 @@ const Accordion = ({ propertyUnits }) => {
         return {
           id: propertyUnit?.id,
           description: propertyUnit?.description,
+          descriptionPerFixedAssetReport:
+            propertyUnit?.descriptionPerFixedAssetReport,
           floorArea: propertyUnit?.floorArea,
           plotSize: propertyUnit?.plotSize,
           propertyTypeId: propertyUnit?.propertyType?.id,
