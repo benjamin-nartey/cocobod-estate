@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { getPaginatedDistricts } from '../../http/district';
+import { getAllDistrict, getPaginatedDistricts } from '../../http/district';
 import { useState } from 'react';
+import { getTownByDistrictId } from '../../http/town';
 
 export const useGetPaginatedDistricts = (pageNum) => {
   const [paginatedData, setPaginatedData] = useState({
@@ -23,4 +24,22 @@ export const useGetPaginatedDistricts = (pageNum) => {
   });
 
   return [paginatedData, props];
+};
+
+export const useGetDistricts = (options = {}) => {
+  return useQuery({
+    queryKey: ['district'],
+    queryFn: getAllDistrict,
+    ...options,
+  });
+};
+
+export const useGetTownByDistrictId = (districtId) => {
+  return useQuery({
+    queryKey: ['getTownByDistrictId'],
+    queryFn: () => {
+      return getTownByDistrictId(districtId);
+    },
+    enabled: false,
+  });
 };
