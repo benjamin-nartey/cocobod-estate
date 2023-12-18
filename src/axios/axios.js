@@ -8,7 +8,7 @@ export default axios.create({
 });
 
 export const privateAxios = axios.create({
-  baseURL: 'http://localhost:3000/api/v1/',
+  baseURL: 'https://0a2c-2a0d-5600-41-c000-00-8b94.ngrok-free.app/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },

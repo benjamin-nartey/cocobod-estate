@@ -2,7 +2,7 @@ import { proxy, subscribe } from 'valtio';
 import { modalSlice } from './modalSlice';
 import { mergeSlice } from './mergeSlice';
 
-const storedStateString = localStorage.getItem('currentUserState');
+const storedStateString = localStorage.getItem('currentUserState') || null;
 
 const initialState = storedStateString
   ? JSON.parse(storedStateString)

@@ -60,6 +60,9 @@ import { useSnapshot } from 'valtio';
 import { useLocalStorage } from './Hooks/useLocalStorage';
 import Property from './components/Property/Property';
 import PropertyUpload from './routes/PropertyUpload/PropertyUpload';
+import Town from './routes/Towns/Town';
+import PoliticalDistrict from './routes/Political District/PoliticalDistrict';
+import PoliticalRegion from './routes/Political Region/PoliticalRegion';
 
 function App() {
   const navigate = useNavigate();
@@ -164,6 +167,9 @@ function App() {
           <Route path="/departments" element={<Departments />} />
 
           <Route path="/divisions" element={<Divisions />} />
+          <Route path="/political-districts" element={<PoliticalDistrict />} />
+          <Route path="/political-regions" element={<PoliticalRegion />} />
+          <Route path="/towns" element={<Town />} />
 
           <Route path="/roles" element={<Roles />} />
 

@@ -26,6 +26,18 @@ export const modalSlice = {
   toggleshowEditPropertyModal() {
     this.showEditPropertyModal = !this.showEditPropertyModal;
   },
+  showLocationModal: false,
+  toggleshowLocationModal() {
+    this.showLocationModal = !this.showLocationModal;
+  },
+  showPoliticalDistrictModal: false,
+  toggleshowPoliticalDistrictModal() {
+    this.showPoliticalDistrictModal = !this.showPoliticalDistrictModal;
+  },
+  showPoliticalRegionModal: false,
+  toggleshowPoliticalRegionModal() {
+    this.showPoliticalRegionModal = !this.showPoliticalRegionModal;
+  },
   showReportModal: false,
   toggleshowReportModal() {
     this.showReportModal = !this.showReportModal;

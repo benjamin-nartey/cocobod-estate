@@ -1,6 +1,9 @@
 import { Button, Form, Modal, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useGetRegions } from '../../../Hooks/query/regions';
+import {
+  useGetDistrictByRegionId,
+  useGetRegions,
+} from '../../../Hooks/query/regions';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getDistrictsByRegionId } from '../../../http/district';
 import { useGetPropertyTypes } from '../../../Hooks/query/propertyType';
@@ -10,6 +13,7 @@ import { getTownByDistrictId } from '../../../http/town';
 import { useGetPaginatedData } from '../../../Hooks/query/generics';
 import { getReport } from '../../../http/report';
 import { useGetReport } from '../../../Hooks/query/report';
+import { useGetTownByDistrictId } from '../../../Hooks/query/district';
 
 const ReportFilter = () => {
   const [form] = Form.useForm();
@@ -18,24 +22,12 @@ const ReportFilter = () => {
   const { data: regions } = useGetRegions();
   const snap = useSnapshot(state);
   const { showReportModal, reportFilters, pageNum } = snap.modalSlice;
-  const {
-    data: district,
-    refetch: fetchDistricts,
-    isLoading,
-  } = useQuery({
-    queryKey: ['getDistrictByRegionId'],
-    queryFn: () => {
-      return getDistrictsByRegionId(selectedRegionId);
-    },
-    enabled: false,
-  });
-  const { data: towns, refetch: fetchTowns } = useQuery({
-    queryKey: ['getTownByDistrictId'],
-    queryFn: () => {
-      return getTownByDistrictId(selectedDistrictId);
-    },
-    enabled: false,
-  });
+
+  const { data: district, refetch: fetchDistricts } =
+    useGetDistrictByRegionId(selectedRegionId);
+
+  const { data: towns, refetch: fetchTowns } =
+    useGetTownByDistrictId(selectedDistrictId);
 
   useEffect(() => {
     fetchDistricts();

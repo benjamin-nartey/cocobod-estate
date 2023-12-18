@@ -10,6 +10,7 @@ import state from '../../store/store';
 import { useSnapshot } from 'valtio';
 import { useIndexedDB } from 'react-indexed-db-hook';
 import { axiosInstance } from '../../axios/axiosInstance';
+import Loader from '../../components/Loader/Loader';
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
 const PropertyUpload = () => {
   const { getAll: getAllProperty } = useIndexedDB('property');
@@ -124,8 +125,8 @@ const PropertyUpload = () => {
               className="text-blue-500 cursor-pointer"
               size={22}
               onClick={() => {
-                state.modalSlice.selectedRecord = record;
-                navigate(`/property-units-main`);
+                // state.modalSlice.selectedRecord = record;
+                // navigate(`/property-units-main`);
               }}
             />
             <BiEdit

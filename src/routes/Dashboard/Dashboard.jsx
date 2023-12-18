@@ -245,7 +245,7 @@ const Dashboard = () => {
     <section className="w-full flex flex-col gap-8 p-6">
       <FloatButtonComponent handleClick={handleDownloadAllResources} />
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-auto">
-        <NavLink to="/properties">
+        <NavLink to="/property-upload">
           <Card allProperty={allProperty} />
         </NavLink>
         {/* <Card allProperty={allProperty} />

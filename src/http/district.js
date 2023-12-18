@@ -6,6 +6,10 @@ export const getPaginatedDistricts = (queryParams) => {
   });
 };
 
+export const getAllDistrict = () => {
+  return axiosInstance.get(`/district/all`);
+};
+
 export const addDistrict = (data) => {
   return axiosInstance.post(`/district`, {
     ...data,
