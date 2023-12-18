@@ -109,8 +109,6 @@ const PropertyForm = () => {
     });
   };
 
-  console.log({ propertyUnits });
-
   useEffect(() => {
     getDomainTowns(districtId || propertyPseudo?.district?.id);
   }, [districtId]);
@@ -229,10 +227,6 @@ const PropertyForm = () => {
             propertyReferenceId: propertyUnit?.id,
             propertyOccupancy: propertyUnit.occupants?.length
               ? propertyUnit.occupants?.map((occupant) => ({
-                  leaseStartsOn:
-                    occupant?.tenancyAgreeMentStartDate.toISOString(),
-                  leaseExpiresOn:
-                    occupant?.tenancyAgreeMentEndDate.toISOString(),
                   name: occupant?.occupantName,
                   category: occupant?.occupantType,
                   clientOccupantId: occupant?.occupantName,

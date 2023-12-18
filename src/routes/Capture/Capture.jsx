@@ -1,41 +1,64 @@
-import { Button, Input, Popconfirm, Table } from 'antd';
-import React, { useEffect, useState, useContext } from 'react';
-import { PropertyPseudoContext } from '../../context/propertyPseudo.context';
+import { Button, Input, Popconfirm, Table } from "antd";
+import React, { useEffect, useState, useContext } from "react";
+import { PropertyPseudoContext } from "../../context/propertyPseudo.context";
 
-import { BiEdit } from 'react-icons/bi';
+import { BiEdit } from "react-icons/bi";
 // import { useGetPaginatedData } from "../../Hooks/query/generics";
 // import { getPaginatedProperties } from "../../http/properties";
-import { HiEye } from 'react-icons/hi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { HiEye } from "react-icons/hi";
+import { useNavigate, useParams } from "react-router-dom";
 // import { capitalize } from "../../utils/typography";
-import state from '../../store/store';
-import { useSnapshot } from 'valtio';
-import { useIndexedDB } from 'react-indexed-db-hook';
-import { axiosInstance } from '../../axios/axiosInstance';
+import state from "../../store/store";
+import { useSnapshot } from "valtio";
+import { useIndexedDB } from "react-indexed-db-hook";
+import { axiosInstance } from "../../axios/axiosInstance";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
 
 const Capture = () => {
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
 
   const [data, setData] = useState([]);
+  const [tempData, setTempData] = useState([]);
+  const [districts, setDistricts] = useState([]);
   const navigate = useNavigate();
+
   const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
-    'propertyReferenceCategories'
+    "propertyReferenceCategories"
   );
+
+  const { getAll: getAllDistricts } = useIndexedDB("districts");
+
   const { handleSetPropertyPseudo } = useContext(PropertyPseudoContext);
+
+  const handleChange = (districtType) => {
+    let _data = tempData;
+    const filteredData = _data.filter(
+      (result) => result.district.name === districtType
+    );
+
+    setData(filteredData);
+  };
 
   useEffect(() => {
     getAllPropertyReferenceCategories().then((allPropertyReferenceCategory) => {
       setData(allPropertyReferenceCategory);
+      setTempData(allPropertyReferenceCategory);
     });
 
-    // getAllpropertyReferences().then((references) => {
-    //   setPropertyReferences(references);
-    // });
-    console.log({ data });
-    // console.log(propertyReferences);
+    getAllDistricts().then((allDistricts) => {
+      const data = allDistricts.map((district) => {
+        return {
+          text: district?.name,
+          value: district?.name,
+        };
+      });
+      setDistricts(data);
+    });
   }, []);
+  console.log({ data });
+  console.log({ districts });
 
   const { regionId } = useParams();
   const [pageNum, setPageNum] = useState(1);
@@ -52,34 +75,29 @@ const Capture = () => {
   // const { showEditPropertyModal } = snap.modalSlice;
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: "Name",
+      dataIndex: "name",
       filteredValue: [searchText],
-      onFilter: (value, record) => {
-        return (
-          String(record.name).toLowerCase().includes(value.toLowerCase()) ||
-          String(record.region.name)
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          String(record.propertyType.name)
-            .toLowerCase()
-            .includes(value.toLowerCase())
-        );
-      },
     },
     {
-      title: 'Region',
-      dataIndex: ['district', 'region', 'name'],
+      title: "Region",
+      dataIndex: ["district", "region", "name"],
+    },
+    {
+      title: "District",
+      dataIndex: ["district", "name"],
+      // filters: districts,
+      // onFilter: (_, record) => record.district.name.includes(districtType),
     },
 
     {
-      title: 'Property Type',
-      dataIndex: ['propertyType', 'name'],
+      title: "Property Type",
+      dataIndex: ["propertyType", "name"],
     },
 
     {
-      title: 'Actions',
-      dataIndex: 'id',
+      title: "Actions",
+      dataIndex: "id",
       render: (value, record) => {
         return (
           <div className="flex items-center gap-4">
@@ -103,12 +121,17 @@ const Capture = () => {
       </div>
 
       <div className="flex flex-col">
-        <Input.Search
-          placeholder="Search records..."
-          onSearch={(value) => setSearchText(value)}
-          onChange={(e) => setSearchText(e.target.value)}
+        <CustomSelect
+          mode="single"
+          placeholder="Select district"
+          options={districts}
+          style={{
+            width: "100%",
+          }}
+          onChange={(e) => handleChange(e)}
         />
         <Table
+          rowKey={"id"}
           // loading={props?.isLoading}
           columns={columns}
           dataSource={data}

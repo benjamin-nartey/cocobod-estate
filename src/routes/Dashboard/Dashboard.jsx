@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
-import FloatButtonComponent from '../../components/FloatButtonComponent/FloatButtonComponent';
-import { axiosInstance } from '../../axios/axiosInstance';
-import { useIndexedDB } from 'react-indexed-db-hook';
-import { BsBuildingFillCheck } from 'react-icons/bs';
-import { message } from 'antd';
-import Link from 'antd/es/typography/Link';
-import { NavLink } from 'react-router-dom';
-import { useLocalStorage } from '../../Hooks/useLocalStorage';
-import { useGetDashboard } from '../../Hooks/query/dashboard';
+import { useEffect, useState } from "react";
+import FloatButtonComponent from "../../components/FloatButtonComponent/FloatButtonComponent";
+import { axiosInstance } from "../../axios/axiosInstance";
+import { useIndexedDB } from "react-indexed-db-hook";
+import { BsBuildingFillCheck } from "react-icons/bs";
+import { message } from "antd";
+import { NavLink } from "react-router-dom";
+
+import { useGetDashboard } from "../../Hooks/query/dashboard";
 import {
   propertiesIcon,
   propertiesThumbnail,
@@ -19,14 +18,14 @@ import {
   divisionsThumbnail,
   rolesIcon,
   rolesThumbnail,
-} from '../../assets/icons/icons';
-import ReportLineChart from '../../components/charts/LineChart/ReportLineChart';
-import ReportPieChart from '../../components/charts/PieChart/ReportPieChart';
-import { cn } from '../../utils/helper';
-import nodata from '../../assets/nodata.json';
-import Lottie from 'lottie-react';
-import { useSnapshot } from 'valtio';
-import state from '../../store/store';
+} from "../../assets/icons/icons";
+import ReportLineChart from "../../components/charts/LineChart/ReportLineChart";
+import ReportPieChart from "../../components/charts/PieChart/ReportPieChart";
+import { cn } from "../../utils/helper";
+import nodata from "../../assets/nodata.json";
+import Lottie from "lottie-react";
+import { useSnapshot } from "valtio";
+import state from "../../store/store";
 
 const Card = ({ allProperty }) => {
   return (
@@ -46,11 +45,11 @@ const Card = ({ allProperty }) => {
 
 const Dashboard = () => {
   const [allProperty, setAllProperty] = useState([]);
-  const [currentUserState, setCurrentUserState] = useState('currentUserState');
+  const [currentUserState, setCurrentUserState] = useState("currentUserState");
   const [allocationData, setAllocationData] = useState(null);
 
   const { add: addPropertyReferenceCategories } = useIndexedDB(
-    'propertyReferenceCategories'
+    "propertyReferenceCategories"
   );
 
   const { data: dashboard, isLoading } = useGetDashboard();
@@ -63,13 +62,13 @@ const Dashboard = () => {
     }, 0);
   }
 
-  const { add: addPropertyReferences } = useIndexedDB('propertyReferences');
-  const { add: addDistricts } = useIndexedDB('districts');
-  const { add: addLocations } = useIndexedDB('locations');
-  const { add: addPropertyTypes } = useIndexedDB('propertyTypes');
-  const { add: addClientOccupants } = useIndexedDB('clientOccupants');
+  const { add: addPropertyReferences } = useIndexedDB("propertyReferences");
+  const { add: addDistricts } = useIndexedDB("districts");
+  const { add: addLocations } = useIndexedDB("locations");
+  const { add: addPropertyTypes } = useIndexedDB("propertyTypes");
+  const { add: addClientOccupants } = useIndexedDB("clientOccupants");
 
-  const { getAll: getAllProperty } = useIndexedDB('property');
+  const { getAll: getAllProperty } = useIndexedDB("property");
 
   useEffect(() => {
     getAllProperty().then((data) => setAllProperty(data));
@@ -77,7 +76,7 @@ const Dashboard = () => {
 
   const fetchUserAlocation = async () => {
     try {
-      const response = await axiosInstance.get('/allocation/me');
+      const response = await axiosInstance.get("/allocation/me");
       console.log({ response });
       console.log(response.data.region.id);
 
@@ -100,37 +99,37 @@ const Dashboard = () => {
   const handleDownloadAllResources = async () => {
     // console.log(auth.currentUser)?.allocationData.id;
     await Promise.all([
-      axiosInstance.get('/property-reference-categories/all', {
+      axiosInstance.get("/property-reference-categories/all", {
         params: {
           regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
-      axiosInstance.get('/property-references/all', {
+      axiosInstance.get("/property-references/all", {
         params: {
           regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
-      axiosInstance.get('/district/all', {
+      axiosInstance.get("/district/all", {
         params: {
           regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
-      axiosInstance.get('/location/all', {
+      axiosInstance.get("/location/all", {
         params: {
           regionFilter: allocationData?.region?.id,
         },
       }),
 
-      axiosInstance.get('/property-types/all', {
+      axiosInstance.get("/property-types/all", {
         params: {
           regionFilter: allocationData?.region?.id,
         },
       }),
 
-      axiosInstance.get('/client-occupants/all', {
+      axiosInstance.get("/client-occupants/all", {
         params: {
           regionFilter: allocationData?.region?.id,
         },
@@ -152,7 +151,7 @@ const Dashboard = () => {
               propertyType: property?.propertyType,
               district: property?.district,
             }).then(() =>
-              console.log('propertyReferenceCategories downloaded successfully')
+              console.log("propertyReferenceCategories downloaded successfully")
             );
           });
 
@@ -172,7 +171,7 @@ const Dashboard = () => {
               // propertyUnit: references?.propertyUnit,
               propertyType: references?.propertyType,
             }).then(() =>
-              console.log('propertyReferences downloaded successfully')
+              console.log("propertyReferences downloaded successfully")
             );
           });
 
@@ -182,7 +181,7 @@ const Dashboard = () => {
               name: district?.name,
               regionId: district?.regionId,
               districtType: district?.districtType,
-            }).then(() => console.log('districts downloaded successfully'));
+            }).then(() => console.log("districts downloaded successfully"));
           });
 
           locationsResponse.data.map((location) => {
@@ -190,7 +189,7 @@ const Dashboard = () => {
               id: location?.id,
               name: location?.name,
               districtId: location?.districtId,
-            }).then(() => console.log('locations downloaded successfully'));
+            }).then(() => console.log("locations downloaded successfully"));
           });
 
           propertyTypesResponse.data.map((propertyType) => {
@@ -198,7 +197,7 @@ const Dashboard = () => {
               id: propertyType?.id,
               name: propertyType?.name,
               attributes: propertyType?.attributes,
-            }).then(() => console.log('propertyTypes downloaded successfully'));
+            }).then(() => console.log("propertyTypes downloaded successfully"));
           });
 
           clientOccupantsResponse.data.map((propertyType) => {
@@ -209,35 +208,35 @@ const Dashboard = () => {
               email: propertyType?.email,
               phoneNumber: propertyType?.phoneNumber,
             }).then(() => {
-              console.log('clientOccupants downloaded successfully');
-              message.success('Resources downloaded successfully');
+              console.log("clientOccupants downloaded successfully");
+              message.success("Resources downloaded successfully");
             });
           });
         }
       )
       .catch((error) => {
-        console.error('Error downloading Resources ', error);
+        console.error("Error downloading Resources ", error);
       });
   };
 
   const cardItems = [
     {
-      name: 'Properties',
+      name: "Properties",
       value: allProperty.length,
       icon: <BsBuildingFillCheck size={20} />,
-      link: '/properties',
+      link: "/properties",
     },
     {
-      name: 'Users',
+      name: "Users",
       value: 0,
       icon: <BsBuildingFillCheck size={20} />,
-      link: '/users',
+      link: "/users",
     },
     {
-      name: 'Users',
+      name: "Users",
       value: 0,
       icon: <BsBuildingFillCheck size={20} />,
-      link: '/users',
+      link: "/users",
     },
   ];
 
@@ -245,7 +244,7 @@ const Dashboard = () => {
     <section className="w-full flex flex-col gap-8 p-6">
       <FloatButtonComponent handleClick={handleDownloadAllResources} />
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-auto">
-        <NavLink to="/properties">
+        <NavLink to="/property-upload">
           <Card allProperty={allProperty} />
         </NavLink>
         {/* <Card allProperty={allProperty} />

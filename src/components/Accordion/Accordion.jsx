@@ -4,6 +4,7 @@ import { Button, Form } from "antd";
 
 const Accordion = ({ propertyUnits }) => {
   const [selected, setSelected] = useState(null);
+  const [selectedPropType, setSelectedPropType] = useState("");
   const form = Form.useFormInstance();
 
   const toggle = (idx) => {
@@ -15,22 +16,22 @@ const Accordion = ({ propertyUnits }) => {
 
   useEffect(() => {
     if (propertyUnits?.length) {
-      const data = propertyUnits.map((propertyUnit) => ({
-        id: propertyUnit?.id,
-        description: propertyUnit?.description,
-        floorArea: propertyUnit?.floorArea,
-        plotSize: propertyUnit?.plotSize,
-        propertyTypeId: propertyUnit?.propertyType?.id,
-        occupants: [],
-      }));
+      const data = propertyUnits.map((propertyUnit) => {
+        return {
+          id: propertyUnit?.id,
+          description: propertyUnit?.description,
+          floorArea: propertyUnit?.floorArea,
+          plotSize: propertyUnit?.plotSize,
+          propertyTypeId: propertyUnit?.propertyType?.id,
+          occupants: [],
+        };
+      });
 
       form.setFieldsValue({
         propertyUnits: data,
       });
     }
   }, [propertyUnits.length]);
-
-  console.log(propertyUnits);
 
   return (
     <Fragment>
@@ -39,6 +40,7 @@ const Accordion = ({ propertyUnits }) => {
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name }) => {
+                console.log(key);
                 return (
                   <div
                     className="wrapper-accordion w-full h-auto flex justify-center items-start"
@@ -65,7 +67,7 @@ const Accordion = ({ propertyUnits }) => {
                               : "accordion-content max-h-0 overflow-hidden ease-out duration-300"
                           }
                         >
-                          <PropertyUnitForm name={name} />
+                          <PropertyUnitForm name={name} unitFormKey={key} />
                         </div>
                       </div>
                     </div>
