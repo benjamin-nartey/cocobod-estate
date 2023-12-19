@@ -64,6 +64,8 @@ const Dashboard = () => {
 
   const { add: addPropertyReferences } = useIndexedDB("propertyReferences");
   const { add: addDistricts } = useIndexedDB("districts");
+  const { add: addPolitcalDistricts } = useIndexedDB("politcalDistricts");
+  const { add: addPolitcalRegions } = useIndexedDB("politcalRegions");
   const { add: addLocations } = useIndexedDB("locations");
   const { add: addPropertyTypes } = useIndexedDB("propertyTypes");
   const { add: addClientOccupants } = useIndexedDB("clientOccupants");
@@ -134,6 +136,9 @@ const Dashboard = () => {
           regionFilter: allocationData?.region?.id,
         },
       }),
+
+      axiosInstance.get("/political-district/all"),
+      axiosInstance.get("/political-region/all"),
     ])
       .then(
         ([
@@ -143,6 +148,8 @@ const Dashboard = () => {
           locationsResponse,
           propertyTypesResponse,
           clientOccupantsResponse,
+          politicalDistrictResponse,
+          PoliticalRegionResponse,
         ]) => {
           propertyRefereceCategoriesResponse.data.map((property) => {
             addPropertyReferenceCategories({
@@ -182,6 +189,25 @@ const Dashboard = () => {
               regionId: district?.regionId,
               districtType: district?.districtType,
             }).then(() => console.log("districts downloaded successfully"));
+          });
+
+          politicalDistrictResponse.data.map((district) => {
+            addPolitcalDistricts({
+              id: district?.id,
+              name: district?.name,
+              regionId: district?.regionId,
+            }).then(() =>
+              console.log("political districts downloaded successfully")
+            );
+          });
+
+          PoliticalRegionResponse.data.map((region) => {
+            addPolitcalRegions({
+              id: region?.id,
+              name: region?.name,
+            }).then(() =>
+              console.log("political region downloaded successfully")
+            );
           });
 
           locationsResponse.data.map((location) => {

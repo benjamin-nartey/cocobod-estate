@@ -25,11 +25,18 @@ import { useAddPropertyData } from "../../Hooks/useAddFetch";
 
 import { useIndexedDB } from "react-indexed-db-hook";
 import Loader from "../Loader/Loader";
+import { get } from "lodash";
 
 const PropertyForm = () => {
   const [propertyUnitReference, setPropertyUnitRefernce] = useState(null);
+  const [politicalRegionId, setPoliticalRegionId] = useState("");
   const [optionsPropertyType, setOptionsPropertyType] = useState([]);
   const [optionsDistrict, setOptionsDistrict] = useState([]);
+  const [optionsPoliticalRegions, setOptionsPoliticalRegions] = useState([]);
+
+  const [optionsPoliticalDistricts, setOptionsPoliticalDistricts] = useState(
+    []
+  );
   const [optionsLocation, setOptionsLocation] = useState([]);
   const [districtId, setDistrictId] = useState("");
   const [propertyUnits, setPropertyUnits] = useState([]);
@@ -54,6 +61,10 @@ const PropertyForm = () => {
 
   const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
   const { getAll: getAllDistricts } = useIndexedDB("districts");
+  const { getAll: getAllPoliticalRegions } = useIndexedDB("politcalRegions");
+  const { getAll: getAllPoliticalDistricts } =
+    useIndexedDB("politicalDistricts");
+
   const { getAll: getAllLocations } = useIndexedDB("locations");
   const { getAll: getAllpropertyReferences } =
     useIndexedDB("propertyReferences");
@@ -88,9 +99,44 @@ const PropertyForm = () => {
     });
   };
 
+  const getPoliticalRegions = () => {
+    getAllPoliticalRegions().then((regions) => {
+      console.log("politicalRegion", regions);
+      const data = regions.map((record) => {
+        return {
+          label: record?.name,
+          value: record?.id,
+        };
+      });
+      setOptionsPoliticalRegions(data);
+    });
+  };
+
   useEffect(() => {
+    getPoliticalRegions();
     getDomainDistricts();
   }, [propertyPseudo]);
+
+  const getPolitcalDistricts = (regionId) => {
+    getAllDistricts().then((districts) => {
+      console.log("politicalDistrict", districts);
+      const getDistrictsByRegionId = districts.filter(
+        (district) => district?.regionId === regionId
+      );
+
+      const data = getDistrictsByRegionId.map((record) => {
+        return {
+          label: record?.name,
+          value: record?.id,
+        };
+      });
+      setOptionsPoliticalDistricts(data);
+    });
+  };
+
+  useEffect(() => {
+    getPolitcalDistricts(politicalRegionId);
+  }, [politicalRegionId]);
 
   const getDomainTowns = (districtId) => {
     getAllLocations().then((locations) => {
@@ -187,20 +233,6 @@ const PropertyForm = () => {
     setFileList(newFileList);
   };
 
-  const success = (content) => {
-    messageApi.open({
-      type: "success",
-      content: content,
-    });
-  };
-
-  const errorMessage = (content) => {
-    messageApi.open({
-      type: "error",
-      content: content,
-    });
-  };
-
   const handleSubmit = async (values) => {
     // console.log(values);
 
@@ -215,6 +247,7 @@ const PropertyForm = () => {
       lat: `${values?.lat}`,
       long: `${values?.long}`,
       landmark: values?.landmark,
+      politicalDistrict: values?.politicalDistrict,
       propertyUnits: values?.propertyUnits?.length
         ? values?.propertyUnits?.map((propertyUnit) => ({
             descriptionPerFixedAssetReport:
@@ -229,9 +262,13 @@ const PropertyForm = () => {
             propertyReferenceId: propertyUnit?.id,
             propertyOccupancy: propertyUnit.occupants?.length
               ? propertyUnit.occupants?.map((occupant) => ({
-                  name: occupant?.occupantName,
+                  name: occupant.occupantName
+                    ? occupant.occupantName
+                    : undefined,
                   category: occupant?.occupantType,
-                  clientOccupantId: occupant?.occupantName,
+                  clientOccupantId: occupant.occupantId
+                    ? occupant.occupantId
+                    : undefined,
                 }))
               : [],
             propertyUnitStates: [
@@ -389,7 +426,7 @@ const PropertyForm = () => {
             <Divider orientation="left">Location</Divider>
 
             <Form.Item
-              label="District"
+              label="Cocoa District"
               name="districtId"
               rules={[
                 {
@@ -405,6 +442,45 @@ const PropertyForm = () => {
                   width: "100%",
                 }}
                 onChange={(e) => setDistrictId(e)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Political Region"
+              name="politicalRegion"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <CustomSelect
+                mode="single"
+                placeholder="Select political region"
+                options={optionsPoliticalRegions}
+                style={{
+                  width: "100%",
+                }}
+                onChange={(e) => setPoliticalRegionId(e)}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Political District"
+              name="politicalDistrict"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <CustomSelect
+                mode="single"
+                placeholder="Select political district"
+                options={optionsPoliticalDistricts}
+                style={{
+                  width: "100%",
+                }}
+                // onChange={(e) => setDistrictId(e)}
               />
             </Form.Item>
 

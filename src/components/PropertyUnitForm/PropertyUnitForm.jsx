@@ -363,24 +363,42 @@ const PropertyUnitForm = ({ name, unitFormKey }) => {
                       />
                     </Form.Item>
 
-                    <Form.Item
+                    {occupantType === "LBC" ? (
+                      <Form.Item
+                        label="Occupant Name"
+                        name={[name, "occupantId"]}
+                        rules={[
+                          {
+                            // required: true,
+                          },
+                        ]}
+                      >
+                        <CustomSelect
+                          mode="single"
+                          placeholder="Select name of Occupant"
+                          options={occupantNames}
+                          style={{
+                            width: "100%",
+                          }}
+                        />
+                      </Form.Item>
+                    ): (
+                      <Form.Item
                       label="Occupant Name"
                       name={[name, "occupantName"]}
                       rules={[
                         {
-                          // required: true,
+                          required: true,
                         },
                       ]}
                     >
-                      <CustomSelect
-                        mode="single"
-                        placeholder="Select name of Occupant"
-                        options={occupantNames}
-                        style={{
-                          width: "100%",
-                        }}
+                      <Input
+                        type="text"
+                        placeholder="Enter occupant name"
+                        prefix={<MdOutlineEmail />}
                       />
                     </Form.Item>
+                    )}
 
                     {/* <Form.Item
                       label="Tenancy Agreement Start-date"

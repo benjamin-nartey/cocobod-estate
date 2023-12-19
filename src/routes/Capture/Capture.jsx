@@ -105,8 +105,8 @@ const Capture = () => {
               className="text-blue-500 cursor-pointer"
               size={22}
               onClick={() => {
-                handleSetPropertyPseudo(record);
-                navigate(`/property-detail-capture`);
+                // handleSetPropertyPseudo(record);
+                navigate(`property-detail-capture/${JSON.stringify(record)}`);
               }}
             />
           </div>
