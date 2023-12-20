@@ -1,43 +1,50 @@
-import { useEffect, useState, useContext } from "react";
-import PropertyForm from "../../components/PropertyForm/PropertyForm";
-import SearchBar from "../../components/SearchBar/SearchBar";
-import SearchResultList from "../../components/SearchResultList/SearchResultList.JSX";
-import { useIndexedDB } from "react-indexed-db-hook";
-import { useParams } from "react-router";
-import { PropertyPseudoContext } from "../../context/propertyPseudo.context";
+import { useEffect, useState, useContext } from 'react';
+import PropertyForm from '../../components/PropertyForm/PropertyForm';
+import SearchBar from '../../components/SearchBar/SearchBar';
+import SearchResultList from '../../components/SearchResultList/SearchResultList.JSX';
+import { useIndexedDB } from 'react-indexed-db-hook';
+import { useParams } from 'react-router';
+import { PropertyPseudoContext } from '../../context/propertyPseudo.context';
 
 const PropertyCapture = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [propertyReferenceCategories, setPropertyReferenceCategories] =
-    useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  // const [propertyReferenceCategories, setPropertyReferenceCategories] =
+  //   useState([]);
 
   const { setPropertyPseudo } = useContext(PropertyPseudoContext);
 
-  const { records } = useParams();
-  useEffect(() => {
-    setPropertyPseudo(JSON.parse(records));
-  }, [records]);
+  const { id } = useParams();
+  // useEffect(() => {
+  //   setPropertyPseudo(JSON.parse(records));
+  // }, [records]);
 
   // const [propertyReferences, setPropertyReferences] = useState([]);
 
-  const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
-    "propertyReferenceCategories"
-  );
+  // const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
+  //   'propertyReferenceCategories'
+  // );
 
-  // const { getAll: getAllpropertyReferences } =
-  //   useIndexedDB("propertyReferences");
+  // // const { getAll: getAllpropertyReferences } =
+  // //   useIndexedDB("propertyReferences");
 
-  useEffect(() => {
-    getAllPropertyReferenceCategories().then((allPropertyReferenceCategory) => {
-      setPropertyReferenceCategories(allPropertyReferenceCategory);
-    });
+  // useEffect(() => {
+  //   getAllPropertyReferenceCategories().then((allPropertyReferenceCategory) => {
+  //     // console.log({ allPropertyReferenceCategory });
 
-    // getAllpropertyReferences().then((references) => {
-    //   setPropertyReferences(references);
-    // });
-    console.log({ propertyReferenceCategories });
-    // console.log(propertyReferences);
-  }, []);
+  //     const referencesCategories = allPropertyReferenceCategory?.filter(
+  //       (pr) => pr?.id === id
+  //     );
+
+  //     console.log({ referencesCategories });
+  //     setPropertyReferenceCategories(referencesCategories);
+  //   });
+
+  //   // getAllpropertyReferences().then((references) => {
+  //   //   setPropertyReferences(references);
+  //   // });
+  //   // console.log({ propertyReferenceCategories });
+  //   // console.log(propertyReferences);
+  // }, []);
 
   return (
     <>
@@ -54,7 +61,10 @@ const PropertyCapture = () => {
 
       <div className="p-6 grid place-items-center">
         <div className="w-[600px] max-md:w-full bg-white">
-          <PropertyForm />
+          <PropertyForm
+            id={id}
+            // propertyPseudo={propertyReferenceCategories[0]}
+          />
         </div>
       </div>
     </>

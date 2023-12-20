@@ -1,23 +1,23 @@
-import { Button, Input, Popconfirm, Table } from "antd";
-import React, { useEffect, useState, useContext } from "react";
-import { PropertyPseudoContext } from "../../context/propertyPseudo.context";
+import { Button, Input, Popconfirm, Table } from 'antd';
+import React, { useEffect, useState, useContext } from 'react';
+import { PropertyPseudoContext } from '../../context/propertyPseudo.context';
 
-import { BiEdit } from "react-icons/bi";
+import { BiEdit } from 'react-icons/bi';
 // import { useGetPaginatedData } from "../../Hooks/query/generics";
 // import { getPaginatedProperties } from "../../http/properties";
-import { HiEye } from "react-icons/hi";
-import { useNavigate, useParams } from "react-router-dom";
+import { HiEye } from 'react-icons/hi';
+import { useNavigate, useParams } from 'react-router-dom';
 // import { capitalize } from "../../utils/typography";
-import state from "../../store/store";
-import { useSnapshot } from "valtio";
-import { useIndexedDB } from "react-indexed-db-hook";
-import { axiosInstance } from "../../axios/axiosInstance";
-import CustomSelect from "../../components/CustomSelect/CustomSelect";
+import state from '../../store/store';
+import { useSnapshot } from 'valtio';
+import { useIndexedDB } from 'react-indexed-db-hook';
+import { axiosInstance } from '../../axios/axiosInstance';
+import CustomSelect from '../../components/CustomSelect/CustomSelect';
 
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
 
 const Capture = () => {
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
 
   const [data, setData] = useState([]);
   const [tempData, setTempData] = useState([]);
@@ -25,10 +25,10 @@ const Capture = () => {
   const navigate = useNavigate();
 
   const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
-    "propertyReferenceCategories"
+    'propertyReferenceCategories'
   );
 
-  const { getAll: getAllDistricts } = useIndexedDB("districts");
+  const { getAll: getAllDistricts } = useIndexedDB('districts');
 
   const { handleSetPropertyPseudo } = useContext(PropertyPseudoContext);
 
@@ -75,29 +75,29 @@ const Capture = () => {
   // const { showEditPropertyModal } = snap.modalSlice;
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: 'Name',
+      dataIndex: 'name',
       filteredValue: [searchText],
     },
     {
-      title: "Region",
-      dataIndex: ["district", "region", "name"],
+      title: 'Region',
+      dataIndex: ['district', 'region', 'name'],
     },
     {
-      title: "District",
-      dataIndex: ["district", "name"],
+      title: 'District',
+      dataIndex: ['district', 'name'],
       // filters: districts,
       // onFilter: (_, record) => record.district.name.includes(districtType),
     },
 
     {
-      title: "Property Type",
-      dataIndex: ["propertyType", "name"],
+      title: 'Property Type',
+      dataIndex: ['propertyType', 'name'],
     },
 
     {
-      title: "Actions",
-      dataIndex: "id",
+      title: 'Actions',
+      dataIndex: 'id',
       render: (value, record) => {
         return (
           <div className="flex items-center gap-4">
@@ -106,7 +106,7 @@ const Capture = () => {
               size={22}
               onClick={() => {
                 // handleSetPropertyPseudo(record);
-                navigate(`property-detail-capture/${JSON.stringify(record)}`);
+                navigate(`/property-capture/${value}`);
               }}
             />
           </div>
@@ -126,12 +126,12 @@ const Capture = () => {
           placeholder="Select district"
           options={districts}
           style={{
-            width: "100%",
+            width: '100%',
           }}
           onChange={(e) => handleChange(e)}
         />
         <Table
-          rowKey={"id"}
+          rowKey={'id'}
           // loading={props?.isLoading}
           columns={columns}
           dataSource={data}

@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
-import { PropertyPseudoContext } from "../../context/propertyPseudo.context";
-import Accordion from "../Accordion/Accordion";
+import React, { Fragment, useEffect, useState, useContext } from 'react';
+// import { propertyReferenceCategoriesContext } from '../../context/propertyReferenceCategories.context';
+import Accordion from '../Accordion/Accordion';
 
 import {
   Button,
@@ -11,35 +11,36 @@ import {
   message,
   Space,
   Divider,
-} from "antd";
-import Upload from "antd/es/upload/Upload";
+} from 'antd';
+import Upload from 'antd/es/upload/Upload';
 
-import { UserOutlined } from "@ant-design/icons";
-import { MdOutlineEmail } from "react-icons/md";
+import { UserOutlined } from '@ant-design/icons';
+import { MdOutlineEmail } from 'react-icons/md';
 
-import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import PhotosUploader from "../../components/PhotosUploader/PhotosUploader";
+import CustomSelect from '../../components/CustomSelect/CustomSelect';
+import PhotosUploader from '../../components/PhotosUploader/PhotosUploader';
 
-import { axiosInstance } from "../../axios/axiosInstance";
-import { useAddPropertyData } from "../../Hooks/useAddFetch";
+import { axiosInstance } from '../../axios/axiosInstance';
+import { useAddPropertyData } from '../../Hooks/useAddFetch';
 
-import { useIndexedDB } from "react-indexed-db-hook";
-import Loader from "../Loader/Loader";
-import { get } from "lodash";
+import { useIndexedDB } from 'react-indexed-db-hook';
+import Loader from '../Loader/Loader';
+import { get } from 'lodash';
 
-const PropertyForm = () => {
+const PropertyForm = (id) => {
   const [propertyUnitReference, setPropertyUnitRefernce] = useState(null);
-  const [politicalRegionId, setPoliticalRegionId] = useState("");
+  const [politicalRegionId, setPoliticalRegionId] = useState('');
   const [optionsPropertyType, setOptionsPropertyType] = useState([]);
   const [optionsDistrict, setOptionsDistrict] = useState([]);
   const [optionsPoliticalRegions, setOptionsPoliticalRegions] = useState([]);
-
+  const [propertyReferenceCategories, setPropertyReferenceCategories] =
+    useState({});
   const [optionsPoliticalDistricts, setOptionsPoliticalDistricts] = useState(
     []
   );
   const [optionsLocation, setOptionsLocation] = useState([]);
-  const [districtId, setDistrictId] = useState("");
-  const [propertyUnits, setPropertyUnits] = useState([]);
+  const [districtId, setDistrictId] = useState('');
+  // const [propertyUnits, setPropertyUnits] = useState([]);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [fileList, setFileList] = useState([]);
@@ -47,44 +48,71 @@ const PropertyForm = () => {
   const [loading, setLoading] = useState(false);
   const [optionsOccupant, setOptionsOccupant] = useState([
     {
-      label: "LBC",
-      value: "LBC",
+      label: 'LBC',
+      value: 'LBC',
     },
     {
-      label: "NON LBC",
-      value: "NON LBC",
+      label: 'NON LBC',
+      value: 'NON LBC',
     },
   ]);
-  const { propertyPseudo, setPropertyPseudo } = useContext(
-    PropertyPseudoContext
+  // const { propertyReferenceCategories, setpropertyReferenceCategories } = useContext(
+  //   propertyReferenceCategoriesContext
+  // );
+
+  const { getAll: getAllPropertyTypes } = useIndexedDB('propertyTypes');
+  const { getAll: getAllDistricts } = useIndexedDB('districts');
+  const { getAll: getAllPoliticalRegions } = useIndexedDB('politcalRegions');
+  const { getAll: getAllPoliticalDistricts } =
+    useIndexedDB('politcalDistricts');
+
+  const { getAll: getAllLocations } = useIndexedDB('locations');
+  // const { getAll: getAllpropertyReferences } =
+  //   useIndexedDB('propertyReferences');
+
+  const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
+    'propertyReferenceCategories'
   );
 
-  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
-  const { getAll: getAllDistricts } = useIndexedDB("districts");
-  const { getAll: getAllPoliticalRegions } = useIndexedDB("politcalRegions");
-  const { getAll: getAllPoliticalDistricts } =
-    useIndexedDB("politicalDistricts");
+  // const { getAll: getAllpropertyReferences } =
+  //   useIndexedDB("propertyReferences");
 
-  const { getAll: getAllLocations } = useIndexedDB("locations");
-  const { getAll: getAllpropertyReferences } =
-    useIndexedDB("propertyReferences");
-
-  const { add: addProperty } = useIndexedDB("property");
-
-  const getAllPropertyUnits = (propertyPseudoId) => {
-    getAllpropertyReferences().then((propertyReferences) => {
-      const getPropertyUnitsByPropPseudoId = propertyReferences.filter(
-        (references) =>
-          references?.propertyReferenceCategory?.id === propertyPseudoId
-      );
-      setPropertyUnits(getPropertyUnitsByPropPseudoId);
-      console.log({ getPropertyUnitsByPropPseudoId });
-    });
-  };
+  // console.log({ propertyReferenceCategories });
 
   useEffect(() => {
-    getAllPropertyUnits(propertyPseudo?.id);
-  }, [propertyPseudo]);
+    if (id) {
+      getAllPropertyReferenceCategories().then(
+        (allPropertyReferenceCategory) => {
+          // console.log({ allPropertyReferenceCategory });
+
+          const referencesCategories = allPropertyReferenceCategory?.filter(
+            (pr) => pr?.id === id?.id
+          );
+
+          console.log({ referencesCategories });
+          setPropertyReferenceCategories(referencesCategories[0]);
+        }
+      );
+      // getAllPropertyUnits(id);
+    }
+
+    // getAllpropertyReferences().then((references) => {
+    //   setPropertyReferences(references);
+    // });
+    // console.log({ propertyReferenceCategories });
+    // console.log(propertyReferences);
+  }, [id]);
+
+  const { add: addProperty } = useIndexedDB('property');
+
+  // const getAllPropertyUnits = (id) => {
+  //   getAllpropertyReferences().then((propertyReferences) => {
+  //     const getPropertyUnitsByPropPseudoId = propertyReferences.filter(
+  //       (references) => references?.propertyReferenceCategory?.id === id?.id
+  //     );
+  //     setPropertyUnits(getPropertyUnitsByPropPseudoId);
+  //   });
+  // };
 
   const getDomainDistricts = () => {
     getAllDistricts().then((districts) => {
@@ -101,7 +129,7 @@ const PropertyForm = () => {
 
   const getPoliticalRegions = () => {
     getAllPoliticalRegions().then((regions) => {
-      console.log("politicalRegion", regions);
+      console.log('politicalRegion', regions);
       const data = regions.map((record) => {
         return {
           label: record?.name,
@@ -115,13 +143,13 @@ const PropertyForm = () => {
   useEffect(() => {
     getPoliticalRegions();
     getDomainDistricts();
-  }, [propertyPseudo]);
+  }, [propertyReferenceCategories]);
 
   const getPolitcalDistricts = (regionId) => {
-    getAllDistricts().then((districts) => {
-      console.log("politicalDistrict", districts);
+    getAllPoliticalDistricts().then((districts) => {
+      console.log(districts);
       const getDistrictsByRegionId = districts.filter(
-        (district) => district?.regionId === regionId
+        (district) => district?.politicalRegion?.id === regionId
       );
 
       const data = getDistrictsByRegionId.map((record) => {
@@ -156,7 +184,7 @@ const PropertyForm = () => {
   };
 
   useEffect(() => {
-    getDomainTowns(districtId || propertyPseudo?.district?.id);
+    getDomainTowns(districtId || propertyReferenceCategories?.district?.id);
   }, [districtId]);
 
   const fetchPropertyTypes = async () => {
@@ -177,10 +205,6 @@ const PropertyForm = () => {
 
   const [location, setLocation] = useState(null);
 
-  useEffect(() => {
-    console.log({ propertyPseudo });
-  }, [propertyPseudo]);
-
   const handleLocation = () => {
     setLoading(true);
     if (navigator.geolocation) {
@@ -188,16 +212,16 @@ const PropertyForm = () => {
         (position) => {
           const { latitude, longitude } = position.coords;
           setLocation({ latitude, longitude });
-          form.setFieldValue("lat", latitude);
-          form.setFieldValue("long", longitude);
+          form.setFieldValue('lat', latitude);
+          form.setFieldValue('long', longitude);
           console.log(longitude, latitude);
         },
         (error) => {
-          console.error("Error getting location", error.message);
+          console.error('Error getting location', error.message);
         }
       );
     } else {
-      console.error("Geolocation is not supported by this browser");
+      console.error('Geolocation is not supported by this browser');
     }
     setLoading(false);
   };
@@ -214,11 +238,11 @@ const PropertyForm = () => {
 
     beforeUpload: (file) => {
       const isJpgOrPng =
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg" ||
-        file.type === "image/png";
+        file.type === 'image/jpeg' ||
+        file.type === 'image/jpg' ||
+        file.type === 'image/png';
       if (!isJpgOrPng) {
-        message.error("You can only upload JPG/PNG file!");
+        message.error('You can only upload JPG/PNG file!');
         return Upload.LIST_IGNORE;
       }
 
@@ -234,8 +258,6 @@ const PropertyForm = () => {
   };
 
   const handleSubmit = async (values) => {
-    // console.log(values);
-
     const data = {
       name: values?.name,
       description: values?.description,
@@ -243,11 +265,11 @@ const PropertyForm = () => {
       digitalAddress: values?.digitalAddress,
       propertyTypeId: values?.propertyTypeId,
       locationId: values?.locationId,
-      propertyReferenceCategoryId: propertyPseudo?.id,
+      propertyReferenceCategoryId: propertyReferenceCategories?.id,
       lat: `${values?.lat}`,
       long: `${values?.long}`,
       landmark: values?.landmark,
-      politicalDistrict: values?.politicalDistrict,
+      politicalDistrictId: values?.politicalDistrict,
       propertyUnits: values?.propertyUnits?.length
         ? values?.propertyUnits?.map((propertyUnit) => ({
             descriptionPerFixedAssetReport:
@@ -288,7 +310,7 @@ const PropertyForm = () => {
         // success(`${values.name} saved successfully`);
         message.success(`${values.name} saved successfully`);
         // form.resetFields();
-        // setPropertyPseudo(null);
+        // setpropertyReferenceCategories(null);
       },
       (error) => {
         console.log(error);
@@ -297,27 +319,25 @@ const PropertyForm = () => {
     );
   };
 
-  console.log({ fileList });
-
   useEffect(() => {
-    form.resetFields();
+    // form.resetFields();
     form.setFieldsValue({
-      name: propertyPseudo?.name,
-      propertyTypeId: propertyPseudo?.propertyType?.id,
-      districtId: propertyPseudo?.district?.id,
+      name: propertyReferenceCategories?.name,
+      propertyTypeId: propertyReferenceCategories?.propertyType?.id,
+      districtId: propertyReferenceCategories?.district?.id,
     });
-  }, [propertyPseudo]);
+  }, [propertyReferenceCategories]);
 
   return (
     <Fragment>
-      {propertyPseudo && (
+      {propertyReferenceCategories && (
         <div className="w-full p-6">
           <Form
             className="bg-white w-full"
             form={form}
             layout="vertical"
             onFinish={(values) => handleSubmit(values)}
-            // initialValues={propertyPseudo}
+            // initialValues={propertyReferenceCategories}
             name="wrap"
             // labelCol={{
             //   flex: "110px",
@@ -401,7 +421,7 @@ const PropertyForm = () => {
                 placeholder="Select category"
                 options={optionsPropertyType}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
             </Form.Item>
@@ -439,7 +459,7 @@ const PropertyForm = () => {
                 placeholder="Select District"
                 options={optionsDistrict}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 onChange={(e) => setDistrictId(e)}
               />
@@ -459,7 +479,7 @@ const PropertyForm = () => {
                 placeholder="Select political region"
                 options={optionsPoliticalRegions}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 onChange={(e) => setPoliticalRegionId(e)}
               />
@@ -478,7 +498,7 @@ const PropertyForm = () => {
                 placeholder="Select political district"
                 options={optionsPoliticalDistricts}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 // onChange={(e) => setDistrictId(e)}
               />
@@ -498,7 +518,7 @@ const PropertyForm = () => {
                 placeholder="Select Town"
                 options={optionsLocation}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
             </Form.Item>
@@ -507,15 +527,15 @@ const PropertyForm = () => {
               <Form.Item
                 label="Latitude"
                 name="lat"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
+                // rules={[
+                //   {
+                //     required: true,
+                //   },
+                // ]}
               >
                 <Input
                   name="lat"
-                  readOnly
+                  // readOnly
                   type="text"
                   placeholder="latitude"
                   // value={location?.latitude}
@@ -533,7 +553,7 @@ const PropertyForm = () => {
               >
                 <Input
                   name="long"
-                  readOnly
+                  // readOnly
                   type="text"
                   placeholder="longitude"
                   // value={location?.longitude}
@@ -545,7 +565,7 @@ const PropertyForm = () => {
                   className=""
                   type="primary"
                   htmlType="button"
-                  style={{ backgroundColor: "#6E431D", color: "#fff" }}
+                  style={{ backgroundColor: '#6E431D', color: '#fff' }}
                   onClick={handleLocation}
                 >
                   {loading ? (
@@ -555,7 +575,7 @@ const PropertyForm = () => {
                       fillColor="fill-[#6E431D]"
                     />
                   ) : (
-                    "Generate"
+                    'Generate'
                   )}
                 </Button>
               </Form.Item>
@@ -591,16 +611,17 @@ const PropertyForm = () => {
             <Divider orientation="left">Property Units</Divider>
 
             <Accordion
-              propertyUnits={propertyUnits}
               form={form}
-              setPropertyUnitRefernce={setPropertyUnitRefernce}
+              // propertyUnits={propertyUnits}
+              // setPropertyUnitRefernce={setPropertyUnitRefernce}
+              id={id.id}
             />
 
             <Button
               className="w-full"
               type="primary"
               htmlType="submit"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
+              style={{ backgroundColor: '#6E431D', color: '#fff' }}
             >
               Save
             </Button>

@@ -1,25 +1,25 @@
-import { Button, Input, Popconfirm, Table, message } from "antd";
-import React, { useEffect, useState } from "react";
-import { BiEdit } from "react-icons/bi";
+import { Button, Input, Popconfirm, Table, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { BiEdit } from 'react-icons/bi';
 // import { useGetPaginatedData } from "../../Hooks/query/generics";
 // import { getPaginatedProperties } from "../../http/properties";
-import { HiEye } from "react-icons/hi";
-import { useNavigate, useParams } from "react-router-dom";
+import { HiEye } from 'react-icons/hi';
+import { useNavigate, useParams } from 'react-router-dom';
 // import { capitalize } from "../../utils/typography";
-import state from "../../store/store";
-import { useSnapshot } from "valtio";
-import { useIndexedDB } from "react-indexed-db-hook";
-import { axiosInstance } from "../../axios/axiosInstance";
-import Loader from "../../components/Loader/Loader";
+import state from '../../store/store';
+import { useSnapshot } from 'valtio';
+import { useIndexedDB } from 'react-indexed-db-hook';
+import { axiosInstance } from '../../axios/axiosInstance';
+import Loader from '../../components/Loader/Loader';
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
 const PropertyUpload = () => {
-  const { getAll: getAllProperty } = useIndexedDB("property");
-  const { deleteRecord: deletePropertyRecord } = useIndexedDB("property");
-  const { getAll: getAllLocations } = useIndexedDB("locations");
-  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
+  const { getAll: getAllProperty } = useIndexedDB('property');
+  const { deleteRecord: deletePropertyRecord } = useIndexedDB('property');
+  const { getAll: getAllLocations } = useIndexedDB('locations');
+  const { getAll: getAllPropertyTypes } = useIndexedDB('propertyTypes');
   const [data, setData] = useState([]);
-  const [location, setLocation] = useState("");
-  const [propertyType, setPropertyType] = useState("");
+  const [location, setLocation] = useState('');
+  const [propertyType, setPropertyType] = useState('');
   const [loading, setLoading] = useState(false);
   const { regionId } = useParams();
   const [pageNum, setPageNum] = useState(1);
@@ -60,10 +60,10 @@ const PropertyUpload = () => {
           lat: property?.lat,
           long: property?.long,
           landmark: property?.landmark,
-          politicalDistrict: property?.politicalDistrict,
+          politicalDistrictId: property?.politicalDistrictId,
           propertyUnits: property?.propertyUnits,
         };
-        return await axiosInstance.post("/properties/field-capture", data);
+        return await axiosInstance.post('/properties/field-capture', data);
       }),
     ])
       //   .then((response) =>
@@ -82,42 +82,42 @@ const PropertyUpload = () => {
       //   .catch((error) => message.error(error))
       .finally(() => {
         setLoading(false);
-        message.success("Properties uploaded successfully");
+        message.success('Properties uploaded successfully');
       });
   };
   const snap = useSnapshot(state);
   // const { showEditPropertyModal } = snap.modalSlice;
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: 'Name',
+      dataIndex: 'name',
     },
     {
-      title: "Property Description",
-      dataIndex: "description",
+      title: 'Property Description',
+      dataIndex: 'description',
       render: (value) => {
         return <p>{value.toLowerCase()}</p>;
       },
     },
     {
-      title: "Town",
-      dataIndex: ["location", "name"],
+      title: 'Town',
+      dataIndex: ['location', 'name'],
     },
     {
-      title: "Property Type",
-      dataIndex: ["propertyType", "name"],
+      title: 'Property Type',
+      dataIndex: ['propertyType', 'name'],
     },
     {
-      title: "Digital Address",
-      dataIndex: "digitalAddress",
+      title: 'Digital Address',
+      dataIndex: 'digitalAddress',
     },
     {
-      title: "Property Code",
-      dataIndex: "propertyCode",
+      title: 'Property Code',
+      dataIndex: 'propertyCode',
     },
     {
-      title: "Actions",
-      dataIndex: "id",
+      title: 'Actions',
+      dataIndex: 'id',
       render: (value, record) => {
         return (
           <div className="flex items-center gap-4">
@@ -153,7 +153,7 @@ const PropertyUpload = () => {
           {loading ? (
             <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
           ) : (
-            "Upload"
+            'Upload'
           )}
         </button>
       </div>
