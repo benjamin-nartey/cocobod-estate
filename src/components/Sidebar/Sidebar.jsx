@@ -15,7 +15,6 @@ import {
   MdOutlineSafetyDivider,
   MdPieChart,
   MdProductionQuantityLimits,
-  MdRecentActors,
   MdUpload,
   MdWorkspacePremium,
 } from 'react-icons/md';
@@ -129,6 +128,17 @@ function Sidebar({ closeToggle }) {
                 Properties
               </NavLink>
 
+              {/* <NavLink
+                to="/property-capture"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdOutlineAddAPhoto size={18} />
+                Property Capture
+              </NavLink> */}
+
               <NavLink
                 to="/property-capture"
                 className={({ isActive }) =>
@@ -149,6 +159,17 @@ function Sidebar({ closeToggle }) {
                 <MdOutlineAddAPhoto size={18} />
                 Property Upload
               </NavLink>
+
+              {/* <NavLink
+                to="/property-capture"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdOutlineAddAPhoto size={18} />
+                Property Capture
+              </NavLink> */}
 
               <NavLink
                 to="/users"
@@ -184,17 +205,6 @@ function Sidebar({ closeToggle }) {
               </NavLink>
 
               <NavLink
-                to="/towns"
-                className={({ isActive }) =>
-                  isActive ? isActiveStyle : isNotActiveStyle
-                }
-                onClick={handleCloseSidebar}
-              >
-                <MdOutlineSafetyDivider size={25} />
-                Town
-              </NavLink>
-
-              <NavLink
                 to="/roles"
                 className={({ isActive }) =>
                   isActive ? isActiveStyle : isNotActiveStyle
@@ -215,16 +225,6 @@ function Sidebar({ closeToggle }) {
                 <MdLocationPin size={25} />
                 Locations
               </NavLink>
-              <NavLink
-                to="/political-districts"
-                className={({ isActive }) =>
-                  isActive ? isActiveStyle : isNotActiveStyle
-                }
-                onClick={handleCloseSidebar}
-              >
-                <MdLocationPin size={25} />
-                Political Districts
-              </NavLink>
 
               <NavLink
                 to="/areas"
@@ -235,16 +235,6 @@ function Sidebar({ closeToggle }) {
               >
                 <MdAreaChart size={25} />
                 Region
-              </NavLink>
-              <NavLink
-                to="/political-regions"
-                className={({ isActive }) =>
-                  isActive ? isActiveStyle : isNotActiveStyle
-                }
-                onClick={handleCloseSidebar}
-              >
-                <MdRecentActors size={25} />
-                Political Regions
               </NavLink>
               <NavLink
                 to="/district"
@@ -339,7 +329,7 @@ function Sidebar({ closeToggle }) {
             <MdOutlineReceipt size={18} />
             Reports
           </NavLink> */}
-          <NavLink
+          {/* <NavLink
             to="/map"
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
@@ -348,7 +338,7 @@ function Sidebar({ closeToggle }) {
           >
             <IoMdMap size={18} />
             Map
-          </NavLink>
+          </NavLink> */}
           <button
             onClick={logout}
             className={`${isNotActiveStyle} hidden max-md:flex`}

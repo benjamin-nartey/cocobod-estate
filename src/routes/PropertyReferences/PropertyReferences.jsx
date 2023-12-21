@@ -88,6 +88,7 @@ const PropertyReferences = () => {
       />
       <Table
         columns={columns}
+        loading={props?.isLoading || props?.isFetching}
         dataSource={data}
         pagination={{
           pageSize: paginatedData?.pageSize,

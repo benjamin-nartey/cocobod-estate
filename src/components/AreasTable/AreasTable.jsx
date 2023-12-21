@@ -81,8 +81,9 @@ const AreasTable = () => {
     }
   };
 
-  const { data, status, error, loading } = useQuery(['regions', pageNum], () =>
-    fetchRegions(pageNum)
+  const { data, status, error, loading, isLoading, isFetching } = useQuery(
+    ['regions', pageNum],
+    () => fetchRegions(pageNum)
   );
 
   if (status === 'error') {
@@ -247,7 +248,7 @@ const AreasTable = () => {
       />
       <Table
         dataSource={data?.records}
-        loading={status === 'loading' || loading}
+        loading={isLoading || isFetching}
         pagination={{
           pageSize: recordsPerPage,
           total: totalPages,

@@ -36,8 +36,6 @@ const District = () => {
     },
   });
 
-
-
   const _data = props.data?.data?.records?.map((rec) => ({
     ...rec,
     key: rec?.id,
@@ -123,7 +121,7 @@ const District = () => {
       />
       <Table
         dataSource={_data}
-        loading={props.isLoading}
+        loading={props.isLoading || props?.isFetching}
         columns={columns}
         pagination={{
           pageSize: paginatedData?.pageSize,

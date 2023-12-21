@@ -26,7 +26,8 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  baseURL: 'http://192.168.0.178:3000/api/v1/',
+  // baseURL: 'https://estate-api-2.onrender.com/api/v1',
+  baseURL: 'http://localhost:3000/api/v1',
 });
 
 function LoginForm() {

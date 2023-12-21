@@ -1,21 +1,38 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext } from 'react';
 
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from 'react-router-dom';
 
-import { MdChevronRight, MdChevronLeft } from "react-icons/md";
+import { MdChevronRight, MdChevronLeft, MdLocationOff } from 'react-icons/md';
 
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import { SearchResultContext } from "../../context/searchResult.context";
+import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import { SearchResultContext } from '../../context/searchResult.context';
 
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import { useGetProperty } from '../../Hooks/query/properties';
+import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
 
 function PropertyDetail() {
   const sliderRef = useRef();
-  const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
+  const [propertyData, setPropertyData] = useLocalStorage('propertyData', null);
   const [endOfScroll, setEndOfScroll] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const { setSearchResult } = useContext(SearchResultContext);
+
+  const { propId } = useParams();
+
+  const { data: property } = useGetProperty(propId);
+
+  const propertyId = property?.data?.id;
+
+  const { data: propertyUnits } = useGetPropertyUnits(
+    {
+      propertyFilter: propertyId,
+    },
+    {
+      enabled: !!propertyId,
+    }
+  );
 
   const onScroll = () => {
     if (sliderRef.current) {
@@ -26,7 +43,6 @@ function PropertyDetail() {
         Number(scrollLeft - 1) === Number(scrollWidth - offsetWidth)
       ) {
         setEndOfScroll(true);
-        console.log("You have reached the end of line");
       } else {
         setEndOfScroll(false);
       }
@@ -34,7 +50,7 @@ function PropertyDetail() {
   };
 
   const showAllGallery = () => {
-    if (propertyData?.gallery.length > 15 && endOfScroll === true) {
+    if (property?.data?.photos?.length > 15 && endOfScroll === true) {
       setShowAll(true);
     } else {
       setShowAll(false);
@@ -62,35 +78,43 @@ function PropertyDetail() {
       <div className="flex py-3 items-center mb-10 gap-8 text-[#6E431D] text-lg font-semibold w-full bg-[#F4EDE7] sticky top-[18vh] z-10">
         <h3>Property Details</h3>
         <div className="line h-6 w-[1px] bg-[#6E431D]"></div>
-        <h3>{propertyData?.name}</h3>
+        <h3>{property?.data?.name}</h3>
       </div>
       <div className="w-full grid grid-cols-2 gap-4 max-md:flex max-md:flex-col ">
         <div className="description-column">
           <p className="text-sm text-[#6E431D] mb-10">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto,
-            totam iure perspiciatis aspernatur a maiores veritatis quos.
-            Reiciendis illo quibusdam, ex unde sequi sunt praesentium sed.
-            Maiores corporis quam quaerat? Quaerat, odio nesciunt minima iusto
-            tempora laborum necessitatibus deserunt culpa labore.
+            {property?.data?.description ? (
+              property?.data?.description
+            ) : (
+              <span className="">Property has no description yet</span>
+            )}
           </p>
           <div className="w-full flex justify-start items-center mb-10">
             <div className="border-solid border-r border-[#6E431D] pr-8 grid place-items-center">
-              <div>
+              <div className="">
                 <h3 className="text-[15px] text-[#6E431D] font-semibold capitalize">
-                  Lease Renewal
+                  Digital Address
                 </h3>
                 <span className="text-[13px] text-[#6E431D] capitalize">
-                  Lease renewal due
+                  {property?.data?.digitalAddres ? (
+                    property?.data?.digitalAddress
+                  ) : (
+                    <span>&nbsp;</span>
+                  )}
                 </span>
               </div>
             </div>
             <div className="border-solid border-r border-[#6E431D] px-8 grid place-items-center">
               <div>
                 <h3 className="text-[15px] text-[#6E431D] font-semibold capitalize">
-                  Current Property Rate
+                  Property Code
                 </h3>
                 <span className="text-[13px] text-[#6E431D] capitalize">
-                  35% per anum
+                  {property?.data?.propertyCode ? (
+                    property?.data?.propertyCode
+                  ) : (
+                    <span>&nbsp;</span>
+                  )}
                 </span>
               </div>
             </div>
@@ -100,7 +124,11 @@ function PropertyDetail() {
                   Property Type
                 </h3>
                 <span className="text-[13px] text-[#6E431D] capitalize">
-                  Accomodation
+                  {property?.data?.propertyType?.name ? (
+                    property?.data?.propertyType?.name
+                  ) : (
+                    <span>&nbsp;</span>
+                  )}
                 </span>
               </div>
             </div>
@@ -110,30 +138,42 @@ function PropertyDetail() {
             <div className="border-solid border-r border-[#6E431D] pr-8 grid place-items-center">
               <div>
                 <h3 className="text-[15px] text-[#6E431D] font-semibold capitalize">
-                  Assets
+                  LandMark
                 </h3>
                 <span className="text-[13px] text-[#6E431D] capitalize">
-                  Lease renewal due
+                  {property?.data?.landmark ? (
+                    property?.data?.landmark
+                  ) : (
+                    <span>&nbsp;</span>
+                  )}
                 </span>
               </div>
             </div>
             <div className="border-solid border-r border-[#6E431D] px-8 grid place-items-center">
               <div>
                 <h3 className="text-[15px] text-[#6E431D] font-semibold capitalize">
-                  Blocks
+                  PropertyUnits
                 </h3>
-                <span className="text-2xl text-[#6E431D] capitalize font-normal">
-                  350
+                <span className="flex justify-center text-2xl text-center text-[#6E431D] capitalize font-normal">
+                  {propertyUnits?.data?.length ? (
+                    propertyUnits?.data?.length
+                  ) : (
+                    <span>0</span>
+                  )}
                 </span>
               </div>
             </div>
             <div className="px-8 grid place-items-center">
               <div>
                 <h3 className="text-[15px] text-[#6E431D] font-semibold capitalize">
-                  Rooms
+                  Town
                 </h3>
-                <span className="text-2xl text-[#6E431D] capitalize font-normal">
-                  500
+                <span className="text-[15px] text-[#6E431D] capitalize font-normal">
+                  {property?.data?.location?.name ? (
+                    property?.data?.location?.name
+                  ) : (
+                    <span>&nbsp;</span>
+                  )}
                 </span>
               </div>
             </div>
@@ -155,29 +195,27 @@ function PropertyDetail() {
                 id="slider"
                 onScroll={onScroll}
               >
-                {propertyData?.gallery.length > 15
-                  ? propertyData?.gallery
-                      .slice(0, 15)
-                      .map((photo, id) => (
-                        <LazyLoadImage
-                          effect="blur"
-                          className="w-[100px] h-[90px] inline-block p-1 rounded-2xl cursor-pointer hover:scale-105 ease-in-out duration-300"
-                          src={photo.url}
-                          alt="image"
-                          key={id}
-                          height="90px"
-                          width="100px"
-                        />
-                      ))
-                  : propertyData?.gallery.map((photo, id) => (
+                {property?.data?.photos?.length > 15
+                  ? property?.data?.photos?.slice(0, 15)?.map((photo, id) => (
                       <LazyLoadImage
                         effect="blur"
-                        className="w-[100px] h-[90px] inline-block p-1 rounded-2xl cursor-pointer hover:scale-105 ease-in-out duration-300"
+                        className=" w-[6rem] h-[6rem] inline-block rounded-2xl p-1  cursor-pointer hover:scale-105 ease-in-out duration-300 object-cover"
                         src={photo.url}
                         alt="image"
                         key={id}
-                        height="90px"
-                        width="100px"
+                        // height="90px"
+                        // width="100px"
+                      />
+                    ))
+                  : property?.data?.photos.map((photo, id) => (
+                      <LazyLoadImage
+                        effect="blur"
+                        className="w-[6rem] h-[6rem] inline-block p-1 rounded-2xl cursor-pointer hover:scale-105 ease-in-out duration-300 object-cover "
+                        src={photo.url}
+                        alt="image"
+                        key={id}
+                        // height="90px"
+                        // width="100px"
                       />
                     ))}
               </div>
@@ -185,8 +223,10 @@ function PropertyDetail() {
                 <div
                   style={{
                     backgroundImage: `url(${
-                      propertyData?.gallery[
-                        Math.floor(Math.random() * propertyData?.gallery.length)
+                      property?.data?.photos[
+                        Math.floor(
+                          Math.random() * property?.data?.photos.length
+                        )
                       ].url
                     })`,
                   }}
@@ -194,7 +234,7 @@ function PropertyDetail() {
                 >
                   <NavLink className="outline-none" to="/gallery">
                     <div
-                      style={{ backgroundColor: "rgba(0,0,0,0.05)" }}
+                      style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}
                       className="w-full h-full rounded-2xl grid place-items-center backdrop-blur font-semibold"
                     >
                       Show All
@@ -216,25 +256,25 @@ function PropertyDetail() {
             <LazyLoadImage
               effect="blur"
               className="rounded-2xl h-full w-full object-cover"
-              src={propertyData?.gallery[0].url}
+              src={property?.data?.photos[0]?.url}
               alt="property-image"
               height="100%"
               width="100%"
             />
             <div
-              style={{ backgroundColor: "rgba(244,237,231,0.85)" }}
+              style={{ backgroundColor: 'rgba(244,237,231,0.85)' }}
               className="w-3/4 rounded-tr-2xl absolute bottom-0 h-12 p-1"
             >
               <div className="w-full h-full p-[1px] flex flex-col items-start justify-center">
                 <h5 className="text-[15px] font-semibold text-[#6E431D] capitalize">
-                  {propertyData?.name.length > 20
-                    ? `${propertyData?.name.slice(0, 20)}...`
-                    : propertyData?.name}
+                  {property?.data?.name.length > 20
+                    ? `${property?.data?.name.slice(0, 20)}...`
+                    : property?.data?.name}
                 </h5>
                 <span className="text-[12px] text-[#B67F4E] font-normal">
-                  {propertyData?.location?.name.length > 20
-                    ? `${propertyData?.location?.name.slice(0, 20)}...`
-                    : propertyData?.location?.name}
+                  {property?.data?.location?.name.length > 20
+                    ? `${property?.data?.location?.name.slice(0, 20)}...`
+                    : property?.data?.location?.name}
                 </span>
               </div>
             </div>
@@ -248,17 +288,31 @@ function PropertyDetail() {
             0302661877 . 0302667416 Email Us: civilworks@cocobod.gh
           </p>
           <div className="w-[18rem] h-[6rem] hover:shadow-lg border-solid border-2 border-white rounded-2xl">
-            <NavLink onClick={() => setSearchResult([propertyData])} to="/map">
-              <img
-                className="inline-block w-full h-full object-cover rounded-2xl"
-                src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${
-                  propertyData?.location.long
-                },${propertyData?.location.lat},6,0/300x200@2x?access_token=${
-                  import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN
-                }`}
-                alt=""
-              />
-            </NavLink>
+            {property?.data?.long && property?.data.lat ? (
+              <NavLink
+                onClick={() => setSearchResult([property?.data])}
+                to="/map"
+              >
+                <img
+                  className="inline-block w-full h-full object-cover rounded-2xl"
+                  src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${Number(
+                    property?.data?.long
+                  )},${Number(
+                    property?.data?.lat
+                  )},6,0/300x200@2x?access_token=${
+                    import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN
+                  }`}
+                  alt=""
+                />
+              </NavLink>
+            ) : (
+              <div className=" flex  flex-col justify-center items-center gap-2 translate-y-[20%]">
+                <MdLocationOff className=" text-[#6E431D]" size={32} />
+                <span className=" text-xs font-semibold text-[#6E431D] ">
+                  No Location Information
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

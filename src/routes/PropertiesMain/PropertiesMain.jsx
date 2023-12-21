@@ -20,8 +20,6 @@ const PropertiesMain = () => {
     getPaginatedProperties //TODO change url
   );
 
-  console.log(props.data?.data?.records);
-
   const navigate = useNavigate();
 
   const _data = props.data?.data?.records?.map((rec) => ({
@@ -40,7 +38,7 @@ const PropertiesMain = () => {
       title: 'Property Description',
       dataIndex: 'description',
       render: (value) => {
-        return <p>{capitalize(value.toLowerCase())}</p>;
+        return <p>{value && capitalize(value?.toLowerCase())}</p>;
       },
     },
 

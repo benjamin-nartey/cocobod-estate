@@ -123,7 +123,7 @@ const Town = () => {
       />
       <Table
         dataSource={_data}
-        loading={props.isLoading}
+        loading={props.isLoading || props?.isFetching}
         columns={columns}
         pagination={{
           pageSize: paginatedData?.pageSize,

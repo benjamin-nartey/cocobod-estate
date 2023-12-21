@@ -75,12 +75,12 @@ function App() {
     null
   );
 
-  useEffect(() => {
-    if (location.pathname !== '/merge/create') {
-      state.mergeSlice.selectedRowsInTable = [];
-      console.log('reset');
-    }
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   if (location.pathname !== '/merge/create') {
+  //     state.mergeSlice.selectedRowsInTable = [];
+  //     console.log('reset');
+  //   }
+  // }, [location.pathname]);
 
   const fetchUser = async () => {
     try {
@@ -186,7 +186,7 @@ function App() {
           <Route path="/properties-main" element={<PropertiesMain />} />
           <Route path="/property-units-main" element={<PropertyUnitsMain />} />
 
-          <Route path="/locations" element={<Locations />} />
+          <Route path="/locations" element={<Town />} />
 
           <Route path="/areas" element={<Areas />} />
           <Route path="/district" element={<District />} />
