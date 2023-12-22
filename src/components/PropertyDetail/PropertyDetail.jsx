@@ -14,7 +14,7 @@ import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
 
 function PropertyDetail() {
   const sliderRef = useRef();
-  const [propertyData, setPropertyData] = useLocalStorage('propertyData', null);
+  // const [propertyData, setPropertyData] = useLocalStorage('propertyData', null);
   const [endOfScroll, setEndOfScroll] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const { setSearchResult } = useContext(SearchResultContext);

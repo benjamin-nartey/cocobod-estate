@@ -129,6 +129,7 @@ const PoliticalRegion = () => {
           total: paginatedData?.total,
         }}
         onChange={(pagination) => setPageNum(pagination.current)}
+        loading={props?.isLoading || props?.isFetching}
       />
       {showPoliticalRegionModal && <AddPoliticalRegion />}
     </div>
