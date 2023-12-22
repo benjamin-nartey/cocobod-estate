@@ -70,10 +70,10 @@ function App() {
   const from = location.state?.from?.pathname;
   // const [online, setonline] = useState(navigator.onLine);
 
-  const [currentUserState, setCurrentUserState] = useLocalStorage(
-    'currentUserState',
-    null
-  );
+  // const [currentUserState, setCurrentUserState] = useLocalStorage(
+  //   'currentUserState',
+  //   null
+  // );
 
   // useEffect(() => {
   //   if (location.pathname !== '/merge/create') {
@@ -84,7 +84,6 @@ function App() {
 
   const fetchUser = async () => {
     try {
-      state.loadingState = true;
       const response = await axiosInstance.get('/auth/user');
       const allocationResponse = await axiosInstance.get('/allocation/me');
 
@@ -98,10 +97,12 @@ function App() {
         };
 
         state.auth.currentUser = currentUser;
+        state.auth.loadingState = false;
 
         navigate(from, { replace: true });
       }
     } catch (error) {
+      state.auth.loadingState = false;
       console.log(error);
     } finally {
       state.auth.loadingState = false;
