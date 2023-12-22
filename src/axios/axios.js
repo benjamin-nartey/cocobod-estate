@@ -8,7 +8,7 @@ export default axios.create({
 });
 
 export const privateAxios = axios.create({
-  baseURL: 'http://192.168.0.178:3000/api/v1/',
+  baseURL: 'https://estate-api-2.onrender.com/api/v1/',
   headers: {
     'Content-Type': 'application/json',
   },
