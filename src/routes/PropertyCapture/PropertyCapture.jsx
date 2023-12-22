@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import PropertyForm from '../../components/PropertyForm/PropertyForm';
 import SearchBar from '../../components/SearchBar/SearchBar';
-import SearchResultList from '../../components/SearchResultList/SearchResultList.JSX';
+import SearchResultList from '../../components/SearchResultList/SearchResultList';
 import { useIndexedDB } from 'react-indexed-db-hook';
 import { useParams } from 'react-router';
 import { PropertyPseudoContext } from '../../context/propertyPseudo.context';
