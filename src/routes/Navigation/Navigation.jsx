@@ -36,8 +36,6 @@ function Navigation() {
   const { logout } = useContext(LogoutContext);
 
   const snap = useSnapshot(state);
-  console.log({ snap });
-
   function getRandomColor() {
     const letters = '0123456789ABCDEF';
     let color = '#';

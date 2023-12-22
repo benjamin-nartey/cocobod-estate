@@ -39,3 +39,7 @@ export const getPUnitsReferences = (queryParams = {}) => {
     params: { ...queryParams },
   });
 };
+
+export const uploadPropertyPhotos = (propertyId, data) => {
+  return axiosInstance.post(`/properties/${propertyId}/photos`, data);
+};

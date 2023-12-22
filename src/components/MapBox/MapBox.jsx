@@ -1,20 +1,20 @@
-import React, { useRef, useState, useContext, useEffect } from "react";
+import React, { useRef, useState, useContext, useEffect } from 'react';
 
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 
-import Map, { Marker, Popup } from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { getCenter } from "geolib";
+import Map, { Marker, Popup } from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { getCenter } from 'geolib';
 
-import { MdLocationPin } from "react-icons/md";
+import { MdLocationPin } from 'react-icons/md';
 
-import { SearchResultContext } from "../../context/searchResult.context";
+import { SearchResultContext } from '../../context/searchResult.context';
 
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { useLocalStorage } from '../../Hooks/useLocalStorage';
 
 function MapBox({}) {
   const { searchResult } = useContext(SearchResultContext);
-  const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
+  // const [propertyData, setPropertyData] = useLocalStorage('propertyData', null);
   const [center, setCenter] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState({});
   const [animateBounce, setAnimateBounce] = useState(-1);
@@ -28,13 +28,13 @@ function MapBox({}) {
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleClickOutsideMarker, true);
+    document.addEventListener('click', handleClickOutsideMarker, true);
   }, []);
 
   useEffect(() => {
     const coordinates = searchResult?.map((result) => ({
-      latitude: parseFloat(result?.location?.lat),
-      longitude: parseFloat(result?.location?.long),
+      latitude: parseFloat(result?.lat),
+      longitude: parseFloat(result?.long),
     }));
 
     setCenter(getCenter(coordinates));
@@ -63,7 +63,7 @@ function MapBox({}) {
   return (
     <Map
       {...viewState}
-      mapLib={import("mapbox-gl")}
+      mapLib={import('mapbox-gl')}
       onMove={(evt) => setViewState(evt.viewState)}
       className="w-full h-full"
       mapStyle="mapbox://styles/brightarhin/clje8v5tp005d01qsaa1ya2u8"
@@ -71,10 +71,10 @@ function MapBox({}) {
     >
       {searchResult &&
         searchResult.map((result, idx) => (
-          <div key={result.location.long}>
+          <div key={result?.long}>
             <Marker
-              longitude={parseFloat(result?.location?.long)}
-              latitude={parseFloat(result?.location?.lat)}
+              longitude={Number(result?.long)}
+              latitude={Number(result?.lat)}
               offsetLeft={-20}
               offsetRight={-10}
               onClick={() => setAnimateBounce(idx)}
@@ -86,7 +86,7 @@ function MapBox({}) {
                   setSelectedLocation(result);
                 }}
                 className={`${
-                  animateBounce === idx && "animate-bounce"
+                  animateBounce === idx && 'animate-bounce'
                 } text-xl cursor-pointer`}
               >
                 <MdLocationPin color="red" size={25} />
@@ -101,18 +101,18 @@ function MapBox({}) {
                   setSl(false);
                 }}
                 closeOnClick={true}
-                latitude={parseFloat(selectedLocation?.location?.lat) || 0}
-                longitude={parseFloat(selectedLocation?.location?.long) || 0}
+                latitude={Number(selectedLocation?.lat) || 0}
+                longitude={Number(selectedLocation?.long) || 0}
               >
                 <div className="min-w-[200px]">
                   <div className="flex justify-between items-center">
                     <div className="inline-block">
                       <span className="font-semibold">Long:</span>
-                      {` ${selectedLocation?.location?.long.toFixed(4)}`}
+                      {` ${parseFloat(selectedLocation?.long)?.toFixed(4)}`}
                     </div>
                     <div className="inline-block">
                       <span className="font-semibold">Lat:</span>
-                      {` ${selectedLocation?.location?.lat.toFixed(4)}`}
+                      {` ${parseFloat(selectedLocation?.lat)?.toFixed(4)}`}
                     </div>
                   </div>
                   <h4 className="capitalize font-semibold text-base">
@@ -122,8 +122,8 @@ function MapBox({}) {
                     <h5 className="capitalize text-sm">{`(${selectedLocation.location.name})`}</h5>
                     <NavLink
                       className="outline-none text-blue-400 hover:underline"
-                      to={`/property-detail/${selectedLocation.name}`}
-                      onClick={() => setPropertyData(selectedLocation)}
+                      to={`/property-detail/${selectedLocation?.id}`}
+                      // onClick={() => setPropertyData(selectedLocation)}
                     >
                       View Property
                     </NavLink>

@@ -4,9 +4,22 @@ import { useState } from "react";
 import { axiosInstance } from "../axios/axiosInstance";
 
 export const useLogout = async () => {
+<<<<<<< HEAD
   const [logoutResponse, setLogoutResponse] = useState("");
   const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
 
+=======
+  const [logoutResponse, setLogoutResponse] = useState('');
+  const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
+  const api = axios.create({
+    // baseURL: 'https://estate-api-2.onrender.com/api/v1/',
+    baseURL: 'http://localhost:3000/api/v1/',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${refreshToken}`,
+    },
+  });
+>>>>>>> 309412deb89e0660c2694a900a6568e4face2268
   try {
     state.loadingState = true;
     setLogoutResponse(

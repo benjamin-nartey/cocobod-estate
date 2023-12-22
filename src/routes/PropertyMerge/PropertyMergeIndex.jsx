@@ -145,7 +145,7 @@ const PropertyMergeIndex = () => {
           total: paginatedData?.total,
         }}
         onChange={(pagination) => setPageNum(pagination.current)}
-        loading={props?.isLoading}
+        loading={props?.isLoading || props?.isFetching}
       />
     </div>
   );
