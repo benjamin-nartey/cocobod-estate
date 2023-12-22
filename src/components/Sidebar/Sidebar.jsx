@@ -1,10 +1,34 @@
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import { AiFillHome } from 'react-icons/ai';
+import { AiFillCalendar } from 'react-icons/ai';
 import { BiTimeFive } from 'react-icons/bi';
 import { GiAutoRepair } from 'react-icons/gi';
-import { MdOutlineReceipt } from 'react-icons/md';
+import {
+  MdAreaChart,
+  MdDashboard,
+  MdLocationPin,
+  MdOutlineAddAPhoto,
+  MdOutlineReceipt,
+  MdOutlineSafetyDivider,
+  MdPieChart,
+  MdProductionQuantityLimits,
+  MdUpload,
+  MdWorkspacePremium,
+} from 'react-icons/md';
 import { IoMdMap } from 'react-icons/io';
-import { GiHouseKeys } from 'react-icons/gi';
+import { BsFillBuildingsFill } from 'react-icons/bs';
+import { PoweroffOutlined } from '@ant-design/icons';
+import {
+  HiArrowsExpand,
+  HiInbox,
+  HiLightningBolt,
+  HiScissors,
+  HiUsers,
+} from 'react-icons/hi';
+
 import logo from '../../assets/logo-cocobod.png';
 import { ReactComponent as SidebarImage } from '../../assets/sidebarImg.svg';
 
@@ -19,6 +43,17 @@ function Sidebar({ closeToggle }) {
   const allowedRoles = ['Super Administrator', 'Divisional Administrator'];
   const snap = useSnapshot(state);
   const { logout } = useContext(LogoutContext);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || '/login';
+
+  const handleLogout = async () => {
+    const response = await Logout();
+    if (!response) return;
+
+    navigate(from, { replace: true });
+  };
 
   const handleCloseSidebar = () => {
     if (closeToggle) closeToggle(false);
@@ -57,7 +92,7 @@ function Sidebar({ closeToggle }) {
             <AiFillHome size={18} />
             Home
           </NavLink>
-          {snap?.currentUser?.currentUser?.roles.find((role) =>
+          {snap?.auth?.currentUser?.roles.find((role) =>
             allowedRoles.includes(role.name)
           ) && (
             <>
@@ -71,9 +106,19 @@ function Sidebar({ closeToggle }) {
                 <MdDashboard size={18} />
                 Dasboard
               </NavLink>
+              <NavLink
+                to="/report"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdPieChart size={18} />
+                Report
+              </NavLink>
 
               <NavLink
-                to="/properties"
+                to="/properties-main"
                 className={({ isActive }) =>
                   isActive ? isActiveStyle : isNotActiveStyle
                 }
@@ -83,7 +128,7 @@ function Sidebar({ closeToggle }) {
                 Properties
               </NavLink>
 
-              <NavLink
+              {/* <NavLink
                 to="/property-capture"
                 className={({ isActive }) =>
                   isActive ? isActiveStyle : isNotActiveStyle
@@ -92,6 +137,27 @@ function Sidebar({ closeToggle }) {
               >
                 <MdOutlineAddAPhoto size={18} />
                 Property Capture
+              </NavLink> */}
+
+              <NavLink
+                to="/property-capture"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdUpload size={18} />
+                Property Capture
+              </NavLink>
+              <NavLink
+                to="/property-upload"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdOutlineAddAPhoto size={18} />
+                Property Upload
               </NavLink>
 
               {/* <NavLink
@@ -168,7 +234,37 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdAreaChart size={25} />
-                Areas
+                Region
+              </NavLink>
+              <NavLink
+                to="/district"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdAreaChart size={25} />
+                District
+              </NavLink>
+              <NavLink
+                to="/moderation"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <HiLightningBolt size={25} />
+                Moderation
+              </NavLink>
+              <NavLink
+                to="property-references"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <HiInbox size={25} />
+                References
               </NavLink>
 
               <NavLink
@@ -179,7 +275,7 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdProductionQuantityLimits size={25} />
-                Property types
+                Category
               </NavLink>
             </>
           )}
@@ -204,6 +300,26 @@ function Sidebar({ closeToggle }) {
             Maintenance
           </NavLink>
           <NavLink
+            to="/deployment"
+            className={({ isActive }) =>
+              isActive ? isActiveStyle : isNotActiveStyle
+            }
+            onClick={handleCloseSidebar}
+          >
+            <HiArrowsExpand size={18} />
+            Deployment
+          </NavLink>
+          <NavLink
+            to="/merge"
+            className={({ isActive }) =>
+              isActive ? isActiveStyle : isNotActiveStyle
+            }
+            onClick={handleCloseSidebar}
+          >
+            <HiScissors size={18} />
+            Property Merge
+          </NavLink>
+          {/* <NavLink
             to="/reports"
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
@@ -212,8 +328,8 @@ function Sidebar({ closeToggle }) {
           >
             <MdOutlineReceipt size={18} />
             Reports
-          </NavLink>
-          <NavLink
+          </NavLink> */}
+          {/* <NavLink
             to="/map"
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
@@ -222,12 +338,12 @@ function Sidebar({ closeToggle }) {
           >
             <IoMdMap size={18} />
             Map
-          </NavLink>
+          </NavLink> */}
           <button
             onClick={logout}
             className={`${isNotActiveStyle} hidden max-md:flex`}
           >
-            {snap.loadingState ? (
+            {snap.auth?.loadingState ? (
               <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
             ) : (
               <>

@@ -15,20 +15,20 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => {
-              return url.pathname.startsWith("/api") && !url.pathname.includes('user');
-            },
-            handler: "CacheFirst",
-            options: {
-              cacheName: "api-cache",
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-        ],
+        // runtimeCaching: [
+        //   {
+        //     urlPattern: ({ url }) => {
+        //       return url.pathname.startsWith("/api") && !url.pathname.includes('user');
+        //     },
+        //     handler: "CacheFirst",
+        //     options: {
+        //       cacheName: "api-cache",
+        //       cacheableResponse: {
+        //         statuses: [0, 200],
+        //       },
+        //     },
+        //   },
+        // ],
       },
       includeAssets: ["apple-touch-icon-180x180.png", "pwa-512x512.png"],
       manifest: {

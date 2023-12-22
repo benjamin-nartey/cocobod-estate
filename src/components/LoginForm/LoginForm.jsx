@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import { useNavigate, useLocation, json } from "react-router-dom";
+import { useOnlineStatus } from '../../Hooks/useIsOnlineStatus';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import { useOnlineStatus } from "../../Hooks/useIsOnlineStatus";
-import state from "../../store/store";
+import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import state from '../../store/store';
 
-import Loader from "../Loader/Loader";
+import Loader from '../Loader/Loader';
 
-import axios from "axios";
 // import { useSnapshot } from "valtio";
-import bcrypt from "bcryptjs";
-import { useCookies } from "react-cookie";
+import bcrypt from 'bcryptjs';
+import { useCookies } from 'react-cookie';
+import axios from 'axios';
 
 const defaultFormFields = {
-  email: "",
-  password: "",
+  email: '',
+  password: '',
 };
 
 const defaultPassword = import.meta.env.VITE_APP_DEFAULT_PASSWORD;
@@ -26,23 +26,24 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  baseURL: "https://estate-api-2.onrender.com/api/v1/",
+  baseURL: 'https://estate-api-2.onrender.com/api/v1',
+  // baseURL: 'http://localhost:3000/api/v1',
 });
 
 function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);
   const { email, password } = formFields;
-  const [ipAddress, setIPAddress] = useState("");
+  const [ipAddress, setIPAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const isOnLine = useOnlineStatus();
-  const [cookies, setCookie] = useCookies(["name"]);
+  const [cookies, setCookie] = useCookies(['name']);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
-    "accessToken",
+    'accessToken',
     null
   );
   const [refreshTokenAuth, setRefreshTokenAuth] = useLocalStorage(
-    "refreshToken",
+    'refreshToken',
     null
   );
 
@@ -51,11 +52,11 @@ function LoginForm() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/home";
+  const from = location.state?.from?.pathname || '/dashboard';
 
   useEffect(() => {
     axios
-      .get("https://ipapi.co/json")
+      .get('https://ipapi.co/json')
       .then((response) => response.data)
       .then((data) => setIPAddress(data.ip))
       .catch((error) => console.log(error));
@@ -71,66 +72,55 @@ function LoginForm() {
 
     console.log(password, defaultPassword);
 
-    switch (isOnLine) {
-      case true:
-        try {
-          setLoading(true);
-          const response = await API.post(
-            "/auth",
-            { email, password },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                "X-IP-Address": ipAddress,
-              },
-            }
-          );
-
-          const userResponse = await API.get("/auth/user", {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${response?.data?.accessToken}`,
-            },
-          });
-
-          if (userResponse) {
-            const currentUser = userResponse.data;
-            state.currentUser = { currentUser };
-            const offlineUser = JSON.stringify(currentUser);
-            console.log({offlineUser})
-            // setCookie("name", userResponse.data.name);
-            setCookie("currentUser", offlineUser);
-
-            setAccessTokenAuth(response?.data?.accessToken);
-            setRefreshTokenAuth(response?.data?.refreshToken);
-
-            navigate(from, { replace: true });
-          }
-        } catch (error) {
-          console.log(error);
-        } finally {
-          setLoading(false);
+    try {
+      setLoading(true);
+      const response = await API.post(
+        '/auth',
+        { email, password },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-IP-Address': ipAddress,
+          },
         }
-        break;
+      );
 
-      case false:
-        const isMatch = await bcrypt.compare(password, hashedDefaultPassword);
-        try {
-          if (!isMatch) {
-            console.log("wrong password");
-          } else if (isMatch && email === cookies?.email) {
-            console.log("success");
-            navigate(from, { replace: true });
-          } else {
-            console.log("wrong username or password");
-          }
-        } catch (error) {
-          throw error;
-        }
+      const userResponse = await API.get('/auth/user', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${response?.data?.accessToken}`,
+        },
+      });
 
-      default:
-        console.log("Error signing in offline");
-        break;
+      const allocationResponse = await API.get('/allocation/me', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${response?.data?.accessToken}`,
+        },
+      });
+      if (userResponse && allocationResponse) {
+        const currentUser = {
+          name: userResponse.data.name,
+          email: userResponse.data.email,
+          staff: userResponse.data.staff,
+          roles: userResponse.data.roles,
+          allocationData: allocationResponse.data.region,
+        };
+
+        state.auth.currentUser = currentUser;
+
+        // setCookie("name", userResponse.data.name);
+        // setCookie('currentUser', offlineUser);
+
+        setAccessTokenAuth(response?.data?.accessToken);
+        setRefreshTokenAuth(response?.data?.refreshToken);
+
+        navigate(from, { replace: true });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -158,7 +148,7 @@ function LoginForm() {
         {loading ? (
           <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
         ) : (
-          "Login"
+          'Login'
         )}
       </button>
       <div className="w-full">

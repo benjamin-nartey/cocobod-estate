@@ -3,10 +3,25 @@
 @tailwind utilities;
 
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Quicksand', sans-serif;
 }
 html {
   scroll-behavior: smooth;
+}
+
+@layer utilities {
+  @variants responsive {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+  }
 }
 
 .ant-btn-primary {
@@ -42,6 +57,16 @@ html {
   border-color: #6e431d !important;
 }
 
+.ant-float-btn-body {
+  background-color: #b67f4e !important;
+  color: white !important;
+}
+
+.ant-float-btn-body:hover {
+  background-color: #6e431d !important;
+  color: white !important;
+}
+
 /* .wrapper-accordion {
   height: 100vh;
   width: 100%;
@@ -55,5 +80,34 @@ html {
 .accordion-content.show {
   height: auto;
   max-height: 9999px;
-  /* transition: all 0.5s, cubic-bezier(0, 1, 0, 1); */
+}
+/* transition: all 0.5s, cubic-bezier(0, 1, 0, 1); */
+.ant-steps .ant-steps-item-process .ant-steps-item-icon {
+  background-color: #af5c13 !important;
+  border-color: #af5c13 !important;
+}
+
+.ant-form-vertical .ant-form-item-label > label {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 500;
+}
+
+.ant-table-wrapper .ant-table-container table > thead > tr {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 800;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr > td {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 500;
+}
+
+.ant-tag {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 500;
+}
+
+.ant-divider .ant-divider-inner-text {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
 }

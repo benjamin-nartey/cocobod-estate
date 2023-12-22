@@ -109,9 +109,9 @@ const DivisionsTable = () => {
         value: record.id,
       };
     });
-    setOptions(...options, dataRcord);
+    setOptions( dataRcord);
 
-    return options;
+    
   }
 
   useEffect(() => {
