@@ -46,7 +46,7 @@ export const LogoutProvider = ({ children }) => {
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
           // localStorage.removeItem("currentUser");
-          localStorage.removeItem('currentUserState');
+          // localStorage.removeItem('currentUserState');
           state.currentUser = {};
           navigate(from, { replace: true });
           return response;

@@ -23,7 +23,7 @@ export const Logout = async () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     // localStorage.removeItem("currentUser");
-    localStorage.removeItem('currentUserState');
+    // localStorage.removeItem('currentUserState');
     state.currentUser = {};
     return response;
   } catch (error) {

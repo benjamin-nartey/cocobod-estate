@@ -45,7 +45,7 @@ const Card = ({ allProperty }) => {
 
 const Dashboard = () => {
   const [allProperty, setAllProperty] = useState([]);
-  const [currentUserState, setCurrentUserState] = useState('currentUserState');
+
   const [allocationData, setAllocationData] = useState(null);
 
   const { add: addPropertyReferenceCategories } = useIndexedDB(
