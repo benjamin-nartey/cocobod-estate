@@ -266,8 +266,8 @@ const PropertyForm = (id) => {
       propertyTypeId: values?.propertyTypeId,
       locationId: values?.locationId,
       propertyReferenceCategoryId: propertyReferenceCategories?.id,
-      lat: `${values?.lat}`,
-      long: `${values?.long}`,
+      lat: `${values?.lat.toFixed(10)}`,
+      long: `${values?.long.toFixed(10)}`,
       landmark: values?.landmark,
       politicalDistrictId: values?.politicalDistrict,
       propertyUnits: values?.propertyUnits?.length
