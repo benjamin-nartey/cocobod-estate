@@ -1,20 +1,22 @@
-import { useEffect, useRef, useState, useContext } from 'react';
+import { useEffect, useRef, useState, useContext } from "react";
 
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useParams } from "react-router-dom";
 
-import { MdChevronRight, MdChevronLeft, MdLocationOff } from 'react-icons/md';
+import { MdChevronRight, MdChevronLeft, MdLocationOff } from "react-icons/md";
 
-import { useLocalStorage } from '../../Hooks/useLocalStorage';
-import { SearchResultContext } from '../../context/searchResult.context';
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { SearchResultContext } from "../../context/searchResult.context";
 
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-import 'react-lazy-load-image-component/src/effects/blur.css';
-import { useGetProperty } from '../../Hooks/query/properties';
-import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import {
+  useGetProperty,
+  useGetPropertyUnitsForProperty,
+} from "../../Hooks/query/properties";
 
 function PropertyDetail() {
   const sliderRef = useRef();
-  const [propertyData, setPropertyData] = useLocalStorage('propertyData', null);
+  const [propertyData, setPropertyData] = useLocalStorage("propertyData", null);
   const [endOfScroll, setEndOfScroll] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const { setSearchResult } = useContext(SearchResultContext);
@@ -25,7 +27,7 @@ function PropertyDetail() {
 
   const propertyId = property?.data?.id;
 
-  const { data: propertyUnits } = useGetPropertyUnits(
+  const { data: propertyUnits } = useGetPropertyUnitsForProperty(
     {
       propertyFilter: propertyId,
     },
@@ -234,7 +236,7 @@ function PropertyDetail() {
                 >
                   <NavLink className="outline-none" to="/gallery">
                     <div
-                      style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}
+                      style={{ backgroundColor: "rgba(0,0,0,0.05)" }}
                       className="w-full h-full rounded-2xl grid place-items-center backdrop-blur font-semibold"
                     >
                       Show All
@@ -262,7 +264,7 @@ function PropertyDetail() {
               width="100%"
             />
             <div
-              style={{ backgroundColor: 'rgba(244,237,231,0.85)' }}
+              style={{ backgroundColor: "rgba(244,237,231,0.85)" }}
               className="w-3/4 rounded-tr-2xl absolute bottom-0 h-12 p-1"
             >
               <div className="w-full h-full p-[1px] flex flex-col items-start justify-center">
