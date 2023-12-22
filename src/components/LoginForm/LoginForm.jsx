@@ -26,16 +26,16 @@ const hashedDefaultPassword = bcrypt.hashSync(
   bcrypt.genSaltSync()
 );
 
-<<<<<<< HEAD
+
 // const API = axios.create({
 //   baseURL: "https://estate-api-2.onrender.com/api/v1/",
 // });
-=======
-const API = axios.create({
-  // baseURL: 'https://estate-api-2.onrender.com/api/v1',
-  baseURL: 'http://localhost:3000/api/v1',
-});
->>>>>>> 309412deb89e0660c2694a900a6568e4face2268
+
+// const API = axios.create({
+//   // baseURL: 'https://estate-api-2.onrender.com/api/v1',
+//   baseURL: 'http://localhost:3000/api/v1',
+// });
+
 
 function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);

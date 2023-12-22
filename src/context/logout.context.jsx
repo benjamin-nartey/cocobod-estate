@@ -21,19 +21,17 @@ export const LogoutProvider = ({ children }) => {
   const from = location.state?.from?.pathname || "/login";
 
   const logout = async () => {
-<<<<<<< HEAD
+
     const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
-=======
-    const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
-    const api = axios.create({
-      // baseURL: 'https://estate-api-2.onrender.com/api/v1',
-      baseURL: 'http://localhost:3000/api/v1',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${refreshToken}`,
-      },
-    });
->>>>>>> 309412deb89e0660c2694a900a6568e4face2268
+
+    // const api = axios.create({
+    //   // baseURL: 'https://estate-api-2.onrender.com/api/v1',
+    //   baseURL: 'http://localhost:3000/api/v1',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${refreshToken}`,
+    //   },
+    // });
 
     if (online) {
       try {

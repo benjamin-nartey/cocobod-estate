@@ -3,17 +3,15 @@ import { memoizedRefreshToken } from "../utils/refreshToken";
 // import jwt_decode from "jwt-decode";
 // import dayjs from "dayjs";
 
-<<<<<<< HEAD
 
 
 axios.defaults.baseURL = "https://estate-api-2.onrender.com/api/v1/";
 
-=======
 // axios.defaults.baseURL = "https://estate-api-2.onrender.com/api/v1/";
 // axios.defaults.baseURL = 'http://192.168.43.141:3000/api/v1/';
 // axios.defaults.baseURL = 'https://estate-api-2.onrender.com/api/v1/';
-axios.defaults.baseURL = 'http://localhost:3000/api/v1/';
->>>>>>> 309412deb89e0660c2694a900a6568e4face2268
+// axios.defaults.baseURL = 'http://localhost:3000/api/v1/';
+
 
 axios.interceptors.request.use(
   async (config) => {
