@@ -10,7 +10,8 @@ import { SearchResultContext } from '../../context/searchResult.context';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useGetProperty } from '../../Hooks/query/properties';
-import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
+// import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
+import { useGetPropertyUnitsForProperty } from '../../Hooks/query/properties';
 
 function PropertyDetail() {
   const sliderRef = useRef();
@@ -25,7 +26,7 @@ function PropertyDetail() {
 
   const propertyId = property?.data?.id;
 
-  const { data: propertyUnits } = useGetPropertyUnits(
+  const { data: propertyUnits } = useGetPropertyUnitsForProperty(
     {
       propertyFilter: propertyId,
     },
