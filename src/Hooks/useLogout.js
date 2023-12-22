@@ -1,6 +1,7 @@
 import axios from 'axios';
 import state from '../store/store';
 import { useState } from 'react';
+import { axiosInstance } from '../axios/axiosInstance';
 
 export const useLogout = async () => {
   const [logoutResponse, setLogoutResponse] = useState('');
@@ -15,7 +16,15 @@ export const useLogout = async () => {
   });
   try {
     state.loadingState = true;
-    setLogoutResponse(async () => await api.delete('/auth'));
+    setLogoutResponse(
+      async () =>
+        await axiosInstance.delete('/auth', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        })
+    );
     // const response = await api.delete("/auth");
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');

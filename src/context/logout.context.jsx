@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from 'react';
 import { useOnlineStatus } from '../Hooks/useIsOnlineStatus';
 
 import axios from 'axios';
+import { axiosInstance } from '../axios/axiosInstance';
 import state from '../store/store';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -33,7 +34,12 @@ export const LogoutProvider = ({ children }) => {
     if (online) {
       try {
         state.loadingState = true;
-        const response = await api.delete('/auth');
+        const response = await axiosInstance.delete('/auth', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${refreshToken}`,
+          },
+        });
         if (!response) {
           return;
         } else {

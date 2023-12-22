@@ -12,6 +12,7 @@ import Loader from '../Loader/Loader';
 import bcrypt from 'bcryptjs';
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
+import { axiosInstance } from '../../axios/axiosInstance';
 
 const defaultFormFields = {
   email: '',
@@ -74,7 +75,7 @@ function LoginForm() {
 
     try {
       setLoading(true);
-      const response = await API.post(
+      const response = await axiosInstance.post(
         '/auth',
         { email, password },
         {
@@ -85,14 +86,14 @@ function LoginForm() {
         }
       );
 
-      const userResponse = await API.get('/auth/user', {
+      const userResponse = await axiosInstance.get('/auth/user', {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${response?.data?.accessToken}`,
         },
       });
 
-      const allocationResponse = await API.get('/allocation/me', {
+      const allocationResponse = await axiosInstance.get('/allocation/me', {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${response?.data?.accessToken}`,

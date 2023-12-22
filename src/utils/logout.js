@@ -1,5 +1,6 @@
 import axios from 'axios';
 import state from '../store/store';
+import { axiosInstance } from '../axios/axiosInstance';
 
 export const Logout = async () => {
   const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
@@ -13,7 +14,12 @@ export const Logout = async () => {
   });
   try {
     state.loadingState = true;
-    const response = await api.delete('/auth');
+    const response = await axiosInstance.delete('/auth', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    });
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     // localStorage.removeItem("currentUser");
