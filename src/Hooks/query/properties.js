@@ -7,6 +7,16 @@ import {
   // getReferences,
 } from '../../http/properties';
 import { getPropertyReferenceUnits } from '../../http/propertyUnits';
+import { getAllProperties } from '../../http/properties';
+
+export const useGetAllProperties = () => {
+  return useQuery({
+    queryKey: ['getAllProperties'],
+    queryFn: () => {
+      return getAllProperties();
+    },
+  });
+};
 
 export const useGetPropertyUnitsForProperty = (propertyUnitId) => {
   return useQuery({

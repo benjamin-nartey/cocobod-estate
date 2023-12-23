@@ -234,7 +234,17 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdAreaChart size={25} />
-                Region
+                Cocoa Regions
+              </NavLink>
+              <NavLink
+                to="/political-regions"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdAreaChart size={25} />
+                Political Regions
               </NavLink>
               <NavLink
                 to="/district"
@@ -244,7 +254,17 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdAreaChart size={25} />
-                District
+                Cocoa Districts
+              </NavLink>
+              <NavLink
+                to="/political-districts"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <MdAreaChart size={25} />
+                Political Districts
               </NavLink>
               <NavLink
                 to="/moderation"
@@ -329,7 +349,7 @@ function Sidebar({ closeToggle }) {
             <MdOutlineReceipt size={18} />
             Reports
           </NavLink> */}
-          {/* <NavLink
+          <NavLink
             to="/map"
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
@@ -338,7 +358,7 @@ function Sidebar({ closeToggle }) {
           >
             <IoMdMap size={18} />
             Map
-          </NavLink> */}
+          </NavLink>
           <button
             onClick={logout}
             className={`${isNotActiveStyle} hidden max-md:flex`}

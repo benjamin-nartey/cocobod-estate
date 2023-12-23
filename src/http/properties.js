@@ -1,5 +1,9 @@
 import { axiosInstance } from '../axios/axiosInstance';
 
+export const getAllProperties = () => {
+  return axiosInstance.get('properties/all');
+};
+
 export const mergePropertyToPropertyUnit = (data) => {
   return axiosInstance.patch(
     `/property-reference-categories/${data?.propertyId}`,
@@ -42,4 +46,8 @@ export const getPUnitsReferences = (queryParams = {}) => {
 
 export const uploadPropertyPhotos = (propertyId, data) => {
   return axiosInstance.post(`/properties/${propertyId}/photos`, data);
+};
+
+export const setPropertyFeaturedPhoto = (photoId, propertyId) => {
+  return axiosInstance.post(`/properties/${propertyId}/photos/${photoId}`);
 };

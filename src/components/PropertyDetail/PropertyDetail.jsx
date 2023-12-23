@@ -35,6 +35,13 @@ function PropertyDetail() {
     }
   );
 
+  const { mutate } = useMutation({
+    mutationKey: 'setFeaturedPhoto',
+    mutationFn: (photoId) => {
+      return setPropertyFeaturedPhoto(photoId, propertyId);
+    },
+  });
+
   const onScroll = () => {
     if (sliderRef.current) {
       const { scrollLeft, scrollWidth, offsetWidth } = sliderRef.current;
@@ -71,8 +78,6 @@ function PropertyDetail() {
     let slider = sliderRef.current;
     slider.scrollLeft = slider.scrollLeft + 200;
   };
-
-  // console.log(first)
 
   return (
     <div className="w-full h-auto ">
@@ -215,6 +220,7 @@ function PropertyDetail() {
                         src={photo.url}
                         alt="image"
                         key={id}
+                        onClick={() => mutate(photo?.id)}
                         // height="90px"
                         // width="100px"
                       />

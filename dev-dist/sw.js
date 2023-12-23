@@ -20,12 +20,12 @@ if (!self.define) {
   let nextDefineUri;
 
   const singleRequire = (uri, parentUri) => {
-    uri = new URL(uri + ".js", parentUri).href;
+    uri = new URL(uri + '.js', parentUri).href;
     return (
       registry[uri] ||
       new Promise((resolve) => {
-        if ("document" in self) {
-          const script = document.createElement("script");
+        if ('document' in self) {
+          const script = document.createElement('script');
           script.src = uri;
           script.onload = resolve;
           document.head.appendChild(script);
@@ -47,7 +47,7 @@ if (!self.define) {
   self.define = (depsNames, factory) => {
     const uri =
       nextDefineUri ||
-      ("document" in self ? document.currentScript.src : "") ||
+      ('document' in self ? document.currentScript.src : '') ||
       location.href;
     if (registry[uri]) {
       // Module is already loading or loaded.
@@ -68,8 +68,8 @@ if (!self.define) {
     });
   };
 }
-define(["./workbox-b5f7729d"], function (workbox) {
-  "use strict";
+define(['./workbox-b5f7729d'], function (workbox) {
+  'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
@@ -79,25 +79,18 @@ define(["./workbox-b5f7729d"], function (workbox) {
    * requests for URLs in the manifest.
    * See https://goo.gl/S9QRab
    */
-  workbox.precacheAndRoute([{
-    "url": "index.html",
-    "revision": "0.ekt1v06acdg"
-  }], {});
-  workbox.cleanupOutdatedCaches();
-  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
-    allowlist: [/^\/$/]
-  }));
-
-        revision: "0.kp1mcj1dtt",
-
-        // "revision": "0.cbtfn7c9fi"
+  workbox.precacheAndRoute(
+    [
+      {
+        url: 'index.html',
+        revision: '0.94g6fcu3jf',
       },
     ],
     {}
   );
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(
-    new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
+    new workbox.NavigationRoute(workbox.createHandlerBoundToURL('index.html'), {
       allowlist: [/^\/$/],
     })
   );
