@@ -1,6 +1,5 @@
-import axiosFetch from "../axios/axios";
-
-import { createContext, useState, useEffect } from "react";
+import { createContext, useEffect, useState } from 'react';
+import { useGetAllProperties } from '../Hooks/query/properties';
 
 export const SearchResultContext = createContext({
   searchResult: [],
@@ -10,19 +9,13 @@ export const SearchResultContext = createContext({
 export const SearchResultProvider = ({ children }) => {
   const [searchResult, setSearchResult] = useState([]);
 
-  const fetchData = async () => {
-    try {
-      const response = await axiosFetch("/properties");
-      const results = await response.data;
-      if (results) setSearchResult(results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { data: properties } = useGetAllProperties();
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (properties?.data) {
+      setSearchResult(properties?.data);
+    }
+  }, [properties?.data]);
 
   const value = { searchResult, setSearchResult };
 

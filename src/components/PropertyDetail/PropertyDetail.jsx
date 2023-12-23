@@ -10,7 +10,10 @@ import { SearchResultContext } from '../../context/searchResult.context';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useGetProperty } from '../../Hooks/query/properties';
-import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
+// import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
+import { useGetPropertyUnitsForProperty } from '../../Hooks/query/properties';
+import { useMutation } from '@tanstack/react-query';
+import { setPropertyFeaturedPhoto } from '../../http/properties';
 
 function PropertyDetail() {
   const sliderRef = useRef();
@@ -25,7 +28,7 @@ function PropertyDetail() {
 
   const propertyId = property?.data?.id;
 
-  const { data: propertyUnits } = useGetPropertyUnits(
+  const { data: propertyUnits } = useGetPropertyUnitsForProperty(
     {
       propertyFilter: propertyId,
     },
@@ -33,6 +36,13 @@ function PropertyDetail() {
       enabled: !!propertyId,
     }
   );
+
+  const { mutate } = useMutation({
+    mutationKey: 'setFeaturedPhoto',
+    mutationFn: (photoId) => {
+      return setPropertyFeaturedPhoto(photoId, propertyId);
+    },
+  });
 
   const onScroll = () => {
     if (sliderRef.current) {
@@ -70,8 +80,6 @@ function PropertyDetail() {
     let slider = sliderRef.current;
     slider.scrollLeft = slider.scrollLeft + 200;
   };
-
-  // console.log(first)
 
   return (
     <div className="w-full h-auto ">
@@ -214,6 +222,7 @@ function PropertyDetail() {
                         src={photo.url}
                         alt="image"
                         key={id}
+                        onClick={() => mutate(photo?.id)}
                         // height="90px"
                         // width="100px"
                       />
