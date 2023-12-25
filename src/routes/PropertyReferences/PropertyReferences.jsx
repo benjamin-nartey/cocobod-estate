@@ -5,8 +5,9 @@ import { getPagionatedPropertyUnitReferenceList } from '../../http/propertiesMer
 import state from '../../store/store';
 import { capitalize } from '../../utils/typography';
 import { useSnapshot } from 'valtio';
-import ReferencesUpload from '../../components/modals/uploads/references';
+
 import { useGetReferences } from '../../Hooks/query/properties';
+import UploadCSV from '../../components/modals/uploads/uploadCsv';
 
 const columns = [
   {
@@ -61,7 +62,7 @@ const PropertyReferences = () => {
   );
 
   const snap = useSnapshot(state);
-  const { showReferencesUploadModal } = snap.modalSlice;
+  const { showUploadModal } = snap.modalSlice;
 
   const data = props.data?.data?.records?.map((rec) => ({
     ...rec,
@@ -74,7 +75,7 @@ const PropertyReferences = () => {
         <Button
           type="primary"
           onClick={() => {
-            state.modalSlice.toggleshowReferencesUploadModal();
+            state.modalSlice.toggleshowUploadModal();
           }}
           style={{ backgroundColor: '#6E431D', color: '#fff' }}
         >
@@ -98,7 +99,12 @@ const PropertyReferences = () => {
           setPageNum(pagination.current);
         }}
       />
-      {showReferencesUploadModal && <ReferencesUpload />}
+      {showUploadModal && (
+        <UploadCSV
+          fieldName={'batch-property-reference'}
+          uploadUrl={'/property-references/batch-upload'}
+        />
+      )}
     </div>
   );
 };

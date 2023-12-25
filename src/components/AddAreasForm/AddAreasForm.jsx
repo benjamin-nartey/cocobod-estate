@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 
-import { Button, Modal, Form, Input, message } from 'antd';
+import { Button, Modal, Form, Input, message, Tooltip } from 'antd';
 
-import { UserOutlined } from '@ant-design/icons';
+import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 
 import CustomSelect from '../CustomSelect/CustomSelect';
 
 import { useAddRegionData } from '../../Hooks/useAddFetch';
+import { MdOutlineUpload } from 'react-icons/md';
+import state from '../../store/store';
 
 const AddAreasForm = () => {
   const [open, setOpen] = useState(false);
@@ -100,13 +102,23 @@ const AddAreasForm = () => {
   return (
     <>
       {contextHolder}
-      <Button
-        type="primary"
-        onClick={showModal}
-        style={{ backgroundColor: '#6E431D', color: '#fff' }}
-      >
-        Add Region
-      </Button>
+      <div className="flex gap-4">
+        <Tooltip title={'Upload CSV'}>
+          <MdOutlineUpload
+            size={32}
+            className="text-[#6E431D] cursor-pointer"
+            onClick={() => state.modalSlice.toggleshowUploadModal()}
+          />
+        </Tooltip>
+        <Button
+          type="primary"
+          onClick={showModal}
+          style={{ backgroundColor: '#6E431D', color: '#fff' }}
+        >
+          Add Region
+        </Button>
+      </div>
+
       <Modal
         title="ADD REGION"
         open={open}

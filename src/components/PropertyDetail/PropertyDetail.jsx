@@ -10,8 +10,9 @@ import { SearchResultContext } from '../../context/searchResult.context';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useGetProperty } from '../../Hooks/query/properties';
-// import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
-import { useGetPropertyUnitsForProperty } from '../../Hooks/query/properties';
+
+import { useMutation } from '@tanstack/react-query';
+import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
 
 function PropertyDetail() {
   const sliderRef = useRef();
@@ -25,8 +26,9 @@ function PropertyDetail() {
   const { data: property } = useGetProperty(propId);
 
   const propertyId = property?.data?.id;
+  console.log(propertyId);
 
-  const { data: propertyUnits } = useGetPropertyUnitsForProperty(
+  const { data: propertyUnits } = useGetPropertyUnits(
     {
       propertyFilter: propertyId,
     },

@@ -50,7 +50,7 @@ function MapBox({}) {
     setViewState({
       latitude: center && center?.latitude,
       longitude: center && center?.longitude,
-      zoom: 6,
+      zoom: searchResult.length > 1 ? 6 : 12,
     });
   }, [center]);
 

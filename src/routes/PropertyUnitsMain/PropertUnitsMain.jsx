@@ -39,10 +39,10 @@ const PropertyUnitsMain = () => {
       key: 'propertyCode',
     },
 
-    {
-      title: 'Current Condition',
-      key: 'currentCondition',
-    },
+    // {
+    //   title: 'Current Condition',
+    //   key: 'currentCondition',
+    // },
     {
       title: 'Property Type',
       dataIndex: ['propertyType', 'name'],
