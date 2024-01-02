@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-export let baseURL = import.meta.env.VITE_BASE_URL;
+// export let baseURL = import.meta.env.VITE_BASE_URL;
+export let baseURL = 'https://estate-api-2.onrender.com/api/v1';
 const axiosInstance = axios.create({
   baseURL,
 });
