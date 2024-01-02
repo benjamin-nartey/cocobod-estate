@@ -34,7 +34,7 @@ axiosInstance.interceptors.response.use(
         const refreshToken =
           localStorage.getItem('refreshToken') &&
           localStorage.getItem('refreshToken');
-        const { data } = await axios.get(`${baseURL}/auth/refresh`, {
+        const { data } = await axios.get(`${baseURL}/auth/refresh-token`, {
           headers: { Authorization: 'Bearer ' + refreshToken },
         });
 
