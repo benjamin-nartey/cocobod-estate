@@ -26,11 +26,6 @@ const hashedDefaultPassword = bcrypt.hashSync(
   bcrypt.genSaltSync()
 );
 
-const API = axios.create({
-  baseURL: 'https://estate-api-2.onrender.com/api/v1',
-  // baseURL: 'http://localhost:3000/api/v1',
-});
-
 function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);
   const { email, password } = formFields;
@@ -71,8 +66,6 @@ function LoginForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(password, defaultPassword);
-
     try {
       setLoading(true);
       const response = await axiosInstance.post(
@@ -86,37 +79,37 @@ function LoginForm() {
         }
       );
 
-      const userResponse = await axiosInstance.get('/auth/user', {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${response?.data?.accessToken}`,
-        },
-      });
+      if (response) {
+        localStorage.setItem('accessToken', response?.data?.accessToken);
+        localStorage.setItem('refreshToken', response?.data?.refreshToken);
+        // setAccessTokenAuth(response?.data?.accessToken);
+        // setRefreshTokenAuth(response?.data?.refreshToken);
+        const userResponse = await axiosInstance.get('/auth/user', {
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   Authorization: `Bearer ${response?.data?.accessToken}`,
+          // },
+        });
 
-      const allocationResponse = await axiosInstance.get('/allocation/me', {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${response?.data?.accessToken}`,
-        },
-      });
-      if (userResponse && allocationResponse) {
-        const currentUser = {
-          name: userResponse.data.name,
-          email: userResponse.data.email,
-          staff: userResponse.data.staff,
-          roles: userResponse.data.roles,
-          allocationData: allocationResponse.data.region,
-        };
+        const allocationResponse = await axiosInstance.get('/allocation/me', {
+          // headers: {
+          //   'Content-Type': 'application/json',
+          //   Authorization: `Bearer ${response?.data?.accessToken}`,
+          // },
+        });
+        if (userResponse && allocationResponse) {
+          const currentUser = {
+            name: userResponse.data.name,
+            email: userResponse.data.email,
+            staff: userResponse.data.staff,
+            roles: userResponse.data.roles,
+            allocationData: allocationResponse.data.region,
+          };
 
-        state.auth.currentUser = currentUser;
+          state.auth.currentUser = currentUser;
 
-        // setCookie("name", userResponse.data.name);
-        // setCookie('currentUser', offlineUser);
-
-        setAccessTokenAuth(response?.data?.accessToken);
-        setRefreshTokenAuth(response?.data?.refreshToken);
-
-        navigate(from, { replace: true });
+          navigate(from, { replace: true });
+        }
       }
     } catch (error) {
       console.log(error);
