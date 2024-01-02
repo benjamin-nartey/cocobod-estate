@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export let baseURL = import.meta.env.VITE_BASE_URL;
-
 const axiosInstance = axios.create({
   baseURL,
 });
@@ -9,7 +8,7 @@ const axiosInstance = axios.create({
 // Request interceptor to add access token to authorization header
 axiosInstance.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem('accessToken')
-    ? JSON.parse(localStorage.getItem('accessToken'))
+    ? localStorage.getItem('accessToken')
     : null;
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
@@ -33,16 +32,13 @@ axiosInstance.interceptors.response.use(
       try {
         const refreshToken =
           localStorage.getItem('refreshToken') &&
-          JSON.parse(localStorage.getItem('refreshToken'));
+          localStorage.getItem('refreshToken');
         const { data } = await axios.get(`${baseURL}/auth/refresh`, {
           headers: { Authorization: 'Bearer ' + refreshToken },
         });
 
-        localStorage.setItem('accessToken', JSON.stringify(data?.accessToken));
-        localStorage.setItem(
-          'refreshToken',
-          JSON.stringify(data?.refreshToken)
-        );
+        localStorage.setItem('accessToken', data?.accessToken);
+        localStorage.setItem('refreshToken', data?.refreshToken);
         axiosInstance.defaults.headers.common[
           'Authorization'
         ] = `Bearer ${data.accessToken}`;
@@ -55,7 +51,7 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export { axiosInstance };
 
 // export const request = ({ ...options }) => {
 //   const onSuccess = (response) => response;

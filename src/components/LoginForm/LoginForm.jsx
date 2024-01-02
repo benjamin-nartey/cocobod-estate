@@ -85,14 +85,14 @@ function LoginForm() {
         localStorage.setItem('refreshToken', response?.data?.refreshToken);
         // setAccessTokenAuth(response?.data?.accessToken);
         // setRefreshTokenAuth(response?.data?.refreshToken);
-        const userResponse = await axios.get('/auth/user', {
+        const userResponse = await axiosInstance.get('/auth/user', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${response?.data?.accessToken}`,
           },
         });
 
-        const allocationResponse = await axios.get('/allocation/me', {
+        const allocationResponse = await axiosInstance.get('/allocation/me', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${response?.data?.accessToken}`,
