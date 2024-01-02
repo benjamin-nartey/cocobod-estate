@@ -34,9 +34,13 @@ axiosInstance.interceptors.response.use(
         const refreshToken =
           localStorage.getItem('refreshToken') &&
           localStorage.getItem('refreshToken');
-        const { data } = await axios.post(`${baseURL}/auth/refresh-token`, {
-          headers: { Authorization: 'Bearer ' + refreshToken },
-        });
+        const { data } = await axios.post(
+          `${baseURL}/auth/refresh-token`,
+          {},
+          {
+            headers: { Authorization: 'Bearer ' + refreshToken },
+          }
+        );
 
         localStorage.setItem('accessToken', data?.accessToken);
         localStorage.setItem('refreshToken', data?.refreshToken);
