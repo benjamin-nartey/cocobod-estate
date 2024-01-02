@@ -80,22 +80,23 @@ function LoginForm() {
       );
 
       if (response) {
+        localStorage.clear();
         localStorage.setItem('accessToken', response?.data?.accessToken);
         localStorage.setItem('refreshToken', response?.data?.refreshToken);
         // setAccessTokenAuth(response?.data?.accessToken);
         // setRefreshTokenAuth(response?.data?.refreshToken);
         const userResponse = await axiosInstance.get('/auth/user', {
-          // headers: {
-          //   'Content-Type': 'application/json',
-          //   Authorization: `Bearer ${response?.data?.accessToken}`,
-          // },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${response?.data?.accessToken}`,
+          },
         });
 
         const allocationResponse = await axiosInstance.get('/allocation/me', {
-          // headers: {
-          //   'Content-Type': 'application/json',
-          //   Authorization: `Bearer ${response?.data?.accessToken}`,
-          // },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${response?.data?.accessToken}`,
+          },
         });
         if (userResponse && allocationResponse) {
           const currentUser = {
