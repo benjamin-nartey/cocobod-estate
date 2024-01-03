@@ -1,41 +1,56 @@
-import { Button, Input, Popconfirm, Table, message } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { BiEdit } from 'react-icons/bi';
+import { Button, Input, Popconfirm, Table, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { BiEdit } from "react-icons/bi";
 // import { useGetPaginatedData } from "../../Hooks/query/generics";
 // import { getPaginatedProperties } from "../../http/properties";
-import { HiEye } from 'react-icons/hi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { HiEye } from "react-icons/hi";
+import { useNavigate, useParams } from "react-router-dom";
 // import { capitalize } from "../../utils/typography";
-import state from '../../store/store';
-import { useSnapshot } from 'valtio';
-import { useIndexedDB } from 'react-indexed-db-hook';
-import { axiosInstance } from '../../axios/axiosInstance';
-import Loader from '../../components/Loader/Loader';
+import state from "../../store/store";
+import { useSnapshot } from "valtio";
+import { useIndexedDB } from "react-indexed-db-hook";
+import { axiosInstance } from "../../axios/axiosInstance";
+import Loader from "../../components/Loader/Loader";
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { useAddPropertyUploadData } from "../../Hooks/useAddFetch";
+
 const PropertyUpload = () => {
-  const { getAll: getAllProperty } = useIndexedDB('property');
-  const { deleteRecord: deletePropertyRecord } = useIndexedDB('property');
-  const { getAll: getAllLocations } = useIndexedDB('locations');
-  const { getAll: getAllPropertyTypes } = useIndexedDB('propertyTypes');
-  const [data, setData] = useState([]);
-  const [location, setLocation] = useState('');
-  const [propertyType, setPropertyType] = useState('');
+  const { getAll: getAllProperty } = useIndexedDB("property");
+  const { deleteRecord: deletePropertyRecord } = useIndexedDB("property");
+  const { getAll: getAllLocations } = useIndexedDB("locations");
+  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
+  const [result, setResult] = useState([]);
+  const [location, setLocation] = useState("");
+  const [propertyType, setPropertyType] = useState("");
   const [loading, setLoading] = useState(false);
   const { regionId } = useParams();
   const [pageNum, setPageNum] = useState(1);
-  // const [paginatedData, props] = useGetPaginatedData(
-  //   "getAllProperties",
-  //   "",
-  //   { pageNum, statusFilter: "ACTIVE" },
-  //   getPaginatedProperties //TODO change url
-  // );
-  // console.log(props.data?.data?.records);
-  // const navigate = useNavigate();
-  useEffect(() => {
-    getAllProperty()
+
+  const { mutate } = useAddPropertyUploadData();
+
+  // useEffect(() => {
+  //   getAllProperty()
+  //     .then((result) => {
+  //       console.log({ result });
+  //       setResult(result);
+  //       return result;
+  //     })
+  //     .then((data) => {
+  //       const location = getAllLocations().then((locations) =>
+  //         locations.filter((location) => location === data)
+  //       );
+  //       setLocation(location);
+  //       return data;
+  //     });
+  // }, []);
+
+  const fetchProperty = () => {
+    const fetchedData = getAllProperty()
       .then((result) => {
         console.log({ result });
-        setData(result);
+        setResult(result);
         return result;
       })
       .then((data) => {
@@ -43,81 +58,129 @@ const PropertyUpload = () => {
           locations.filter((location) => location === data)
         );
         setLocation(location);
+        return data;
       });
-  }, []);
-  const handleUploadAll = () => {
-    setLoading(true);
-    Promise.allSettled([
-      data.map(async (property) => {
-        const data = {
-          name: property?.name,
-          description: property?.description,
-          propertyCode: property?.propertyCode,
-          digitalAddress: property?.digitalAddress,
-          propertyTypeId: property?.propertyTypeId,
-          locationId: property?.locationId,
-          propertyReferenceCategoryId: property?.propertyReferenceCategoryId,
-          lat: property?.lat,
-          long: property?.long,
-          landmark: property?.landmark,
-          politicalDistrictId: property?.politicalDistrictId,
-          propertyUnits: property?.propertyUnits,
-        };
-        return await axiosInstance.post('/properties/field-capture', data);
-      }),
-    ])
-      //   .then((response) =>
-      //     response.forEach((result) => {
-      //       if (result.status === "fulfilled") {
-      //         data.map((property) => {
-      //           deletePropertyRecord(property.id).then(() =>
-      //             console.log("deleted")
-      //           );
-      //         });
-      //       } else if (result.status === "rejected") {
-      //         console.log(result.reason);
-      //       }
-      //     })
-      //   )
-      //   .catch((error) => message.error(error))
-      .finally(() => {
-        setLoading(false);
-        message.success('Properties uploaded successfully');
-      });
+    return fetchedData;
   };
+
+  const { data, status, error } = useQuery(["property-upload"], () =>
+    fetchProperty()
+  );
+
+  // const handleUploadAll = () => {
+  //   setLoading(true);
+  //   Promise.allSettled([
+  //     data.map(async (property) => {
+  //       const data = {
+  //         name: property?.name,
+  //         description: property?.description,
+  //         propertyCode: property?.propertyCode,
+  //         digitalAddress: property?.digitalAddress,
+  //         propertyTypeId: property?.propertyTypeId,
+  //         locationId: property?.locationId,
+  //         propertyReferenceCategoryId: property?.propertyReferenceCategoryId,
+  //         lat: property?.lat,
+  //         long: property?.long,
+  //         landmark: property?.landmark,
+  //         politicalDistrictId: property?.politicalDistrictId,
+  //         propertyUnits: property?.propertyUnits,
+  //       };
+  //       return await axiosInstance.post("/properties/field-capture", data);
+  //     }),
+  //   ])
+  //     //   .then((response) =>
+  //     //     response.forEach((result) => {
+  //     //       if (result.status === "fulfilled") {
+  //     //         data.map((property) => {
+  //     //           deletePropertyRecord(property.id).then(() =>
+  //     //             console.log("deleted")
+  //     //           );
+  //     //         });
+  //     //       } else if (result.status === "rejected") {
+  //     //         console.log(result.reason);
+  //     //       }
+  //     //     })
+  //     //   )
+  //     //   .catch((error) => message.error(error))
+  //     .finally(() => {
+  //       setLoading(false);
+  //       message.success("Properties uploaded successfully");
+  //     });
+  // };
+
+  const handleUploadAll = () => {
+    try {
+      setLoading(true);
+
+      Promise.allSettled([
+        data.map(async (property) => {
+          const propertyData = {
+            name: property?.name,
+            description: property?.description,
+            propertyCode: property?.propertyCode,
+            digitalAddress: property?.digitalAddress,
+            propertyTypeId: property?.propertyTypeId,
+            locationId: property?.locationId,
+            propertyReferenceCategoryId: property?.propertyReferenceCategoryId,
+            lat: property?.lat,
+            long: property?.long,
+            landmark: property?.landmark,
+            politicalDistrictId: property?.politicalDistrictId,
+            propertyUnits: property?.propertyUnits,
+          };
+          mutate(propertyData, {
+            onSuccess: () => {
+              data.map((property) => {
+                const queryClient = useQueryClient();
+                deletePropertyRecord(property.id)
+                  .then(() => message.success("Property uploaded successfully"))
+                  .then(() => queryClient.invalidateQueries("property-upload"))
+                  .then(() => setLoading(false));
+              });
+            },
+          });
+        }),
+      ]);
+    } catch (error) {
+      message.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const snap = useSnapshot(state);
   // const { showEditPropertyModal } = snap.modalSlice;
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: "Name",
+      dataIndex: "name",
     },
     {
-      title: 'Property Description',
-      dataIndex: 'description',
+      title: "Property Description",
+      dataIndex: "description",
       render: (value) => {
         return <p>{value.toLowerCase()}</p>;
       },
     },
     {
-      title: 'Town',
-      dataIndex: ['location', 'name'],
+      title: "Town",
+      dataIndex: ["location", "name"],
     },
     {
-      title: 'Property Type',
-      dataIndex: ['propertyType', 'name'],
+      title: "Property Type",
+      dataIndex: ["propertyType", "name"],
     },
     {
-      title: 'Digital Address',
-      dataIndex: 'digitalAddress',
+      title: "Digital Address",
+      dataIndex: "digitalAddress",
     },
     {
-      title: 'Property Code',
-      dataIndex: 'propertyCode',
+      title: "Property Code",
+      dataIndex: "propertyCode",
     },
     {
-      title: 'Actions',
-      dataIndex: 'id',
+      title: "Actions",
+      dataIndex: "id",
       render: (value, record) => {
         return (
           <div className="flex items-center gap-4">
@@ -153,13 +216,14 @@ const PropertyUpload = () => {
           {loading ? (
             <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
           ) : (
-            'Upload'
+            "Upload"
           )}
         </button>
       </div>
       <div className="flex flex-col">
         <Input.Search placeholder="Search records..." />
         <Table
+          loading={status === "loading"}
           // loading={props?.isLoading}
           columns={columns}
           dataSource={data}

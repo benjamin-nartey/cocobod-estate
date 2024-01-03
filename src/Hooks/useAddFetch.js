@@ -84,4 +84,19 @@ export const useAddRoleData = () => {
   });
 };
 
+const addPropertyUpload = (property)=>{
+  return axiosInstance.post('/properties/field-capture', property);
+}
+
+export const useAddPropertyUploadData = () => {
+  const queryClient = useQueryClient();
+  return useMutation(addPropertyUpload, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('property-upload');
+    },
+  });
+};
+
+
+
 

@@ -185,7 +185,7 @@ const PropertyForm = (id) => {
 
   useEffect(() => {
     getDomainTowns(districtId || propertyReferenceCategories?.district?.id);
-  }, [districtId]);
+  }, [districtId, propertyReferenceCategories?.district?.id]);
 
   const fetchPropertyTypes = async () => {
     getAllPropertyTypes().then((propertyType) => {
@@ -206,24 +206,30 @@ const PropertyForm = (id) => {
   const [location, setLocation] = useState(null);
 
   const handleLocation = () => {
-    setLoading(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
-          form.setFieldValue("lat", latitude);
-          form.setFieldValue("long", longitude);
-          console.log(longitude, latitude);
-        },
-        (error) => {
-          console.error("Error getting location", error.message);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser");
+    try {
+      setLoading(true);
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            setLocation({ latitude, longitude });
+            form.setFieldValue("lat", latitude);
+            form.setFieldValue("long", longitude);
+            console.log(longitude, latitude);
+          },
+          (error) => {
+            console.error("Error getting location", error.message);
+            message.error("Error getting location", error.message);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser");
+      }
+    } catch (error) {
+      message.error(error);
+    }finally{
+      setLoading(false)
     }
-    setLoading(false);
   };
 
   const { mutate } = useAddPropertyData();
@@ -270,36 +276,79 @@ const PropertyForm = (id) => {
       long: `${values?.long.toFixed(10)}`,
       landmark: values?.landmark,
       politicalDistrictId: values?.politicalDistrict,
+      // propertyUnits: values?.propertyUnits?.length
+      //   ? values?.propertyUnits?.map((propertyUnit) => ({
+      //       descriptionPerFixedAssetReport:
+      //         propertyUnit.descriptionPerFixedAssetReport,
+      //       description: propertyUnit.description,
+      //       propertyCode: propertyUnit.propertyCode,
+      //       plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
+      //       floorArea: propertyUnit.floorArea
+      //         ? propertyUnit.floorArea
+      //         : undefined,
+      //       propertyTypeId: propertyUnit.propertyTypeId,
+      //       propertyReferenceId: propertyUnit?.id,
+      //       propertyOccupancy: propertyUnit.occupants?.length
+      //         ? propertyUnit.occupants?.map((occupant) => ({
+      //             name: occupant.occupantName
+      //               ? occupant.occupantName
+      //               : undefined,
+      //             category: occupant?.occupantType,
+      //             clientOccupantId: occupant.occupantId
+      //               ? occupant.occupantId
+      //               : undefined,
+      //           }))
+      //         : [],
+      //       propertyUnitStates: [
+      //         {
+      //           condition: propertyUnit?.condition,
+      //           remarks: propertyUnit?.remarks,
+      //         },
+      //       ],
+      //     }))
+      //   : [],
+
+      // photos: fileList,
       propertyUnits: values?.propertyUnits?.length
-        ? values?.propertyUnits?.map((propertyUnit) => ({
-            descriptionPerFixedAssetReport:
-              propertyUnit.descriptionPerFixedAssetReport,
-            description: propertyUnit.description,
-            propertyCode: propertyUnit.propertyCode,
-            plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
-            floorArea: propertyUnit.floorArea
-              ? propertyUnit.floorArea
-              : undefined,
-            propertyTypeId: propertyUnit.propertyTypeId,
-            propertyReferenceId: propertyUnit?.id,
-            propertyOccupancy: propertyUnit.occupants?.length
-              ? propertyUnit.occupants?.map((occupant) => ({
-                  name: occupant.occupantName
-                    ? occupant.occupantName
-                    : undefined,
-                  category: occupant?.occupantType,
-                  clientOccupantId: occupant.occupantId
-                    ? occupant.occupantId
-                    : undefined,
-                }))
-              : [],
-            propertyUnitStates: [
-              {
-                condition: propertyUnit?.condition,
-                remarks: propertyUnit?.remarks,
-              },
-            ],
-          }))
+        ? values?.propertyUnits?.map((propertyUnit) => {
+            const data = {
+              descriptionPerFixedAssetReport:
+                propertyUnit.descriptionPerFixedAssetReport,
+              description: propertyUnit.description,
+              propertyCode: propertyUnit.propertyCode,
+              // plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
+              // floorArea: propertyUnit.floorArea
+              //   ? propertyUnit.floorArea
+              //   : undefined,
+              propertyTypeId: propertyUnit.propertyTypeId,
+              propertyReferenceId: propertyUnit?.id,
+              propertyOccupancy: propertyUnit.occupants?.length
+                ? propertyUnit.occupants?.map((occupant) => ({
+                    name: occupant.occupantName
+                      ? occupant.occupantName
+                      : undefined,
+                    category: occupant?.occupantType,
+                    clientOccupantId: occupant.occupantId
+                      ? occupant.occupantId
+                      : undefined,
+                  }))
+                : [],
+              propertyUnitStates: [
+                {
+                  condition: propertyUnit?.condition,
+                  remarks: propertyUnit?.remarks,
+                },
+              ],
+            };
+
+            if (!propertyUnit.plotSize) {
+              data.floorSize = propertyUnit.floorArea;
+            } else {
+              data.plotSize = propertyUnit.plotSize;
+            }
+
+            return data;
+          })
         : [],
 
       photos: fileList,
