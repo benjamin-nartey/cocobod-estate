@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Button, Modal, Form, Input, message } from "antd";
 
@@ -6,9 +6,12 @@ import { UserOutlined } from "@ant-design/icons";
 
 import { useAddRoleData } from "../../Hooks/useAddFetch";
 import { axiosInstance } from "../../axios/axiosInstance";
+import CustomSelect from "../CustomSelect/CustomSelect";
 
 const AddRolesForm = () => {
   const [open, setOpen] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
 
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
@@ -16,25 +19,12 @@ const AddRolesForm = () => {
 
   const { mutate } = useAddRoleData();
 
-  const success = (content) => {
-    messageApi.open({
-      type: "success",
-      content: content,
-    });
-  };
-
-  const errorMessage = (content) => {
-    messageApi.open({
-      type: "error",
-      content: content,
-    });
-  };
-
   const [formFields, setformFields] = useState({
     name: "",
+    permissionIds: [],
   });
 
-  const { name } = formFields;
+  const { name, permissionIds } = formFields;
 
   const showModal = () => {
     setOpen(true);
@@ -44,23 +34,45 @@ const AddRolesForm = () => {
     setOpen(false);
   };
 
-  console.log(formFields);
+  async function fetchPermissions(pageNum) {
+    const response = await axiosInstance.get("/permissions", {
+      params: {
+        pageNum: pageNum,
+      },
+    });
+
+    const data = await response.data;
+
+    const dataRcord = await data.records.map((record) => {
+      return {
+        label: `${record.name}`,
+        value: record.id,
+      };
+    });
+    setOptions(dataRcord);
+  }
+
+  useEffect(() => {
+    fetchPermissions(pageNum);
+  }, []);
+
+  // console.log(formFields);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const role = name;
+      const role = {name, permissionIds};
       mutate(role, {
         onSuccess: () => {
-          success("Role created successfuly");
+          message.success("Role created successfuly");
 
           clearInput();
           handleCancel();
         },
       });
     } catch (error) {
-      errorMessage("Error creating role");
+      message.error("Error creating role");
       throw new Error(`Error in creating role ${error}`);
     }
   };
@@ -132,6 +144,29 @@ const AddRolesForm = () => {
               }
               placeholder="Enter role name"
               prefix={<UserOutlined />}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Permissions"
+            name="permissions"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <CustomSelect
+              mode="multiple"
+              value={permissionIds}
+              placeholder="Select permissions"
+              options={options}
+              onChange={(e) =>
+                setformFields({ ...formFields, permissionIds: e })
+              }
+              style={{
+                width: "100%",
+              }}
             />
           </Form.Item>
 

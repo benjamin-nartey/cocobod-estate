@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Form, Input, Table, message, Popconfirm } from "antd";
+import { Button, Modal, Form, Input, Table, message, Popconfirm, Tag } from "antd";
 
 import { DeleteOutlined } from "@ant-design/icons";
 import { BiEdit } from "react-icons/bi";
@@ -8,6 +8,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 
 import { axiosInstance } from "../../axios/axiosInstance";
+import CustomSelect from "../CustomSelect/CustomSelect";
 
 const RolesTable = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -23,6 +24,7 @@ const RolesTable = () => {
   const [formFields, setformFields] = useState({
     name: "",
     roleId: "",
+    permissionIds: [],
   });
 
   const confirm = (e) => {
@@ -30,7 +32,7 @@ const RolesTable = () => {
   };
   const cancel = (e) => {};
 
-  const { name, roleId } = formFields;
+  const { name, roleId, permissionIds } = formFields;
 
   const showModal = () => {
     setOpen(true);
@@ -39,20 +41,6 @@ const RolesTable = () => {
   const handleCancel = () => {
     setOpen(false);
     form.resetFields();
-  };
-
-  const success = (content) => {
-    messageApi.open({
-      type: "success",
-      content: content,
-    });
-  };
-
-  const errorMessage = (content) => {
-    messageApi.open({
-      type: "error",
-      content: content,
-    });
   };
 
   const handleOk = () => {
@@ -88,8 +76,8 @@ const RolesTable = () => {
     console.log(error);
   }
 
-  async function fetchDivisions(pageNum) {
-    const response = await axiosInstance.get("/divisions", {
+  async function fetchPermissions(pageNum) {
+    const response = await axiosInstance.get("/permissions", {
       params: {
         pageNum: pageNum,
       },
@@ -107,7 +95,7 @@ const RolesTable = () => {
   }
 
   useEffect(() => {
-    fetchDivisions(pageNum);
+    fetchPermissions(pageNum);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -116,16 +104,16 @@ const RolesTable = () => {
     try {
       const response = await axiosInstance.patch(`/roles/${roleId}`, {
         name,
+        permissionIds,
       });
 
       if (response) {
-        success("Role updated successfully");
-
+        message.success("Role updated successfully");
         clearInput();
         handleCancel();
       }
     } catch (error) {
-      errorMessage("Error updating role");
+      message.error("Error updating role");
       throw new Error(`Error adding user edits ${error}`);
     }
   };
@@ -147,6 +135,19 @@ const RolesTable = () => {
           String(record.status).toLowerCase().includes(value.toLowerCase())
         );
       },
+    },
+
+    {
+      title: "Permissions",
+      dataIndex: "permissions",
+      key: "permissions",
+      render: (_, { permissions }) => (
+        <>
+          {permissions?.map((permission, i) => (
+            <Tag key={i}>{permission?.name}</Tag>
+          ))}
+        </>
+      ),
     },
 
     {
@@ -252,6 +253,29 @@ const RolesTable = () => {
               }
               placeholder="Enter role name"
               prefix={<UserOutlined />}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Permissions"
+            name="permissions"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <CustomSelect
+              mode="multiple"
+              value={permissionIds}
+              placeholder="Select permissions"
+              options={options}
+              onChange={(e) =>
+                setformFields({ ...formFields, permissionIds: e })
+              }
+              style={{
+                width: "100%",
+              }}
             />
           </Form.Item>
 
