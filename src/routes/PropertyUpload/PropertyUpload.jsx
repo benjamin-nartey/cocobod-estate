@@ -34,9 +34,13 @@ const PropertyUpload = () => {
   useEffect(() => {
     getAllProperty()
       .then((result) => {
-        console.log({ result });
-        setData(result);
-        return result;
+        const data = result.map((r) => ({
+          ...r,
+          key: r?.id,
+        }));
+        console.log({ data });
+        setData(data);
+        return data;
       })
       .then((data) => {
         const location = getAllLocations().then((locations) =>

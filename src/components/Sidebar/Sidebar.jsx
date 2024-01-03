@@ -104,7 +104,7 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdDashboard size={18} />
-                Dasboard
+                Dashboard
               </NavLink>
               <NavLink
                 to="/report"

@@ -25,7 +25,7 @@ import { useAddPropertyData } from '../../Hooks/useAddFetch';
 
 import { useIndexedDB } from 'react-indexed-db-hook';
 import Loader from '../Loader/Loader';
-import { get } from 'lodash';
+import { useNavigate } from 'react-router-dom';
 
 const PropertyForm = (id) => {
   const [propertyUnitReference, setPropertyUnitRefernce] = useState(null);
@@ -56,6 +56,8 @@ const PropertyForm = (id) => {
       value: 'NON LBC',
     },
   ]);
+
+  const navigate = useNavigate();
   // const { propertyReferenceCategories, setpropertyReferenceCategories } = useContext(
   //   propertyReferenceCategoriesContext
   // );
@@ -89,7 +91,6 @@ const PropertyForm = (id) => {
             (pr) => pr?.id === id?.id
           );
 
-          console.log({ referencesCategories });
           setPropertyReferenceCategories(referencesCategories[0]);
         }
       );
@@ -129,7 +130,6 @@ const PropertyForm = (id) => {
 
   const getPoliticalRegions = () => {
     getAllPoliticalRegions().then((regions) => {
-      console.log('politicalRegion', regions);
       const data = regions.map((record) => {
         return {
           label: record?.name,
@@ -147,7 +147,6 @@ const PropertyForm = (id) => {
 
   const getPolitcalDistricts = (regionId) => {
     getAllPoliticalDistricts().then((districts) => {
-      console.log(districts);
       const getDistrictsByRegionId = districts.filter(
         (district) => district?.politicalRegion?.id === regionId
       );
@@ -171,7 +170,7 @@ const PropertyForm = (id) => {
       const getTownsByRegionId = locations.filter(
         (location) => location?.districtId === districtId
       );
-      console.log({ getTownsByRegionId });
+      // console.log({ getTownsByRegionId });
 
       const data = getTownsByRegionId.map((record) => {
         return {
@@ -205,6 +204,8 @@ const PropertyForm = (id) => {
 
   const [location, setLocation] = useState(null);
 
+  console.log(loading);
+
   const handleLocation = () => {
     setLoading(true);
     if (navigator.geolocation) {
@@ -214,16 +215,18 @@ const PropertyForm = (id) => {
           setLocation({ latitude, longitude });
           form.setFieldValue('lat', latitude);
           form.setFieldValue('long', longitude);
-          console.log(longitude, latitude);
+          // console.log(longitude, latitude);
+          setLoading(false);
         },
         (error) => {
-          console.error('Error getting location', error.message);
+          message.error('Error getting location', error.message);
         }
       );
     } else {
-      console.error('Geolocation is not supported by this browser');
+      setLoading(false);
+      message.error('Geolocation is not supported by this browser');
     }
-    setLoading(false);
+    // setLoading(false);
   };
 
   const { mutate } = useAddPropertyData();
@@ -261,7 +264,7 @@ const PropertyForm = (id) => {
     const data = {
       name: values?.name,
       description: values?.description,
-      propertyCode: values?.propertyCode,
+      propertyCode: values?.digitalAddress,
       digitalAddress: values?.digitalAddress,
       propertyTypeId: values?.propertyTypeId,
       locationId: values?.locationId,
@@ -275,7 +278,7 @@ const PropertyForm = (id) => {
             descriptionPerFixedAssetReport:
               propertyUnit.descriptionPerFixedAssetReport,
             description: propertyUnit.description,
-            propertyCode: propertyUnit.propertyCode,
+            // propertyCode: propertyUnit.propertyCode,
             plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
             floorArea: propertyUnit.floorArea
               ? propertyUnit.floorArea
@@ -309,12 +312,13 @@ const PropertyForm = (id) => {
       () => {
         // success(`${values.name} saved successfully`);
         message.success(`${values.name} saved successfully`);
-        // form.resetFields();
+        form.resetFields();
+        navigate('/property-upload');
+
         // setpropertyReferenceCategories(null);
       },
       (error) => {
-        console.log(error);
-        message.error(`Error saving ${values.name}`);
+        message.error(error.message);
       }
     );
   };
@@ -373,7 +377,7 @@ const PropertyForm = (id) => {
               />
             </Form.Item>
 
-            <Form.Item
+            {/* <Form.Item
               label="Property Code"
               name="propertyCode"
               rules={[
@@ -388,7 +392,7 @@ const PropertyForm = (id) => {
                 placeholder="Enter property code"
                 prefix={<MdOutlineEmail />}
               />
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item
               label="Description"
@@ -628,6 +632,10 @@ const PropertyForm = (id) => {
           </Form>
         </div>
       )}
+
+      {/* {loading && (
+        <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
+      )} */}
     </Fragment>
   );
 };
