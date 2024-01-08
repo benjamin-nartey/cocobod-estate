@@ -67,17 +67,21 @@ import PoliticalRegion from "./routes/Political Region/PoliticalRegion";
 import { useIndexedDB } from "react-indexed-db-hook";
 
 function App() {
-  const [offlineUser, setOfflineUser] = useState(null);
+  // const [offlineUser, setOfflineUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
   const isOnLine = useOnlineStatus();
 
   const { getAll: getOfflineUser } = useIndexedDB("offlineUser");
+  const [offlineUser, setOfflineUser] = useLocalStorage(
+    "offlineUser",
+    null
+  );
 
-  useEffect(() => {
-    getOfflineUser().then((data) => setOfflineUser(data[0]));
-  }, []);
+  // useEffect(() => {
+  //   getOfflineUser().then((data) => setOfflineUser(data[0]));
+  // }, []);
   console.log({ offlineUser });
   // const [currentUserState, setCurrentUserState] = useLocalStorage(
   //   'currentUserState',

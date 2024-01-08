@@ -171,17 +171,17 @@ export const ESTATE_DB_CONFIG = {
       ],
     },
 
-    {
-      store: "offlineUser",
-      storeConfig: { keyPath: "id" },
-      storeSchema: [
-        { name: "id", keyPath: "id", options: { unique: true } },
-        { name: "name", keyPath: "name", options: { unique: false } },
-        { name: "email", keyPath: "email", options: { unique: false } },
-        { name: "roles", keyPath: "roles", options: { unique: false } },
-        { name: "staff", keyPath: "staff", options: { unique: false } },
-      ],
-    },
+    // {
+    //   store: "offlineUser",
+    //   storeConfig: { keyPath: "id" },
+    //   storeSchema: [
+    //     { name: "id", keyPath: "id", options: { unique: true } },
+    //     { name: "name", keyPath: "name", options: { unique: false } },
+    //     { name: "email", keyPath: "email", options: { unique: false } },
+    //     { name: "roles", keyPath: "roles", options: { unique: false } },
+    //     { name: "staff", keyPath: "staff", options: { unique: false } },
+    //   ],
+    // },
 
     {
       store: "property",

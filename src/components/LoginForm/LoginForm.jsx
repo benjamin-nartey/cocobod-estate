@@ -39,20 +39,26 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const isOnLine = useOnlineStatus();
   const [cookies, setCookie] = useCookies(["name"]);
-  const [offlineUser, setOfflineUser] = useState(null);
+  // const [offlineUser, setOfflineUser] = useState(null);
 
   const { add: addOfflineUser } = useIndexedDB("offlineUser");
 
   const { getAll: getOfflineUser } = useIndexedDB("offlineUser");
 
-  useEffect(() => {
-    getOfflineUser().then((data) => setOfflineUser(data[0]));
-  }, []);
+  // useEffect(() => {
+  //   getOfflineUser().then((data) => setOfflineUser(data[0]));
+  // }, []);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
     "accessToken",
     null
   );
+
+  const [offlineUser, setOfflineUser] = useLocalStorage(
+    "offlineUser",
+    null
+  );
+  
   const [refreshTokenAuth, setRefreshTokenAuth] = useLocalStorage(
     "refreshToken",
     null
@@ -124,7 +130,7 @@ function LoginForm() {
 
           state.auth.currentUser = currentUser;
 
-          addOfflineUser(currentUser);
+          setOfflineUser(currentUser);
 
           setAccessTokenAuth(response?.data?.accessToken);
           setRefreshTokenAuth(response?.data?.refreshToken);
