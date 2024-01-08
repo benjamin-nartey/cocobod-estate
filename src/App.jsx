@@ -63,6 +63,7 @@ import PropertyUpload from './routes/PropertyUpload/PropertyUpload';
 import Town from './routes/Towns/Town';
 import PoliticalDistrict from './routes/Political District/PoliticalDistrict';
 import PoliticalRegion from './routes/Political Region/PoliticalRegion';
+import PropertyMergeDetail from './routes/PropertyMerge/PropertyMergeDetail';
 
 function App() {
   const navigate = useNavigate();
@@ -216,6 +217,7 @@ function App() {
           <Route path="/merge">
             <Route index element={<PropertyMergeIndex />} />
             <Route path="create" element={<PropertyMerge />} />
+            <Route path=":id" element={<PropertyMergeDetail />} />
           </Route>
         </Route>
       </Route>

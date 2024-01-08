@@ -9,7 +9,7 @@ import state from '../../store/store';
 import Loader from '../Loader/Loader';
 
 // import { useSnapshot } from "valtio";
-import bcrypt from 'bcryptjs';
+
 import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { axiosInstance } from '../../axios/axiosInstance';
@@ -21,11 +21,6 @@ const defaultFormFields = {
 
 const defaultPassword = import.meta.env.VITE_APP_DEFAULT_PASSWORD;
 
-const hashedDefaultPassword = bcrypt.hashSync(
-  defaultPassword,
-  bcrypt.genSaltSync()
-);
-
 function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);
   const { email, password } = formFields;
@@ -34,14 +29,14 @@ function LoginForm() {
   const isOnLine = useOnlineStatus();
   const [cookies, setCookie] = useCookies(['name']);
 
-  const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
-    'accessToken',
-    null
-  );
-  const [refreshTokenAuth, setRefreshTokenAuth] = useLocalStorage(
-    'refreshToken',
-    null
-  );
+  // const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
+  //   'accessToken',
+  //   null
+  // );
+  // const [refreshTokenAuth, setRefreshTokenAuth] = useLocalStorage(
+  //   'refreshToken',
+  //   null
+  // );
 
   // const snap = useSnapshot(state);
   // console.log(snap.currentUser.currentUser.email);

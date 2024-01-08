@@ -11,10 +11,12 @@ import { useSnapshot } from 'valtio';
 import { CRUDTYPES } from '../../store/modalSlice';
 import { useGetPropertyTypes } from '../../Hooks/query/propertyType';
 import { getDistrictsByRegionId } from '../../http/district';
+import { useGetLocationByDisrictId } from '../../Hooks/query/locations';
 
 const PropertyCreateForm = ({ move }) => {
   const { data } = useGetPropertyTypes();
   const [selectedRegionId, setSelectedRegionId] = useState(null);
+  const [selectedDistrictId, setSelectedDistrictId] = useState(null);
 
   const { mutate, isLoading } = useMutation({
     mutationKey: 'saveProperty',
@@ -43,6 +45,16 @@ const PropertyCreateForm = ({ move }) => {
     enabled: false,
   });
 
+  const {
+    data: towns,
+    refetch: fetchTownsByDistrictId,
+    isLoading: isLoadingTowns,
+  } = useGetLocationByDisrictId(selectedDistrictId);
+
+  useEffect(() => {
+    fetchTownsByDistrictId();
+  }, [selectedDistrictId]);
+
   useEffect(() => {
     fetchDistricts();
   }, [selectedRegionId]);
@@ -53,7 +65,6 @@ const PropertyCreateForm = ({ move }) => {
       return updatePropertyReferenceCategory(selectedRecord?.id, { ...data });
     },
     onSuccess: (data) => {
-      console.log({ data });
       state.mergeSlice.addedProperty = data?.data;
 
       message.success('Property Pending Merge');
@@ -79,8 +90,9 @@ const PropertyCreateForm = ({ move }) => {
     crudType === CRUDTYPES.EDIT
       ? {
           name: selectedRecord?.name,
-          regionId: selectedRecord?.district?.region?.id,
-          districtId: selectedRecord?.district?.id,
+          regionId: selectedRecord?.location?.district?.region?.id,
+          districtId: selectedRecord?.location?.district?.id,
+          locationId: selectedRecord?.location?.id,
           propertyTypeId: selectedRecord?.propertyType?.id,
         }
       : {};
@@ -118,7 +130,7 @@ const PropertyCreateForm = ({ move }) => {
         <Form.Item
           name={'regionId'}
           label={'Region'}
-          // rules={[{ required: true }]}
+          rules={[{ required: true }]}
         >
           <Select
             placeholder={'Select Region'}
@@ -136,10 +148,25 @@ const PropertyCreateForm = ({ move }) => {
         >
           <Select
             loading={DistrictLoading}
+            onChange={(value) => setSelectedDistrictId(value)}
             placeholder={'Select District'}
             options={district?.data.map((dist) => ({
               label: dist.name,
               value: dist.id,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item
+          name={'locationId'}
+          label={'Location/Town'}
+          rules={[{ required: true }]}
+        >
+          <Select
+            loading={isLoadingTowns}
+            placeholder={'Select Location/Town'}
+            options={towns?.data.map((town) => ({
+              label: town.name,
+              value: town.id,
             }))}
           />
         </Form.Item>

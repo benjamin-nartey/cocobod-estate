@@ -1,9 +1,15 @@
 import { Fragment, useState } from 'react';
 
-import { HiArrowDown, HiMenu } from 'react-icons/hi';
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
+import {
+  HiArrowDown,
+  HiArrowLeft,
+  HiArrowNarrowLeft,
+  HiMenu,
+} from 'react-icons/hi';
+import { MdOutlineArrowLeft, MdOutlineKeyboardArrowDown } from 'react-icons/md';
 import {
   AiFillCloseCircle,
+  AiOutlineArrowLeft,
   AiOutlineDown,
   AiOutlinePoweroff,
 } from 'react-icons/ai';
@@ -20,6 +26,7 @@ import Loader from '../../components/Loader/Loader';
 
 import { useSnapshot } from 'valtio';
 import { Outlet } from 'react-router-dom/dist';
+import { GiArrowDunk, GiArrowFlights } from 'react-icons/gi';
 
 function Navigation() {
   const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -32,6 +39,8 @@ function Navigation() {
   );
 
   const location = useLocation();
+
+  const navigate = useNavigate();
 
   const { logout } = useContext(LogoutContext);
 
@@ -87,6 +96,13 @@ function Navigation() {
               className="w-full h-full p-5"
             >
               <div className="w-full flex justify-between items-center">
+                <div
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => navigate(-1)}
+                >
+                  <HiArrowLeft className="text-white cursor-pointer" />
+                  <span className="text-white/75">Back</span>
+                </div>
                 <HiMenu
                   onClick={() => setToggleSidebar(true)}
                   className="text-[25px] text-white cursor-pointer hidden max-md:block"

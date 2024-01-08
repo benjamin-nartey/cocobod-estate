@@ -13,6 +13,7 @@ import { useGetProperty } from '../../Hooks/query/properties';
 
 import { useMutation } from '@tanstack/react-query';
 import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
+import state from '../../store/store';
 
 function PropertyDetail() {
   const sliderRef = useRef();
@@ -299,7 +300,10 @@ function PropertyDetail() {
           <div className="w-[18rem] h-[6rem] hover:shadow-lg border-solid border-2 border-white rounded-2xl">
             {property?.data?.long && property?.data.lat ? (
               <NavLink
-                onClick={() => setSearchResult([property?.data])}
+                onClick={() => {
+                  state.mapSlice.selectedProperty = [property?.data];
+                  // setSearchResult([property?.data]);
+                }}
                 to="/map"
               >
                 <img

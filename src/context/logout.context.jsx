@@ -21,7 +21,7 @@ export const LogoutProvider = ({ children }) => {
   const from = location.state?.from?.pathname || '/login';
 
   const logout = async () => {
-    const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
+    const refreshToken = localStorage.getItem('refreshToken');
     const api = axios.create({
       baseURL: 'https://estate-api-2.onrender.com/api/v1',
       // baseURL: 'http://localhost:3000/api/v1',
@@ -34,7 +34,7 @@ export const LogoutProvider = ({ children }) => {
     if (online) {
       try {
         state.loadingState = true;
-        const response = await axiosInstance.delete('/auth', {
+        const response = await api.delete('/auth', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${refreshToken}`,

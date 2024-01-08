@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Modal, Form, Input, message } from 'antd';
+import { Button, Modal, Form, Input, message, Select } from 'antd';
 
 import { UserOutlined } from '@ant-design/icons';
 import { MdOutlineEmail } from 'react-icons/md';
@@ -9,6 +9,9 @@ import CustomSelect from '../CustomSelect/CustomSelect';
 
 import { axiosInstance } from '../../axios/axiosInstance';
 import { useAddUserData } from '../../Hooks/useAddFetch';
+import { useGetRoles } from '../../Hooks/query/roles';
+import { useGetAllDepartments } from '../../Hooks/query/department';
+import { useGetAllDivisions } from '../../Hooks/query/divisions';
 
 const AddUsersForm = () => {
   const [open, setOpen] = useState(false);
@@ -20,6 +23,9 @@ const AddUsersForm = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { mutate } = useAddUserData();
+  const { data: roles } = useGetRoles();
+  const { data: departments } = useGetAllDepartments();
+  const { data: divisions } = useGetAllDivisions();
 
   const success = (content) => {
     messageApi.open({
@@ -187,6 +193,50 @@ const AddUsersForm = () => {
           </Form.Item>
 
           <Form.Item
+            label="Division"
+            name="divisionId"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select
+              showSearch
+              optionFilterProp={'label'}
+              placeholder="Select division"
+              options={divisions?.data?.map((division) => ({
+                label: division?.name,
+                value: division?.id,
+              }))}
+              style={{
+                width: '100%',
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Department"
+            name="departmentId"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select
+              showSearch
+              optionFilterProp={'label'}
+              placeholder="Select department"
+              options={departments?.data?.map((department) => ({
+                label: department?.name,
+                value: department?.id,
+              }))}
+              style={{
+                width: '100%',
+              }}
+            />
+          </Form.Item>
+          <Form.Item
             label="Roles"
             name="roleIds"
             rules={[
@@ -195,11 +245,15 @@ const AddUsersForm = () => {
               },
             ]}
           >
-            <CustomSelect
+            <Select
               mode="multiple"
-              value={roleIds}
+              showSearch
+              optionFilterProp={'label'}
               placeholder="Select roles"
-              options={options}
+              options={roles?.data?.map((role) => ({
+                label: role?.name,
+                value: role?.id,
+              }))}
               style={{
                 width: '100%',
               }}

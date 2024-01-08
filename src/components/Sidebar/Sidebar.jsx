@@ -354,7 +354,10 @@ function Sidebar({ closeToggle }) {
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
             }
-            onClick={handleCloseSidebar}
+            onClick={() => {
+              state.mapSlice.selectedProperty = null;
+              handleCloseSidebar();
+            }}
           >
             <IoMdMap size={18} />
             Map

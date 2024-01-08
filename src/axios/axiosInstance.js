@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// export let baseURL = import.meta.env.VITE_BASE_URL;
-export let baseURL = 'https://estate-api-2.onrender.com/api/v1';
+export let baseURL = import.meta.env.VITE_BASE_URL;
+// export let baseURL = 'https://estate-api-2.onrender.com/api/v1';
 const axiosInstance = axios.create({
   baseURL,
 });
@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
           localStorage.getItem('refreshToken') &&
           localStorage.getItem('refreshToken');
         const { data } = await axios.post(
-          `${baseURL}/auth/refresh-token`,
+          `${baseURL}auth/refresh-token`,
           {},
           {
             headers: { Authorization: 'Bearer ' + refreshToken },
