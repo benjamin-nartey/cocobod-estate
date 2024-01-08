@@ -236,6 +236,7 @@ function Sidebar({ closeToggle }) {
                 <MdAreaChart size={25} />
                 Cocoa Regions
               </NavLink>
+              
               <NavLink
                 to="/political-regions"
                 className={({ isActive }) =>

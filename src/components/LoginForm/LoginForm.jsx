@@ -12,7 +12,8 @@ import Loader from "../Loader/Loader";
 import bcrypt from "bcryptjs";
 import { useCookies } from "react-cookie";
 import axios from "axios";
-import { axiosInstance } from "../../axios/axiosInstance";
+import { useIndexedDB } from "react-indexed-db-hook";
+import { message } from "antd";
 
 const defaultFormFields = {
   email: "",
@@ -38,6 +39,15 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const isOnLine = useOnlineStatus();
   const [cookies, setCookie] = useCookies(["name"]);
+  const [offlineUser, setOfflineUser] = useState(null);
+
+  const { add: addOfflineUser } = useIndexedDB("offlineUser");
+
+  const { getAll: getOfflineUser } = useIndexedDB("offlineUser");
+
+  useEffect(() => {
+    getOfflineUser().then((data) => setOfflineUser(data[0]));
+  }, []);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
     "accessToken",
@@ -71,52 +81,77 @@ function LoginForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(password, defaultPassword);
+    // console.log(password, defaultPassword);
 
     try {
       setLoading(true);
-      const response = await API.post(
-        "/auth",
-        { email, password },
-        {
+
+      if (isOnLine) {
+        const response = await API.post(
+          "/auth",
+          { email, password },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "X-IP-Address": ipAddress,
+            },
+          }
+        );
+
+        const userResponse = await API.get("/auth/user", {
           headers: {
             "Content-Type": "application/json",
-            "X-IP-Address": ipAddress,
+            Authorization: `Bearer ${response?.data?.accessToken}`,
           },
+        });
+
+        const allocationResponse = await API.get("/allocation/me", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${response?.data?.accessToken}`,
+          },
+        });
+
+        if (userResponse && allocationResponse) {
+          const currentUser = {
+            id: userResponse.data.id,
+            name: userResponse.data.name,
+            email: userResponse.data.email,
+            staff: userResponse.data.staff,
+            roles: userResponse.data.roles,
+            allocationData: allocationResponse.data.region,
+          };
+
+          state.auth.currentUser = currentUser;
+
+          addOfflineUser(currentUser);
+
+          setAccessTokenAuth(response?.data?.accessToken);
+          setRefreshTokenAuth(response?.data?.refreshToken);
+
+          navigate(from, { replace: true });
         }
-      );
+      } else {
+        //match password
+        bcrypt.compare(
+          password,
+          hashedDefaultPassword,
+          function (error, isMatch) {
+            if (error) {
+              throw error;
+            } else if (!isMatch) {
+              console.log("wrong password");
+              message.error("Wrong password");
+            } else if (isMatch && email !== offlineUser?.email) {
+              console.log("wrong email");
+              message.error("Wrong email");
+            } else if (isMatch && email === offlineUser?.email) {
+              state.auth.currentUser = offlineUser;
 
-      const userResponse = await API.get("/auth/user", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${response?.data?.accessToken}`,
-        },
-      });
-
-      const allocationResponse = await API.get("/allocation/me", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${response?.data?.accessToken}`,
-        },
-      });
-      if (userResponse && allocationResponse) {
-        const currentUser = {
-          name: userResponse.data.name,
-          email: userResponse.data.email,
-          staff: userResponse.data.staff,
-          roles: userResponse.data.roles,
-          allocationData: allocationResponse.data.region,
-        };
-
-        state.auth.currentUser = currentUser;
-
-        // setCookie("name", userResponse.data.name);
-        // setCookie('currentUser', offlineUser);
-
-        setAccessTokenAuth(response?.data?.accessToken);
-        setRefreshTokenAuth(response?.data?.refreshToken);
-
-        navigate(from, { replace: true });
+              navigate(from, { replace: true });
+            }
+          }
+        );
       }
     } catch (error) {
       console.log(error);

@@ -1,9 +1,10 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 import FetchingPage from "./routes/FetchingPage/FetchingPage";
 import Navigation from "./routes/Navigation/Navigation";
+import { useOnlineStatus } from "./Hooks/useIsOnlineStatus";
 
 import { axiosInstance } from "./axios/axiosInstance";
 import state from "./store/store";
@@ -63,13 +64,21 @@ import PropertyUpload from "./routes/PropertyUpload/PropertyUpload";
 import Town from "./routes/Towns/Town";
 import PoliticalDistrict from "./routes/Political District/PoliticalDistrict";
 import PoliticalRegion from "./routes/Political Region/PoliticalRegion";
+import { useIndexedDB } from "react-indexed-db-hook";
 
 function App() {
+  const [offlineUser, setOfflineUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
-  // const [online, setonline] = useState(navigator.onLine);
+  const isOnLine = useOnlineStatus();
 
+  const { getAll: getOfflineUser } = useIndexedDB("offlineUser");
+
+  useEffect(() => {
+    getOfflineUser().then((data) => setOfflineUser(data[0]));
+  }, []);
+  console.log({ offlineUser });
   // const [currentUserState, setCurrentUserState] = useLocalStorage(
   //   'currentUserState',
   //   null
@@ -84,25 +93,29 @@ function App() {
 
   const fetchUser = async () => {
     try {
-      const response = await axiosInstance.get("/auth/user");
-      const allocationResponse = await axiosInstance.get("/allocation/me");
+      if (isOnLine) {
+        const response = await axiosInstance.get("/auth/user");
+        const allocationResponse = await axiosInstance.get("/allocation/me");
 
-      if (response.status === 200 && allocationResponse.status === 200) {
-        const currentUser = {
-          name: response.data.name,
-          email: response.data.email,
-          staff: response.data.staff,
-          roles: response.data.roles,
-          allocationData: allocationResponse.data.region,
-        };
+        if (response.status === 200 && allocationResponse.status === 200) {
+          const currentUser = {
+            name: response.data.name,
+            email: response.data.email,
+            staff: response.data.staff,
+            roles: response.data.roles,
+            allocationData: allocationResponse.data.region,
+          };
 
-        state.auth.currentUser = currentUser;
-        state.auth.loadingState = false;
+          state.auth.currentUser = currentUser;
+          state.auth.loadingState = false;
 
+          navigate(from, { replace: true });
+        }
+      } else {
+        state.auth.currentUser = offlineUser;
         navigate(from, { replace: true });
       }
     } catch (error) {
-      state.auth.loadingState = false;
       console.log(error);
     } finally {
       state.auth.loadingState = false;
@@ -111,7 +124,7 @@ function App() {
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [offlineUser]);
 
   return (
     <Routes>
@@ -125,15 +138,8 @@ function App() {
       <Route path="*" element={<NotExistPage />} />
 
       <Route element={<Navigation />}>
-        {/*********  Public Routes **********/}
-
-        <Route
-          element={
-            <RequireAuth
-              allowedRoles={["Super Administrator", "Divisional Administrator"]}
-            />
-          }
-        >
+        {/********* Home Routes **********/}
+        <Route element={<RequireAuth allowedPermissions={["view.property"]} />}>
           <Route element={<Home />}>
             <Route path="/home" element={<Properties />} />
             <Route path="/home/*" element={<NotExistPage />} />
@@ -156,7 +162,16 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedPermissions={import.meta.env.VITE_INSPECTOR_PERMISSIONS}
+              allowedPermissions={[
+                "view.allocation",
+                "list.district",
+                "list.location",
+                "list.property-type",
+                "create.property-capture",
+                " list.property-reference",
+                "list.property-reference-category",
+                "list.client-occupant",
+              ]}
             />
           }
         >
@@ -242,6 +257,7 @@ function App() {
           }
         >
           <Route path="/locations" element={<Town />} />
+          <Route path="/towns" element={<Town />} />
         </Route>
 
         {/******* deployment Routes ********/}
@@ -277,10 +293,13 @@ function App() {
           }
         >
           <Route path="/district" element={<District />} />
+          <Route path="/political-districts" element={<PoliticalDistrict />} />
+          <Route path="/political-regions" element={<PoliticalRegion />} />
+          <Route path="/areas" element={<Areas />} />
         </Route>
 
         {/******* Area Routes ********/}
-        <Route
+        {/* <Route
           element={
             <RequireAuth
               allowedPermissions={[
@@ -293,7 +312,7 @@ function App() {
           }
         >
           <Route path="/areas" element={<Areas />} />
-        </Route>
+        </Route> */}
 
         {/******* Property-type Routes ********/}
         <Route
@@ -343,8 +362,8 @@ function App() {
           <Route path="/property-units-main" element={<PropertyUnitsMain />} />
         </Route>
 
-         {/******* Property-reference Routes ********/}
-         <Route
+        {/******* Property-reference Routes ********/}
+        <Route
           element={
             <RequireAuth
               allowedPermissions={[
@@ -359,23 +378,12 @@ function App() {
           <Route path="/property-references" element={<PropertyReferences />} />
         </Route>
 
+        {/*******Moderation Route******/}
         <Route
           element={
-            <RequireAuth
-              allowedPermissions={[
-                "Super Administrator",
-                "Divisional Administrator",
-              ]}
-            />
+            <RequireAuth allowedPermissions={["update.property-unit"]} />
           }
         >
-          <Route path="/report" element={<Report />} />
-
-          <Route path="/political-districts" element={<PoliticalDistrict />} />
-          <Route path="/political-regions" element={<PoliticalRegion />} />
-          <Route path="/towns" element={<Town />} />
-
-
           <Route path="moderation">
             <Route index element={<ModerationDashboard />} />
             <Route
@@ -391,11 +399,25 @@ function App() {
               element={<ModerationDetails />}
             />
           </Route>
+        </Route>
 
+        {/*******Merge******/}
+        <Route
+          element={
+            <RequireAuth
+              allowedPermissions={["create.property-reference-category"]}
+            />
+          }
+        >
           <Route path="/merge">
             <Route index element={<PropertyMergeIndex />} />
             <Route path="create" element={<PropertyMerge />} />
           </Route>
+        </Route>
+
+        {/*******Report******/}
+        <Route element={<RequireAuth allowedPermissions={["view.property"]} />}>
+          <Route path="/report" element={<Report />} />
         </Route>
       </Route>
     </Routes>

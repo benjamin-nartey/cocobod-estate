@@ -7,21 +7,9 @@ import { message } from "antd";
 import { NavLink } from "react-router-dom";
 
 import { useGetDashboard } from "../../Hooks/query/dashboard";
-import {
-  propertiesIcon,
-  propertiesThumbnail,
-  departmentsIcon,
-  departmentThumbnail,
-  usersIcon,
-  divisionsIcon,
-  usersThumbnail,
-  divisionsThumbnail,
-  rolesIcon,
-  rolesThumbnail,
-} from "../../assets/icons/icons";
+
 import ReportLineChart from "../../components/charts/LineChart/ReportLineChart";
 import ReportPieChart from "../../components/charts/PieChart/ReportPieChart";
-import { cn } from "../../utils/helper";
 import nodata from "../../assets/nodata.json";
 import Lottie from "lottie-react";
 import { useSnapshot } from "valtio";

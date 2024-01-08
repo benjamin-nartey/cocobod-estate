@@ -8,6 +8,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export const LogoutContext = createContext({
   online: false,
+  isOffLineLogout: false,
+  setIsOffLineLogout: () => false,
   location: "",
   navigate: "",
   logout: () => null,
@@ -15,6 +17,7 @@ export const LogoutContext = createContext({
 
 export const LogoutProvider = ({ children }) => {
   const online = useOnlineStatus();
+  const [isOffLineLogout, setIsOffLineLogout] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -47,21 +50,26 @@ export const LogoutProvider = ({ children }) => {
           localStorage.removeItem("refreshToken");
           // localStorage.removeItem("currentUser");
           // localStorage.removeItem('currentUserState');
-          state.currentUser = {};
+          state.auth.currentUserr = {};
           navigate(from, { replace: true });
           return response;
         }
       } catch (error) {
         console.log(error);
       } finally {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        navigate(from, { replace: true });
         state.loadingState = false;
       }
     } else {
+      setIsOffLineLogout(true);
+      state.auth.currentUserr = {};
       navigate(from, { replace: true });
     }
   };
 
-  const value = { logout };
+  const value = { logout, isOffLineLogout, setIsOffLineLogout };
 
   return (
     <LogoutContext.Provider value={value}>{children}</LogoutContext.Provider>
