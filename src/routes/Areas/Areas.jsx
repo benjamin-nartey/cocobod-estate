@@ -15,7 +15,7 @@ function Areas() {
       </div>
       <AreasTable />
       {showUploadModal && (
-        <UploadCSV fieldName={'bulk-file'} uploadUrl={'/region/batch-upload'} />
+        <UploadCSV fieldName={'bulk-file'} uploadUrl={'/region/bulk-import'} />
       )}
     </div>
   );

@@ -145,7 +145,7 @@ const District = () => {
       {showUploadModal && (
         <UploadCSV
           fieldName={'bulk-file'}
-          uploadUrl={'/district/batch-upload'}
+          uploadUrl={'/district/bulk-import'}
         />
       )}
     </div>
