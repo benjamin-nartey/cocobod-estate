@@ -65,6 +65,7 @@ import Town from './routes/Towns/Town';
 import PoliticalDistrict from './routes/Political District/PoliticalDistrict';
 import PoliticalRegion from './routes/Political Region/PoliticalRegion';
 import PropertyMergeDetail from './routes/PropertyMerge/PropertyMergeDetail';
+import { useIndexedDB } from 'react-indexed-db-hook';
 
 function App() {
   const [offlineUser, setOfflineUser] = useState(null);
