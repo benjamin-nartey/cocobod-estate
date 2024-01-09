@@ -54,11 +54,8 @@ function LoginForm() {
     null
   );
 
-  const [offlineUser, setOfflineUser] = useLocalStorage(
-    "offlineUser",
-    null
-  );
-  
+  const [offlineUser, setOfflineUser] = useLocalStorage("offlineUser", null);
+
   const [refreshTokenAuth, setRefreshTokenAuth] = useLocalStorage(
     "refreshToken",
     null
@@ -160,6 +157,15 @@ function LoginForm() {
         );
       }
     } catch (error) {
+      switch (error.code) {
+        case "ERR_BAD_REQUEST":
+          message.error("Invalid credentials");
+          break;
+
+        default:
+          message.error(`${error.code}`);
+          break;
+      }
       console.log(error);
     } finally {
       setLoading(false);

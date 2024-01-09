@@ -68,7 +68,7 @@ const Dashboard = () => {
     try {
       const response = await axiosInstance.get("/allocation/me");
       console.log({ response });
-      console.log(response.data.region.id);
+      console.log(response.data?.region?.id);
 
       if (response.status === 200) {
         setAllocationData(response.data.region);
@@ -258,7 +258,9 @@ const Dashboard = () => {
 
   return (
     <section className="w-full flex flex-col gap-8 p-6">
-      <FloatButtonComponent handleClick={handleDownloadAllResources} />
+      {allocationData && (
+        <FloatButtonComponent handleClick={handleDownloadAllResources} />
+      )}
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-auto">
         <NavLink to="/property-upload">
           <Card allProperty={allProperty} />
