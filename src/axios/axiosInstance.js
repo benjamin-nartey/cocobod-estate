@@ -1,45 +1,68 @@
 import axios from 'axios';
-import { memoizedRefreshToken } from '../utils/refreshToken';
 
-axios.defaults.baseURL = 'https://estate-api-2.onrender.com/api/v1/';
+export let baseURL = import.meta.env.VITE_BASE_URL;
+// export let baseURL = 'https://estate-api-2.onrender.com/api/v1';
+const axiosInstance = axios.create({
+  baseURL,
+});
 
-axios.interceptors.request.use(
-  async (config) => {
-    const accessToken = JSON.parse(localStorage.getItem('accessToken'));
+// Request interceptor to add access token to authorization header
+axiosInstance.interceptors.request.use((config) => {
+  const accessToken = localStorage.getItem('accessToken')
+    ? localStorage.getItem('accessToken')
+    : null;
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
+  return config;
+});
 
-    if (accessToken) {
-      config.headers = {
-        ...config.headers,
-        authorization: `Bearer ${accessToken}`,
-      };
-    }
-
-    return config;
+// Response interceptor to refresh access token
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
   },
-  (error) => Promise.reject(error)
-);
-
-axios.interceptors.response.use(
-  (response) => response,
   async (error) => {
-    const config = error?.config;
+    const originalRequest = error.config;
+    if (
+      error?.response?.status === 401 &&
+      !originalRequest._retry &&
+      localStorage.getItem('refreshToken')
+    ) {
+      originalRequest._retry = true;
+      try {
+        const refreshToken =
+          localStorage.getItem('refreshToken') &&
+          localStorage.getItem('refreshToken');
+        const { data } = await axios.post(
+          `${baseURL}auth/refresh-token`,
+          {},
+          {
+            headers: { Authorization: 'Bearer ' + refreshToken },
+          }
+        );
 
-    if (error?.response?.status === 401 && !config?.sent) {
-      config.sent = true;
-
-      const result = await memoizedRefreshToken();
-
-      if (result?.accessToken) {
-        config.headers = {
-          ...config.headers,
-          authorization: `Bearer ${result?.accessToken}`,
-        };
+        localStorage.setItem('accessToken', data?.accessToken);
+        localStorage.setItem('refreshToken', data?.refreshToken);
+        axiosInstance.defaults.headers.common[
+          'Authorization'
+        ] = `Bearer ${data.accessToken}`;
+        return axiosInstance(originalRequest);
+      } catch (error) {
+        console.log(error.message);
       }
-
-      return axios(config);
     }
     return Promise.reject(error);
   }
 );
 
-export const axiosInstance = axios;
+export { axiosInstance };
+
+// export const request = ({ ...options }) => {
+//   const onSuccess = (response) => response;
+//   const onError = (error) => {
+//     throw new Error(error?.response?.data?.message);
+//   };
+
+//   return client(options).then(onSuccess).catch(onError);
+// };

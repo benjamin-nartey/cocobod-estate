@@ -81,7 +81,7 @@ const AreasTable = () => {
     }
   };
 
-  const { data, status, error, loading, isLoading, isFetching } = useQuery(
+  const { data, status, error, isLoading, isFetching } = useQuery(
     ['regions', pageNum],
     () => fetchRegions(pageNum)
   );

@@ -67,6 +67,7 @@ const ModerationPopertyUnitList = () => {
           onChange={(pagination) => {
             setPageNum(pagination.current);
           }}
+          loading={props?.isLoading || props?.isFetching}
         />
       </div>
     </div>

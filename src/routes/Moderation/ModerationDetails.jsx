@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetPropertyUnitsForProperty } from '../../Hooks/query/properties';
 import {
@@ -24,6 +24,7 @@ import { HiQuestionMarkCircle } from 'react-icons/hi';
 
 const ModerationDetails = () => {
   const { propertyUnitId } = useParams();
+  const [form] = Form.useForm();
 
   const navigate = useNavigate();
 
@@ -35,15 +36,25 @@ const ModerationDetails = () => {
     email: occ?.clientOccupant?.email,
     phoneNumber: occ?.clientOccupant?.phoneNumber,
     category: occ?.clientOccupant?.category,
-    leaseStartsOn: dayjs(occ?.leaseStartsOn),
-    leaseExpiresOn: occ?.leaseExpiresOn ? dayjs(occ?.leaseExpiresOn) : '',
+    // leaseStartsOn: dayjs(occ?.leaseStartsOn),
+    // leaseExpiresOn: occ?.leaseExpiresOn ? dayjs(occ?.leaseExpiresOn) : '',
   }));
 
-  console.log({ initValues });
+  useEffect(() => {
+    if (data?.data && !isLoading) {
+      form.setFieldValue('propertyCode', data?.data.propertyCode);
+      form.setFieldValue('description', data?.data?.description);
+      form.setFieldValue('plotSize', data?.data?.plotSize);
+      form.setFieldValue('floorArea', data?.data?.floorArea);
+      form.setFieldValue('condition', data?.data?.propertyStates[0]?.condition);
+      form.setFieldValue('remarks', data?.data?.propertyStates[0]?.remarks);
+      form.setFieldValue('propertyOccupancies', initValues);
+    }
+  }, [data?.data, isLoading]);
 
   console.log({ data: data?.data });
 
-  const { mutate } = useMutation({
+  const { mutate, isLoading: submitLoading } = useMutation({
     mutationKey: 'approveModeration',
     mutationFn: (data) => {
       return approveModeration(propertyUnitId, data);
@@ -66,12 +77,12 @@ const ModerationDetails = () => {
       floorArea: values.floorArea,
       propertyOccupants: values?.propertyOccupancies.map((occ) => ({
         id: occ?.id,
-        leaseStartsOn: occ['leaseStartsOn']
-          ? occ['leaseStartsOn'].toISOString()
-          : undefined,
-        leaseExpiresOn: occ['leaseExpiresOn']
-          ? occ['leaseExpiresOn'].toISOString()
-          : undefined,
+        // leaseStartsOn: occ['leaseStartsOn']
+        //   ? occ['leaseStartsOn'].toISOString()
+        //   : undefined,
+        // leaseExpiresOn: occ['leaseExpiresOn']
+        //   ? occ['leaseExpiresOn'].toISOString()
+        //   : undefined,
         clientOccupant: {
           name: occ?.name,
           email: occ?.email,
@@ -93,9 +104,10 @@ const ModerationDetails = () => {
       <Spin size="large" />
     </div>
   ) : (
-    <div className=" w-[60%] mx-auto m-9 mb-9 bg-white py-8 px-11">
+    <div className=" w-[40%] mx-auto m-9 mb-9 bg-white py-8 px-11">
       <Form
         name="propertyUnitForm"
+        form={form}
         layout="vertical"
         onFinish={(values) => onSubmit(values)}
       >
@@ -105,7 +117,7 @@ const ModerationDetails = () => {
         <Form.Item
           name={'propertyCode'}
           label={'PropertyCode'}
-          initialValue={data?.data?.propertyCode}
+          // initialValue={data?.data?.propertyCode}
         >
           <Input />
         </Form.Item>
@@ -119,138 +131,76 @@ const ModerationDetails = () => {
         <Form.Item
           name={'plotSize'}
           label={'Plot Size'}
-          initialValue={data?.data?.plotSize}
+          // initialValue={data?.data?.plotSize}
         >
           <Input />
         </Form.Item>
         <Form.Item
           name={'floorArea'}
           label={'Floor Area'}
-          initialValue={data?.data?.floorArea}
+          // initialValue={data?.data?.floorArea}
         >
           <Input />
         </Form.Item>
         <Divider>
           <span className="text-[#af5c13]">Property State</span>
         </Divider>
-        <div className="flex justify-between">
-          <Form.Item
-            name={'condition'}
-            label={'Condition'}
-            initialValue={data?.data?.propertyStates[0]?.condition}
-          >
-            <Select
-              options={[
-                {
-                  label: 'NEW',
-                  value: 'NEW',
-                },
-                {
-                  label: 'VERY GOOD',
-                  value: 'VERY_GOOD',
-                },
-                {
-                  label: 'GOOD',
-                  value: 'GOOD',
-                },
-                {
-                  label: 'FAIRLY GOOD',
-                  value: 'FAIRLY_GOOD',
-                },
-                {
-                  label: 'FAIR',
-                  value: 'FAIR',
-                },
-                {
-                  label: 'FAIRLY POOR',
-                  value: 'FAIRLY_POOR',
-                },
-                {
-                  label: 'POOR',
-                  value: 'POOR',
-                },
-                {
-                  label: 'VERY POOR',
-                  value: 'VERY_POOR',
-                },
-                {
-                  label: 'DILAPIDATED',
-                  value: 'DILAPIDATED',
-                },
-                {
-                  label: 'RESIDUAL/DANGEROUS',
-                  value: 'RESIDUAL_DANGEROUS',
-                },
-              ]}
-            />
-          </Form.Item>
-          <Tooltip
-            title={
-              <div className="grid grid-cols-2">
-                <span>New</span>
-                <span>
-                  Recently constructed buildings (1-2 years ago) with no visible
-                  physical deterioration.
-                </span>
-                <span>Very Good</span>
-                <span>
-                  Well maintained buildings/recently renovated buildings with no
-                  physical deterioration and does not require any redecoration
-                  or immediate repairs
-                </span>
-                <span>Good</span>
-                <span>
-                  Buildings having a good physical condition with minor physical
-                  deterioration. Requires periodic maintenance to prevent any
-                  major defect.
-                </span>
-                <span>Fairly Good</span>
-                <span>
-                  Buildings that are somehow in good condition or average (faded
-                  paints, minor fittings and fixtures defects etc.)
-                </span>
-                <span>Fair</span>
-                <span>
-                  Buildings slightly below the average in terms of their
-                  conditions. Example here may be broken aprons, gutters,
-                  defaced walls, rotten wooden fascia,
-                </span>
-                <span>Fairly Poor</span>
-                Buildings below the average in terms of their condition
-                (corroded roof and reinforcement, damaged ceiling and fascia
-                etc.)
-                <span>Poor</span>
-                <span>
-                  Buildings having low/poor physical condition (Roof leakage,
-                  spalling in concrete and masonry walls, damaged fittings &
-                  fixtures)
-                </span>
-                <span>Very Poor</span>
-                <span>
-                  Visible defects such as spalling in concrete and masonry
-                  walls, worn-out and removed fittings and fixtures, poor
-                  drainage/sewage system, roof leakage, broken walls among
-                  others.
-                </span>
-                <span>Dilapidated</span>
-                <span>
-                  Buildings with serious visible structural defects create
-                  serious health, safety and environmental situation to the
-                  extent that makes the property dangerous for rehabilitation.
-                </span>
-                <span> Residual/Dangerous</span>
-                <span>Buildings beyond repairs/ruined</span>
-              </div>
-            }
-          >
-            <HiQuestionMarkCircle size={22} />
-          </Tooltip>
-        </div>
+
+        <Form.Item
+          name={'condition'}
+          label={'Condition'}
+          // initialValue={data?.data?.propertyStates[0]?.condition}
+        >
+          <Select
+            options={[
+              {
+                label: 'NEW',
+                value: 'NEW',
+              },
+              {
+                label: 'VERY GOOD',
+                value: 'VERY_GOOD',
+              },
+              {
+                label: 'GOOD',
+                value: 'GOOD',
+              },
+              {
+                label: 'FAIRLY GOOD',
+                value: 'FAIRLY_GOOD',
+              },
+              {
+                label: 'FAIR',
+                value: 'FAIR',
+              },
+              {
+                label: 'FAIRLY POOR',
+                value: 'FAIRLY_POOR',
+              },
+              {
+                label: 'POOR',
+                value: 'POOR',
+              },
+              {
+                label: 'VERY POOR',
+                value: 'VERY_POOR',
+              },
+              {
+                label: 'DILAPIDATED',
+                value: 'DILAPIDATED',
+              },
+              {
+                label: 'RESIDUAL/DANGEROUS',
+                value: 'RESIDUAL_DANGEROUS',
+              },
+            ]}
+          />
+        </Form.Item>
 
         <Form.Item
           name={'remarks'}
           label={'Remarks'}
-          initialValue={data?.data?.propertyStates[0]?.remarks}
+          // initialValue={data?.data?.propertyStates[0]?.remarks}
         >
           <TextArea rows={10} disabled />
         </Form.Item>
@@ -262,7 +212,7 @@ const ModerationDetails = () => {
           <span className="text-[#af5c13]">Occupancy</span>
         </Divider>
 
-        <Form.List name="propertyOccupancies" initialValue={initValues}>
+        <Form.List name="propertyOccupancies">
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, ...restField }) => (
@@ -327,7 +277,7 @@ const ModerationDetails = () => {
                     />
                   </Form.Item>
 
-                  <Form.Item
+                  {/* <Form.Item
                     label={'Tenancy Agreement Start Datae'}
                     {...restField}
                     name={[name, 'leaseStartsOn']}
@@ -340,7 +290,7 @@ const ModerationDetails = () => {
                     name={[name, 'leaseExpiresOn']}
                   >
                     <DatePicker style={{ width: '100%' }} />
-                  </Form.Item>
+                  </Form.Item> */}
                   <Tooltip title={'Remove Occupancy'}>
                     <MinusCircleOutlined
                       size={64}
@@ -366,7 +316,7 @@ const ModerationDetails = () => {
           )}
         </Form.List>
 
-        <Button htmlType="submit" className="w-full">
+        <Button htmlType="submit" className="w-full" loading={submitLoading}>
           Approve
         </Button>
       </Form>

@@ -19,3 +19,11 @@ export const updateLocation = (id, data) => {
 export const deleteTown = (id) => {
   return axiosInstance.delete(`/location/${id}`);
 };
+
+export const getTownByDistrictId = (districtId) => {
+  return axiosInstance.get('/location/all', {
+    params: {
+      districtFilter: districtId,
+    },
+  });
+};

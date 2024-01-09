@@ -36,6 +36,8 @@ const Dashboard = () => {
 
   const [allocationData, setAllocationData] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+
   const { add: addPropertyReferenceCategories } = useIndexedDB(
     "propertyReferenceCategories"
   );
@@ -66,8 +68,8 @@ const Dashboard = () => {
 
   const fetchUserAlocation = async () => {
     try {
-      const response = await axiosInstance.get("/allocation/me");
-      console.log({ response });
+      const response = await axiosInstance.get('/allocation/me');
+
       console.log(response.data.region.id);
 
       if (response.status === 200) {
@@ -87,6 +89,7 @@ const Dashboard = () => {
   console.log({ allocationData });
 
   const handleDownloadAllResources = async () => {
+    setLoading(true);
     // console.log(auth.currentUser)?.allocationData.id;
     await Promise.all([
       axiosInstance.get("/property-reference-categories/all", {

@@ -66,7 +66,6 @@ const Accordion = ({ id, form }) => {
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name }) => {
-                console.log(key);
                 return (
                   <div
                     className="wrapper-accordion w-full h-auto flex justify-center items-start"

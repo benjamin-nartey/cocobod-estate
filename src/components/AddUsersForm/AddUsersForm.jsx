@@ -1,43 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { Button, Modal, Form, Input, message } from "antd";
+import { Button, Modal, Form, Input, message, Select } from 'antd';
 
-import { UserOutlined } from "@ant-design/icons";
-import { MdOutlineEmail } from "react-icons/md";
+import { UserOutlined } from '@ant-design/icons';
+import { MdOutlineEmail } from 'react-icons/md';
 
-import CustomSelect from "../CustomSelect/CustomSelect";
+import CustomSelect from '../CustomSelect/CustomSelect';
 
-import { axiosInstance } from "../../axios/axiosInstance";
-import { useAddUserData } from "../../Hooks/useAddFetch";
+import { axiosInstance } from '../../axios/axiosInstance';
+import { useAddUserData } from '../../Hooks/useAddFetch';
+import { useGetRoles } from '../../Hooks/query/roles';
+import { useGetAllDepartments } from '../../Hooks/query/department';
+import { useGetAllDivisions } from '../../Hooks/query/divisions';
 
 const AddUsersForm = () => {
   const [open, setOpen] = useState(false);
   const [pageNum, setpageNum] = useState(1);
   const [options, setOptions] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Content of the modal");
+  const [modalText, setModalText] = useState('Content of the modal');
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
   const { mutate } = useAddUserData();
+  const { data: roles } = useGetRoles();
+  const { data: departments } = useGetAllDepartments();
+  const { data: divisions } = useGetAllDivisions();
 
   const success = (content) => {
     messageApi.open({
-      type: "success",
+      type: 'success',
       content: content,
     });
   };
 
   const errorMessage = (content) => {
     messageApi.open({
-      type: "error",
+      type: 'error',
       content: content,
     });
   };
 
   const [formFields, setformFields] = useState({
-    name: "",
-    email: "",
+    name: '',
+    email: '',
     roleIds: [],
   });
 
@@ -67,20 +73,20 @@ const AddUsersForm = () => {
 
       mutate(user, {
         onSuccess: () => {
-          success("User created successfully");
+          success('User created successfully');
 
           clearInput();
           handleCancel();
         },
       });
     } catch (error) {
-      errorMessage("Error creating user");
+      errorMessage('Error creating user');
       throw new Error(`Error creating user ${error}`);
     }
   };
 
   function clearInput() {
-    setformFields({ name: "", email: "", roleIds: [] });
+    setformFields({ name: '', email: '', roleIds: [] });
     form.resetFields();
   }
 
@@ -89,7 +95,7 @@ const AddUsersForm = () => {
   };
 
   async function fetchRoles(pageNum) {
-    const response = await axiosInstance.get("/roles", {
+    const response = await axiosInstance.get('/roles', {
       params: {
         pageNum: pageNum,
       },
@@ -116,7 +122,7 @@ const AddUsersForm = () => {
       <Button
         type="primary"
         onClick={showModal}
-        style={{ backgroundColor: "#6E431D", color: "#fff" }}
+        style={{ backgroundColor: '#6E431D', color: '#fff' }}
       >
         Add User
       </Button>
@@ -163,9 +169,6 @@ const AddUsersForm = () => {
             <Input
               name="name"
               value={name}
-              onChange={(e) =>
-                setformFields({ ...formFields, name: e.target.value })
-              }
               placeholder="Enter name"
               prefix={<UserOutlined />}
             />
@@ -183,15 +186,56 @@ const AddUsersForm = () => {
             <Input
               name="email"
               value={email}
-              onChange={(e) =>
-                setformFields({ ...formFields, email: e.target.value })
-              }
               type="email"
               placeholder="Enter email"
               prefix={<MdOutlineEmail />}
             />
           </Form.Item>
 
+          <Form.Item
+            label="Division"
+            name="divisionId"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select
+              showSearch
+              optionFilterProp={'label'}
+              placeholder="Select division"
+              options={divisions?.data?.map((division) => ({
+                label: division?.name,
+                value: division?.id,
+              }))}
+              style={{
+                width: '100%',
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Department"
+            name="departmentId"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select
+              showSearch
+              optionFilterProp={'label'}
+              placeholder="Select department"
+              options={departments?.data?.map((department) => ({
+                label: department?.name,
+                value: department?.id,
+              }))}
+              style={{
+                width: '100%',
+              }}
+            />
+          </Form.Item>
           <Form.Item
             label="Roles"
             name="roleIds"
@@ -201,14 +245,17 @@ const AddUsersForm = () => {
               },
             ]}
           >
-            <CustomSelect
+            <Select
               mode="multiple"
-              value={roleIds}
+              showSearch
+              optionFilterProp={'label'}
               placeholder="Select roles"
-              options={options}
-              onChange={(e) => setformFields({ ...formFields, roleIds: e })}
+              options={roles?.data?.map((role) => ({
+                label: role?.name,
+                value: role?.id,
+              }))}
               style={{
-                width: "100%",
+                width: '100%',
               }}
             />
           </Form.Item>
@@ -218,7 +265,7 @@ const AddUsersForm = () => {
               className="w-full"
               type="primary"
               htmlType="submit"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
+              style={{ backgroundColor: '#6E431D', color: '#fff' }}
             >
               Submit
             </Button>

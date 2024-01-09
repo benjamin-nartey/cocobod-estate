@@ -183,7 +183,7 @@ const PropertyUnitForm = ({ name, unitFormKey }) => {
           />
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           label="PropertyCode"
           name={[name, 'propertyCode']}
           rules={[
@@ -197,7 +197,7 @@ const PropertyUnitForm = ({ name, unitFormKey }) => {
             placeholder="Enter property code"
             prefix={<MdOutlineEmail />}
           />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
           label="Category"

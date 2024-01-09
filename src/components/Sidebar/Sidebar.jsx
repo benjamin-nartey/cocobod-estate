@@ -104,7 +104,7 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdDashboard size={18} />
-                Dasboard
+                Dashboard
               </NavLink>
               <NavLink
                 to="/report"
@@ -355,7 +355,10 @@ function Sidebar({ closeToggle }) {
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
             }
-            onClick={handleCloseSidebar}
+            onClick={() => {
+              state.mapSlice.selectedProperty = null;
+              handleCloseSidebar();
+            }}
           >
             <IoMdMap size={18} />
             Map

@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
+import React, { Fragment, useEffect, useState, useContext } from 'react';
 // import { propertyReferenceCategoriesContext } from '../../context/propertyReferenceCategories.context';
-import Accordion from "../Accordion/Accordion";
+import Accordion from '../Accordion/Accordion';
 
 import {
   Button,
@@ -11,25 +11,25 @@ import {
   message,
   Space,
   Divider,
-} from "antd";
-import Upload from "antd/es/upload/Upload";
+} from 'antd';
+import Upload from 'antd/es/upload/Upload';
 
-import { UserOutlined } from "@ant-design/icons";
-import { MdOutlineEmail } from "react-icons/md";
+import { UserOutlined } from '@ant-design/icons';
+import { MdOutlineEmail } from 'react-icons/md';
 
-import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import PhotosUploader from "../../components/PhotosUploader/PhotosUploader";
+import CustomSelect from '../../components/CustomSelect/CustomSelect';
+import PhotosUploader from '../../components/PhotosUploader/PhotosUploader';
 
-import { axiosInstance } from "../../axios/axiosInstance";
-import { useAddPropertyData } from "../../Hooks/useAddFetch";
+import { axiosInstance } from '../../axios/axiosInstance';
+import { useAddPropertyData } from '../../Hooks/useAddFetch';
 
-import { useIndexedDB } from "react-indexed-db-hook";
-import Loader from "../Loader/Loader";
-import { get } from "lodash";
+import { useIndexedDB } from 'react-indexed-db-hook';
+import Loader from '../Loader/Loader';
+import { useNavigate } from 'react-router-dom';
 
 const PropertyForm = (id) => {
   const [propertyUnitReference, setPropertyUnitRefernce] = useState(null);
-  const [politicalRegionId, setPoliticalRegionId] = useState("");
+  const [politicalRegionId, setPoliticalRegionId] = useState('');
   const [optionsPropertyType, setOptionsPropertyType] = useState([]);
   const [optionsDistrict, setOptionsDistrict] = useState([]);
   const [optionsPoliticalRegions, setOptionsPoliticalRegions] = useState([]);
@@ -39,7 +39,7 @@ const PropertyForm = (id) => {
     []
   );
   const [optionsLocation, setOptionsLocation] = useState([]);
-  const [districtId, setDistrictId] = useState("");
+  const [districtId, setDistrictId] = useState('');
   // const [propertyUnits, setPropertyUnits] = useState([]);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
@@ -48,30 +48,32 @@ const PropertyForm = (id) => {
   const [loading, setLoading] = useState(false);
   const [optionsOccupant, setOptionsOccupant] = useState([
     {
-      label: "LBC",
-      value: "LBC",
+      label: 'LBC',
+      value: 'LBC',
     },
     {
-      label: "NON LBC",
-      value: "NON LBC",
+      label: 'NON LBC',
+      value: 'NON LBC',
     },
   ]);
+
+  const navigate = useNavigate();
   // const { propertyReferenceCategories, setpropertyReferenceCategories } = useContext(
   //   propertyReferenceCategoriesContext
   // );
 
-  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
-  const { getAll: getAllDistricts } = useIndexedDB("districts");
-  const { getAll: getAllPoliticalRegions } = useIndexedDB("politcalRegions");
+  const { getAll: getAllPropertyTypes } = useIndexedDB('propertyTypes');
+  const { getAll: getAllDistricts } = useIndexedDB('districts');
+  const { getAll: getAllPoliticalRegions } = useIndexedDB('politcalRegions');
   const { getAll: getAllPoliticalDistricts } =
-    useIndexedDB("politcalDistricts");
+    useIndexedDB('politcalDistricts');
 
-  const { getAll: getAllLocations } = useIndexedDB("locations");
+  const { getAll: getAllLocations } = useIndexedDB('locations');
   // const { getAll: getAllpropertyReferences } =
   //   useIndexedDB('propertyReferences');
 
   const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
-    "propertyReferenceCategories"
+    'propertyReferenceCategories'
   );
 
   // const { getAll: getAllpropertyReferences } =
@@ -89,7 +91,6 @@ const PropertyForm = (id) => {
             (pr) => pr?.id === id?.id
           );
 
-          console.log({ referencesCategories });
           setPropertyReferenceCategories(referencesCategories[0]);
         }
       );
@@ -103,7 +104,7 @@ const PropertyForm = (id) => {
     // console.log(propertyReferences);
   }, [id]);
 
-  const { add: addProperty } = useIndexedDB("property");
+  const { add: addProperty } = useIndexedDB('property');
 
   // const getAllPropertyUnits = (id) => {
   //   getAllpropertyReferences().then((propertyReferences) => {
@@ -129,7 +130,6 @@ const PropertyForm = (id) => {
 
   const getPoliticalRegions = () => {
     getAllPoliticalRegions().then((regions) => {
-      console.log("politicalRegion", regions);
       const data = regions.map((record) => {
         return {
           label: record?.name,
@@ -147,7 +147,6 @@ const PropertyForm = (id) => {
 
   const getPolitcalDistricts = (regionId) => {
     getAllPoliticalDistricts().then((districts) => {
-      console.log(districts);
       const getDistrictsByRegionId = districts.filter(
         (district) => district?.politicalRegion?.id === regionId
       );
@@ -171,7 +170,7 @@ const PropertyForm = (id) => {
       const getTownsByRegionId = locations.filter(
         (location) => location?.districtId === districtId
       );
-      console.log({ getTownsByRegionId });
+      // console.log({ getTownsByRegionId });
 
       const data = getTownsByRegionId.map((record) => {
         return {
@@ -205,31 +204,29 @@ const PropertyForm = (id) => {
 
   const [location, setLocation] = useState(null);
 
+  console.log(loading);
+
   const handleLocation = () => {
-    try {
-      setLoading(true);
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            setLocation({ latitude, longitude });
-            form.setFieldValue("lat", latitude);
-            form.setFieldValue("long", longitude);
-            console.log(longitude, latitude);
-          },
-          (error) => {
-            console.error("Error getting location", error.message);
-            message.error("Error getting location", error.message);
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser");
-      }
-    } catch (error) {
-      message.error(error);
-    }finally{
-      setLoading(false)
+    setLoading(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation({ latitude, longitude });
+          form.setFieldValue('lat', latitude);
+          form.setFieldValue('long', longitude);
+          // console.log(longitude, latitude);
+          setLoading(false);
+        },
+        (error) => {
+          message.error('Error getting location', error.message);
+        }
+      );
+    } else {
+      setLoading(false);
+      message.error('Geolocation is not supported by this browser');
     }
+    // setLoading(false);
   };
 
   const { mutate } = useAddPropertyData();
@@ -244,11 +241,11 @@ const PropertyForm = (id) => {
 
     beforeUpload: (file) => {
       const isJpgOrPng =
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg" ||
-        file.type === "image/png";
+        file.type === 'image/jpeg' ||
+        file.type === 'image/jpg' ||
+        file.type === 'image/png';
       if (!isJpgOrPng) {
-        message.error("You can only upload JPG/PNG file!");
+        message.error('You can only upload JPG/PNG file!');
         return Upload.LIST_IGNORE;
       }
 
@@ -267,7 +264,7 @@ const PropertyForm = (id) => {
     const data = {
       name: values?.name,
       description: values?.description,
-      propertyCode: values?.propertyCode,
+      propertyCode: values?.digitalAddress,
       digitalAddress: values?.digitalAddress,
       propertyTypeId: values?.propertyTypeId,
       locationId: values?.locationId,
@@ -358,12 +355,13 @@ const PropertyForm = (id) => {
       () => {
         // success(`${values.name} saved successfully`);
         message.success(`${values.name} saved successfully`);
-        // form.resetFields();
+        form.resetFields();
+        navigate('/property-upload');
+
         // setpropertyReferenceCategories(null);
       },
       (error) => {
-        console.log(error);
-        message.error(`Error saving ${values.name}`);
+        message.error(error.message);
       }
     );
   };
@@ -422,7 +420,7 @@ const PropertyForm = (id) => {
               />
             </Form.Item>
 
-            <Form.Item
+            {/* <Form.Item
               label="Property Code"
               name="propertyCode"
               rules={[
@@ -437,7 +435,7 @@ const PropertyForm = (id) => {
                 placeholder="Enter property code"
                 prefix={<MdOutlineEmail />}
               />
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item
               label="Description"
@@ -470,7 +468,7 @@ const PropertyForm = (id) => {
                 placeholder="Select category"
                 options={optionsPropertyType}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
             </Form.Item>
@@ -508,7 +506,7 @@ const PropertyForm = (id) => {
                 placeholder="Select District"
                 options={optionsDistrict}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 onChange={(e) => setDistrictId(e)}
               />
@@ -528,7 +526,7 @@ const PropertyForm = (id) => {
                 placeholder="Select political region"
                 options={optionsPoliticalRegions}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 onChange={(e) => setPoliticalRegionId(e)}
               />
@@ -547,7 +545,7 @@ const PropertyForm = (id) => {
                 placeholder="Select political district"
                 options={optionsPoliticalDistricts}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
                 // onChange={(e) => setDistrictId(e)}
               />
@@ -567,7 +565,7 @@ const PropertyForm = (id) => {
                 placeholder="Select Town"
                 options={optionsLocation}
                 style={{
-                  width: "100%",
+                  width: '100%',
                 }}
               />
             </Form.Item>
@@ -576,15 +574,15 @@ const PropertyForm = (id) => {
               <Form.Item
                 label="Latitude"
                 name="lat"
-                // rules={[
-                //   {
-                //     required: true,
-                //   },
-                // ]}
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
               >
                 <Input
                   name="lat"
-                  // readOnly
+                  readOnly
                   type="text"
                   placeholder="latitude"
                   // value={location?.latitude}
@@ -594,15 +592,15 @@ const PropertyForm = (id) => {
               <Form.Item
                 label="Longitude"
                 name="long"
-                // rules={[
-                //   {
-                //     required: true,
-                //   },
-                // ]}
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
               >
                 <Input
                   name="long"
-                  // readOnly
+                  readOnly
                   type="text"
                   placeholder="longitude"
                   // value={location?.longitude}
@@ -614,7 +612,7 @@ const PropertyForm = (id) => {
                   className=""
                   type="primary"
                   htmlType="button"
-                  style={{ backgroundColor: "#6E431D", color: "#fff" }}
+                  style={{ backgroundColor: '#6E431D', color: '#fff' }}
                   onClick={handleLocation}
                 >
                   {loading ? (
@@ -624,7 +622,7 @@ const PropertyForm = (id) => {
                       fillColor="fill-[#6E431D]"
                     />
                   ) : (
-                    "Generate"
+                    'Generate'
                   )}
                 </Button>
               </Form.Item>
@@ -670,13 +668,17 @@ const PropertyForm = (id) => {
               className="w-full"
               type="primary"
               htmlType="submit"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
+              style={{ backgroundColor: '#6E431D', color: '#fff' }}
             >
               Save
             </Button>
           </Form>
         </div>
       )}
+
+      {/* {loading && (
+        <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
+      )} */}
     </Fragment>
   );
 };

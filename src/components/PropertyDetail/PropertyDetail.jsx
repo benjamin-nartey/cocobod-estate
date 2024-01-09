@@ -10,8 +10,10 @@ import { SearchResultContext } from '../../context/searchResult.context';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useGetProperty } from '../../Hooks/query/properties';
-// import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
-import { useGetPropertyUnitsForProperty } from '../../Hooks/query/properties';
+
+import { useMutation } from '@tanstack/react-query';
+import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
+import state from '../../store/store';
 
 function PropertyDetail() {
   const sliderRef = useRef();
@@ -25,8 +27,9 @@ function PropertyDetail() {
   const { data: property } = useGetProperty(propId);
 
   const propertyId = property?.data?.id;
+  console.log(propertyId);
 
-  const { data: propertyUnits } = useGetPropertyUnitsForProperty(
+  const { data: propertyUnits } = useGetPropertyUnits(
     {
       propertyFilter: propertyId,
     },
@@ -297,7 +300,10 @@ function PropertyDetail() {
           <div className="w-[18rem] h-[6rem] hover:shadow-lg border-solid border-2 border-white rounded-2xl">
             {property?.data?.long && property?.data.lat ? (
               <NavLink
-                onClick={() => setSearchResult([property?.data])}
+                onClick={() => {
+                  state.mapSlice.selectedProperty = [property?.data];
+                  // setSearchResult([property?.data]);
+                }}
                 to="/map"
               >
                 <img
