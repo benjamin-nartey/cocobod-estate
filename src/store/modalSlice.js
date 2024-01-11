@@ -46,4 +46,8 @@ export const modalSlice = {
   toggleshowUploadModal() {
     this.showUploadModal = !this.showUploadModal;
   },
+  showUserAddModal: false,
+  toggleshowUserAddModal() {
+    this.showUserAddModal = !this.showUserAddModal;
+  },
 };

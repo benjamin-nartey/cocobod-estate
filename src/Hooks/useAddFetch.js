@@ -59,7 +59,7 @@ export const useAddPropertyTypeData = () => {
 
 //Add user hook
 const addUser = (user) => {
-  return axiosInstance.post('/users', user);
+  return axiosInstance.post('/users/staff', user);
 };
 
 export const useAddUserData = () => {
@@ -84,9 +84,9 @@ export const useAddRoleData = () => {
   });
 };
 
-const addPropertyUpload = (property)=>{
+const addPropertyUpload = (property) => {
   return axiosInstance.post('/properties/field-capture', property);
-}
+};
 
 export const useAddPropertyUploadData = () => {
   const queryClient = useQueryClient();
@@ -96,7 +96,3 @@ export const useAddPropertyUploadData = () => {
     },
   });
 };
-
-
-
-

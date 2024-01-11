@@ -146,6 +146,7 @@ const PoliticalRegion = () => {
         <UploadCSV
           fieldName={'bulk-file'}
           uploadUrl={'/political-region/bulk-import'}
+          queryKey={'politicalRegions'}
         />
       )}
     </div>

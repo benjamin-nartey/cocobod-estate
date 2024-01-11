@@ -1,12 +1,12 @@
-import mem from "mem";
-import { privateAxios } from "../axios/axios";
+import mem from 'mem';
+import { privateAxios } from '../axios/axios';
 
 const refreshTokenFn = async () => {
-  const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
+  const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
 
   try {
     const response = await privateAxios.post(
-      "/auth/refresh-token",
+      '/auth/refresh-token',
       {},
       {
         headers: {
@@ -20,16 +20,16 @@ const refreshTokenFn = async () => {
     const refreshResponse = response.data;
 
     if (!refreshResponse.accessToken) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
     }
 
     localStorage.setItem(
-      "accessToken",
+      'accessToken',
       JSON.stringify(refreshResponse?.accessToken)
     );
     localStorage.setItem(
-      "refreshToken",
+      'refreshToken',
       JSON.stringify(refreshResponse?.refreshToken)
     );
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 import {
   Button,
@@ -9,17 +9,21 @@ import {
   Popconfirm,
   Table,
   Tag,
-} from "antd";
+} from 'antd';
 
-import { DeleteOutlined, UserOutlined } from "@ant-design/icons";
-import { BiEdit } from "react-icons/bi";
-import { MdOutlineEmail } from "react-icons/md";
+import { DeleteOutlined, UserOutlined } from '@ant-design/icons';
+import { BiEdit } from 'react-icons/bi';
+import { MdOutlineEmail } from 'react-icons/md';
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 
-import { axiosInstance } from "../../axios/axiosInstance";
+import { axiosInstance } from '../../axios/axiosInstance';
 
-import CustomSelect from "../CustomSelect/CustomSelect";
+import CustomSelect from '../CustomSelect/CustomSelect';
+import { useGetPaginatedData } from '../../Hooks/query/generics';
+import { getAllUsers } from '../../http/users';
+import state from '../../store/store';
+import { CRUDTYPES } from '../../store/modalSlice';
 
 const UsersTable = () => {
   const [options, setOptions] = useState([]);
@@ -28,20 +32,20 @@ const UsersTable = () => {
   const [page, setPage] = useState(1);
   const [rolePage, setRolePage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [formFields, setformFields] = useState({
-    name: "",
-    email: "",
+    name: '',
+    email: '',
     roleIds: [],
-    id: "",
+    id: '',
   });
 
   const confirm = (e) => {
-    message.success("Click on Yes");
+    message.success('Click on Yes');
   };
   const cancel = (e) => {};
 
@@ -57,57 +61,36 @@ const UsersTable = () => {
 
   const success = () => {
     messageApi.open({
-      type: "success",
-      content: "User updated successfully",
+      type: 'success',
+      content: 'User updated successfully',
     });
   };
 
   const errorMessage = () => {
     messageApi.open({
-      type: "error",
-      content: "Error updating user",
+      type: 'error',
+      content: 'Error updating user',
     });
   };
-
-  console.log({ options });
 
   const handleOk = () => {
     //an empty function to keep the modal working
   };
 
-  const fetchUsers = async (page) => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get("/users", {
-        params: {
-          pageNum: page,
-        },
-      });
-      setTotalPages(response.data.meta.totalPages);
-      setRecordsPerPage(response.data.meta.recordsPerPage);
-      console.log({ totalPages });
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [paginatedData, props] = useGetPaginatedData(
+    'users',
+    '',
+    { pageNum: page },
+    getAllUsers
+  );
 
-  const { data, status, error } = useQuery({
-    queryKey: ["users", page],
-    queryFn: () => fetchUsers(page),
-    keepPreviousData: true,
-  });
-
-  console.log(data);
-
-  if (status === "error") {
-    console.log(error);
-  }
+  const _data = props.data?.data?.records?.map((rec) => ({
+    ...rec,
+    key: rec?.id,
+  }));
 
   async function fetchRoles(rolePage) {
-    const response = await axiosInstance.get("/roles", {
+    const response = await axiosInstance.get('/roles', {
       params: {
         pageNum: rolePage,
       },
@@ -151,15 +134,15 @@ const UsersTable = () => {
   };
 
   const clearInput = () => {
-    setformFields({ name: "", email: "", roleIds: [] });
+    setformFields({ name: '', email: '', roleIds: [] });
     form.resetFields();
   };
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
       filteredValue: [searchText],
       onFilter: (value, record) => {
         return (
@@ -178,31 +161,31 @@ const UsersTable = () => {
       },
     },
     {
-      title: "Department",
-      dataIndex: ["staff", "department", "name"],
-      key: "department",
+      title: 'Department',
+      dataIndex: ['staff', 'department', 'name'],
+      key: 'department',
       filteredValue: [searchText],
     },
     {
-      title: "Division",
-      dataIndex: ["staff", "department", "division", "name"],
-      key: "division",
+      title: 'Division',
+      dataIndex: ['staff', 'department', 'division', 'name'],
+      key: 'division',
     },
     {
-      title: " Station",
-      dataIndex: ["staff", "station", "region", "name"],
-      key: "region",
+      title: ' Station',
+      dataIndex: ['staff', 'station', 'region', 'name'],
+      key: 'region',
     },
     {
-      title: "Roles",
-      dataIndex: "roles",
-      key: "roles",
+      title: 'Roles',
+      dataIndex: 'roles',
+      key: 'roles',
       render: (_, { roles }) => (
         <>
           {roles?.map((role, i) => (
             <Tag
               color={`${
-                role?.name === "Super Administrator" ? "green" : "blue"
+                role?.name === 'Super Administrator' ? 'green' : 'blue'
               }`}
               key={i}
             >
@@ -213,31 +196,27 @@ const UsersTable = () => {
       ),
     },
     {
-      title: " Status",
-      dataIndex: "status",
-      key: "status",
+      title: ' Status',
+      dataIndex: 'status',
+      key: 'status',
     },
     {
-      title: "Action",
-      dataIndex: "",
-      key: "action",
-      render: (value) => {
+      title: 'Action',
+      dataIndex: '',
+      key: 'action',
+      render: (value, record) => {
         return (
           <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={(e) => {
-                setformFields({
-                  ...formFields,
-                  name: value?.name,
-                  email: value?.email,
-                  id: value?.id,
-                });
-                console.log(value);
-                showModal();
+            <BiEdit
+              size={22}
+              className="cursor-pointer text-gray-600"
+              onClick={() => {
+                state.modalSlice.selectedRecord = record;
+                state.modalSlice.toggleshowUserAddModal();
+                state.modalSlice.crudType = CRUDTYPES.EDIT;
               }}
-            >
-              <BiEdit size={22} className="cursor-pointer text-gray-600" />
-            </button>
+            />
+
             <Popconfirm
               title="Delete the task"
               description="Are you sure to delete this task?"
@@ -249,9 +228,9 @@ const UsersTable = () => {
               <span className="grid place-items-center">
                 <DeleteOutlined
                   style={{
-                    fontSize: "18px",
-                    color: " #FF6A74",
-                    cursor: "pointer",
+                    fontSize: '18px',
+                    color: ' #FF6A74',
+                    cursor: 'pointer',
                   }}
                 />
               </span>
@@ -262,115 +241,9 @@ const UsersTable = () => {
     },
   ];
 
-  console.log(formFields);
-
   return (
     <>
       {contextHolder}
-      <Modal
-        title="EDIT USER"
-        open={open}
-        onOk={handleOk}
-        okButtonProps={{
-          hidden: true,
-        }}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-        cancelButtonProps={{
-          hidden: true,
-        }}
-      >
-        <Form
-          form={form}
-          onSubmitCapture={handleSubmit}
-          name="useredit"
-          layout="vertical"
-          // labelCol={{
-          //   flex: "110px",
-          // }}
-          labelAlign="left"
-          labelWrap
-          // wrapperCol={{
-          //   flex: 1,
-          // }}
-          colon={false}
-          style={{
-            maxWidth: 600,
-          }}
-        >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              name="name"
-              value={name}
-              defaultValue={name}
-              onChange={(e) =>
-                setformFields({ ...formFields, name: e.target.value })
-              }
-              placeholder="Enter name"
-              prefix={<UserOutlined />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              name="email"
-              defaultValue={email}
-              value={email}
-              onChange={(e) =>
-                setformFields({ ...formFields, email: e.target.value })
-              }
-              type="email"
-              placeholder="Enter email"
-              prefix={<MdOutlineEmail />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Roles"
-            name="roleIds"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <CustomSelect
-              mode="multiple"
-              value={roleIds}
-              placeholder="Select roles"
-              options={options}
-              onChange={(e) => setformFields({ ...formFields, roleIds: e })}
-            />
-          </Form.Item>
-
-          <Form.Item label=" ">
-            <Button
-              className="w-full"
-              type="primary"
-              htmlType="submit"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
-            >
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
 
       <Input.Search
         placeholder="Search records..."
@@ -378,16 +251,19 @@ const UsersTable = () => {
         onChange={(e) => setSearchText(e.target.value)}
       />
       <Table
-        dataSource={data?.records}
-        loading={status === "loading" || loading}
+        dataSource={_data}
+        loading={props?.isLoading || props?.isFetching}
         pagination={{
-          pageSize: recordsPerPage,
-          total: totalPages,
-          onChange: (pageNum) => {
-            fetchUsers(pageNum);
-          },
+          pageSize: paginatedData?.pageSize,
+          total: paginatedData?.total,
+          // onChange: (pageNum) => {
+          //   fetchUsers(pageNum);
+          // },
         }}
-        style={{ width: "100%" }}
+        onChange={(pagination) => {
+          setPage(pagination.current);
+        }}
+        style={{ width: '100%' }}
         rowKey="id"
         columns={columns}
       ></Table>

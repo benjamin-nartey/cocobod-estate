@@ -1,31 +1,50 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Modal, Form, Input, message, Select } from 'antd';
+import { Button, Modal, Form, Input, message, Select, InputNumber } from 'antd';
 
 import { UserOutlined } from '@ant-design/icons';
 import { MdOutlineEmail } from 'react-icons/md';
 
-import CustomSelect from '../CustomSelect/CustomSelect';
-
-import { axiosInstance } from '../../axios/axiosInstance';
 import { useAddUserData } from '../../Hooks/useAddFetch';
 import { useGetRoles } from '../../Hooks/query/roles';
-import { useGetAllDepartments } from '../../Hooks/query/department';
+import {
+  useGetAllDepartments,
+  useGetDepartmentByDivisionId,
+} from '../../Hooks/query/department';
 import { useGetAllDivisions } from '../../Hooks/query/divisions';
+import { useSnapshot } from 'valtio';
+import state from '../../store/store';
+import { CRUDTYPES } from '../../store/modalSlice';
+import { useMutation } from '@tanstack/react-query';
+import { updateUser } from '../../http/users';
 
 const AddUsersForm = () => {
   const [open, setOpen] = useState(false);
-  const [pageNum, setpageNum] = useState(1);
-  const [options, setOptions] = useState([]);
+
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState('Content of the modal');
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const [selectedDivisionId, setSelectDivisionId] = useState(null);
+  const snap = useSnapshot(state);
+  const { showUserAddModal, selectedRecord, crudType } = snap.modalSlice;
 
   const { mutate } = useAddUserData();
   const { data: roles } = useGetRoles();
-  const { data: departments } = useGetAllDepartments();
+
   const { data: divisions } = useGetAllDivisions();
+
+  let divisionFilter = selectedDivisionId
+    ? selectedDivisionId
+    : selectedRecord?.staff?.department?.division?.id;
+
+  const {
+    data: departments,
+    refetch: fetchDepartmentByDivisionId,
+    isLoading,
+  } = useGetDepartmentByDivisionId(divisionFilter, {
+    enabled: false,
+  });
 
   const success = (content) => {
     messageApi.open({
@@ -41,44 +60,68 @@ const AddUsersForm = () => {
     });
   };
 
+  const { mutate: UpdateUserFn } = useMutation({
+    mutationKey: 'updateUser',
+    mutationFn: (data) => {
+      updateUser(selectedRecord?.id, data);
+    },
+    onSuccess: () => {
+      state.modalSlice.selectedRecord = null;
+      state.modalSlice.crudType = CRUDTYPES.RESET;
+      state.modalSlice.toggleshowUserAddModal();
+      success('User updated successfully');
+    },
+    onError: (err) => {
+      errorMessage(err?.message);
+    },
+  });
+
+  useEffect(() => {
+    fetchDepartmentByDivisionId();
+    const initialValues = {
+      name: selectedRecord?.name,
+      email: selectedRecord?.email,
+      staffNumber: selectedRecord?.staff?.staffNumber,
+      departmentId: selectedRecord?.staff?.department?.id,
+      divisionId: selectedRecord?.staff?.department?.division?.id,
+      roleIds: selectedRecord?.roles?.map((role) => role?.id),
+      status: selectedRecord?.status,
+    };
+    form.setFieldsValue(initialValues);
+  }, [selectedRecord]);
+
+  useEffect(() => {
+    if (selectedDivisionId) {
+      fetchDepartmentByDivisionId();
+    }
+  }, [selectedDivisionId]);
+
   const [formFields, setformFields] = useState({
     name: '',
     email: '',
     roleIds: [],
   });
 
-  const { name, email, roleIds } = formFields;
-
-  const showModal = () => {
-    setOpen(true);
-  };
-
   const handleCancel = () => {
     setOpen(false);
   };
 
-  console.log(formFields);
+  console.log(selectedRecord?.roles?.map((role) => role?.id));
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // console.log(initialValues);
 
-    const roles = roleIds.map((role) => role.value);
-
+  const handleSubmit = (values) => {
     try {
-      const user = {
-        name,
-        email,
-        roleIds: roles,
-      };
-
-      mutate(user, {
-        onSuccess: () => {
-          success('User created successfully');
-
-          clearInput();
-          handleCancel();
-        },
-      });
+      crudType === CRUDTYPES.ADD
+        ? mutate(values, {
+            onSuccess: () => {
+              state.modalSlice.crudType = CRUDTYPES.RESET;
+              state.modalSlice.toggleshowUserAddModal();
+              success('User created successfully');
+              clearInput();
+            },
+          })
+        : UpdateUserFn(values);
     } catch (error) {
       errorMessage('Error creating user');
       throw new Error(`Error creating user ${error}`);
@@ -90,72 +133,45 @@ const AddUsersForm = () => {
     form.resetFields();
   }
 
-  const handleOk = () => {
-    //an empty function to keep the modal working
-  };
-
-  async function fetchRoles(pageNum) {
-    const response = await axiosInstance.get('/roles', {
-      params: {
-        pageNum: pageNum,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptions(dataRcord);
-  }
-
-  useEffect(() => {
-    fetchRoles(pageNum);
-  }, []);
-
   return (
     <>
       {contextHolder}
       <Button
         type="primary"
-        onClick={showModal}
+        onClick={() => {
+          state.modalSlice.crudType = CRUDTYPES.ADD;
+          state.modalSlice.toggleshowUserAddModal();
+        }}
         style={{ backgroundColor: '#6E431D', color: '#fff' }}
       >
         Add User
       </Button>
       <Modal
         title="ADD USER"
-        open={open}
-        onOk={handleOk}
-        okButtonProps={{
-          hidden: true,
-        }}
+        open={showUserAddModal}
+        footer={false}
         confirmLoading={confirmLoading}
-        onCancel={handleCancel}
+        onCancel={() => {
+          state.modalSlice.selectedRecord = null;
+          state.modalSlice.crudType = CRUDTYPES.RESET;
+          state.modalSlice.toggleshowUserAddModal();
+        }}
         cancelButtonProps={{
           hidden: true,
         }}
       >
         <Form
           form={form}
-          onSubmitCapture={handleSubmit}
+          onFinish={(values) => handleSubmit(values)}
           name="wrap"
           layout="vertical"
-          // labelCol={{
-          //   flex: "110px",
-          // }}
           labelAlign="left"
           labelWrap
-          // wrapperCol={{
-          //   flex: 1,
-          // }}
           colon={false}
           style={{
             maxWidth: 600,
           }}
+          // initialValues={initialValues}
         >
           <Form.Item
             label="Name"
@@ -167,11 +183,21 @@ const AddUsersForm = () => {
             ]}
           >
             <Input
-              name="name"
-              value={name}
               placeholder="Enter name"
               prefix={<UserOutlined />}
+              style={{ width: '100%' }}
             />
+          </Form.Item>
+          <Form.Item
+            label="Staff Number"
+            name="staffNumber"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input placeholder="Enter Staff Number" style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item
@@ -184,8 +210,6 @@ const AddUsersForm = () => {
             ]}
           >
             <Input
-              name="email"
-              value={email}
               type="email"
               placeholder="Enter email"
               prefix={<MdOutlineEmail />}
@@ -204,6 +228,10 @@ const AddUsersForm = () => {
             <Select
               showSearch
               optionFilterProp={'label'}
+              onChange={(value) => {
+                form.setFieldValue('departmentId', '');
+                setSelectDivisionId(value);
+              }}
               placeholder="Select division"
               options={divisions?.data?.map((division) => ({
                 label: division?.name,
@@ -224,6 +252,7 @@ const AddUsersForm = () => {
             ]}
           >
             <Select
+              loading={isLoading}
               showSearch
               optionFilterProp={'label'}
               placeholder="Select department"
@@ -254,6 +283,32 @@ const AddUsersForm = () => {
                 label: role?.name,
                 value: role?.id,
               }))}
+              style={{
+                width: '100%',
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Status"
+            name="status"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select
+              placeholder="Set Status"
+              options={[
+                {
+                  label: 'ACTIVE',
+                  value: 'ACTIVE',
+                },
+                {
+                  label: 'INACTIVE',
+                  value: 'INACTIVE',
+                },
+              ]}
               style={{
                 width: '100%',
               }}

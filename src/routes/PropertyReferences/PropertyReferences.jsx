@@ -17,22 +17,22 @@ const columns = [
   {
     title: 'Town',
     dataIndex: 'locationOrTown',
-    render: (value) => <span>{capitalize(value.toLowerCase())}</span>,
+    render: (value) => <span>{value && capitalize(value?.toLowerCase())}</span>,
   },
   {
     title: 'Region',
     dataIndex: ['region', 'name'],
-    render: (value) => <span>{capitalize(value.toLowerCase())}</span>,
+    render: (value) => <span>{value && capitalize(value?.toLowerCase())}</span>,
   },
   {
     title: 'Description',
     dataIndex: 'description',
-    render: (value) => <span>{capitalize(value.toLowerCase())}</span>,
+    render: (value) => <span>{value && capitalize(value?.toLowerCase())}</span>,
   },
   {
     title: 'Category/Class Asset',
     dataIndex: ['propertyType', 'name'],
-    render: (value) => <span>{capitalize(value.toLowerCase())}</span>,
+    render: (value) => <span>{value && capitalize(value?.toLowerCase())}</span>,
   },
   {
     title: 'Plot Size',
@@ -103,6 +103,7 @@ const PropertyReferences = () => {
         <UploadCSV
           fieldName={'batch-property-reference'}
           uploadUrl={'/property-references/batch-upload'}
+          queryKey={'properReferenceList'}
         />
       )}
     </div>

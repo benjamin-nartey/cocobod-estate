@@ -83,7 +83,6 @@ const District = () => {
                 removeDistrict(value);
               }}
               onCancel={() => {}}
-              okText="Yes"
               cancelText="No"
             >
               <span className="grid place-items-center">
@@ -146,6 +145,7 @@ const District = () => {
         <UploadCSV
           fieldName={'bulk-file'}
           uploadUrl={'/district/bulk-import'}
+          queryKey={'district'}
         />
       )}
     </div>

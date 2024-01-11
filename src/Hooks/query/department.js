@@ -1,5 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllDepartments } from '../../http/depatment';
+import {
+  getAllDepartments,
+  getDepartmentByDivisionId,
+} from '../../http/depatment';
 
 export const useGetAllDepartments = () => {
   return useQuery({
@@ -7,5 +10,12 @@ export const useGetAllDepartments = () => {
     queryFn: () => {
       return getAllDepartments();
     },
+  });
+};
+export const useGetDepartmentByDivisionId = (divisionId, options = {}) => {
+  return useQuery({
+    queryKey: ['getDepartmentByDivisionId', divisionId],
+    queryFn: () => getDepartmentByDivisionId(divisionId),
+    ...options,
   });
 };

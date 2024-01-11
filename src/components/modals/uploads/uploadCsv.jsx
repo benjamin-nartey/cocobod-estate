@@ -8,16 +8,17 @@ import { useSnapshot } from 'valtio';
 import { uploadData } from '../../../http/uploads';
 import { checkFile } from '../../../utils/common';
 
-const UploadCSV = ({ uploadUrl, fieldName }) => {
+const UploadCSV = ({ uploadUrl, fieldName, queryKey }) => {
   const snap = useSnapshot(state);
   const { showUploadModal } = snap.modalSlice;
-
+  const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
     mutationKey: 'referencesUpload',
     mutationFn: (data) => {
       return uploadData(data, uploadUrl);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey });
       state.modalSlice.toggleshowUploadModal();
       message.success('Properties uploaded successfully');
     },

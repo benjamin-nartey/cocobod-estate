@@ -1,23 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import { useOnlineStatus } from "../../Hooks/useIsOnlineStatus";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useOnlineStatus } from '../../Hooks/useIsOnlineStatus';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import state from "../../store/store";
+import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import state from '../../store/store';
 
-import Loader from "../Loader/Loader";
+import Loader from '../Loader/Loader';
 
 // import { useSnapshot } from "valtio";
-import bcrypt from "bcryptjs";
-import { useCookies } from "react-cookie";
-import axios from "axios";
-import { useIndexedDB } from "react-indexed-db-hook";
-import { message } from "antd";
+import bcrypt from 'bcryptjs';
+import { useCookies } from 'react-cookie';
+import axios from 'axios';
+import { useIndexedDB } from 'react-indexed-db-hook';
+import { message } from 'antd';
 
 const defaultFormFields = {
-  email: "",
-  password: "",
+  email: '',
+  password: '',
 };
 
 const defaultPassword = import.meta.env.VITE_APP_DEFAULT_PASSWORD;
@@ -28,33 +28,33 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  baseURL: "https://estate-api-2.onrender.com/api/v1",
-  // baseURL: 'http://localhost:3000/api/v1',
+  // baseURL: "https://estate-api-2.onrender.com/api/v1",
+  baseURL: 'http://localhost:3000/api/v1',
 });
 
 function LoginForm() {
   const [formFields, setFormfields] = useState(defaultFormFields);
   const { email, password } = formFields;
-  const [ipAddress, setIPAddress] = useState("");
+  const [ipAddress, setIPAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const isOnLine = useOnlineStatus();
-  const [cookies, setCookie] = useCookies(["name"]);
+  const [cookies, setCookie] = useCookies(['name']);
   const [offlineUser, setOfflineUser] = useState(null);
 
-  const { add: addOfflineUser } = useIndexedDB("offlineUser");
+  const { add: addOfflineUser } = useIndexedDB('offlineUser');
 
-  const { getAll: getOfflineUser } = useIndexedDB("offlineUser");
+  const { getAll: getOfflineUser } = useIndexedDB('offlineUser');
 
   useEffect(() => {
     getOfflineUser().then((data) => setOfflineUser(data[0]));
   }, []);
 
   const [accessTokenAuth, setAccessTokenAuth] = useLocalStorage(
-    "accessToken",
+    'accessToken',
     null
   );
   const [refreshTokenAuth, setRefreshTokenAuth] = useLocalStorage(
-    "refreshToken",
+    'refreshToken',
     null
   );
 
@@ -63,11 +63,11 @@ function LoginForm() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/dashboard";
+  const from = location.state?.from?.pathname || '/dashboard';
 
   useEffect(() => {
     axios
-      .get("https://ipapi.co/json")
+      .get('https://ipapi.co/json')
       .then((response) => response.data)
       .then((data) => setIPAddress(data.ip))
       .catch((error) => console.log(error));
@@ -88,26 +88,26 @@ function LoginForm() {
 
       if (isOnLine) {
         const response = await API.post(
-          "/auth",
+          '/auth',
           { email, password },
           {
             headers: {
-              "Content-Type": "application/json",
-              "X-IP-Address": ipAddress,
+              'Content-Type': 'application/json',
+              'X-IP-Address': ipAddress,
             },
           }
         );
 
-        const userResponse = await API.get("/auth/user", {
+        const userResponse = await API.get('/auth/user', {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${response?.data?.accessToken}`,
           },
         });
 
-        const allocationResponse = await API.get("/allocation/me", {
+        const allocationResponse = await API.get('/allocation/me', {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${response?.data?.accessToken}`,
           },
         });
@@ -140,11 +140,11 @@ function LoginForm() {
             if (error) {
               throw error;
             } else if (!isMatch) {
-              console.log("wrong password");
-              message.error("Wrong password");
+              console.log('wrong password');
+              message.error('Wrong password');
             } else if (isMatch && email !== offlineUser?.email) {
-              console.log("wrong email");
-              message.error("Wrong email");
+              console.log('wrong email');
+              message.error('Wrong email');
             } else if (isMatch && email === offlineUser?.email) {
               state.auth.currentUser = offlineUser;
 
@@ -184,7 +184,7 @@ function LoginForm() {
         {loading ? (
           <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
         ) : (
-          "Login"
+          'Login'
         )}
       </button>
       <div className="w-full">

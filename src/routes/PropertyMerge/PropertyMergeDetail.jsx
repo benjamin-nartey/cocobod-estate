@@ -6,8 +6,6 @@ import state from '../../store/store';
 import { capitalize } from '../../utils/typography';
 import { useSnapshot } from 'valtio';
 
-import { useGetReferences } from '../../Hooks/query/properties';
-import UploadCSV from '../../components/modals/uploads/uploadCsv';
 import { useParams } from 'react-router-dom';
 
 const PropertyMergeDetail = () => {

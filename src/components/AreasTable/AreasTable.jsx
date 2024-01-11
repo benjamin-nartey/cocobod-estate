@@ -8,10 +8,11 @@ import { BiEdit } from 'react-icons/bi';
 
 import CustomSelect from '../CustomSelect/CustomSelect';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { axiosInstance } from '../../axios/axiosInstance';
 import { useGetPaginatedDistricts } from '../../Hooks/query/district';
+import { deleteRegion } from '../../http/regions';
 
 const AreasTable = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -28,8 +29,25 @@ const AreasTable = () => {
     areaId: '',
   });
 
-  const confirm = (e) => {
-    message.success('Click on Yes');
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationKey: 'deleteRegion',
+    mutationFn: (id) => {
+      return deleteRegion(id);
+    },
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: 'district' });
+      message.success('Region deleted successfully');
+    },
+
+    onError: (error) => {
+      message.error(error.response.data.message);
+    },
+  });
+
+  const confirm = (id) => {
+    mutate(id);
   };
   const cancel = (e) => {};
 
@@ -132,7 +150,7 @@ const AreasTable = () => {
 
     {
       title: 'Action',
-      dataIndex: '',
+      dataIndex: 'id',
       key: 'action',
       render: (value) => {
         return (
@@ -153,7 +171,7 @@ const AreasTable = () => {
             <Popconfirm
               title="Delete the task"
               description="Are you sure to delete this task?"
-              onConfirm={confirm}
+              onConfirm={() => confirm(value)}
               onCancel={cancel}
               okText="Yes"
               cancelText="No"
