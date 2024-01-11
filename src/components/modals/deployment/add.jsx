@@ -27,7 +27,7 @@ const AddDeploymentModal = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isLoading: addLoading } = useMutation({
     mutationKey: 'makeAllocation',
     mutationFn: (data) => {
       return addAllocation(data);
@@ -43,7 +43,7 @@ const AddDeploymentModal = () => {
       message.error(err.response.data.message);
     },
   });
-  const { mutate: updateAllocationFn } = useMutation({
+  const { mutate: updateAllocationFn, isLoading: updateLoading } = useMutation({
     mutationKey: 'updateAllocation',
     mutationFn: (data) => {
       return updateAllocation(selectedRecord?.id, data);
@@ -141,6 +141,7 @@ const AddDeploymentModal = () => {
               />
             </Form.Item>
             <Button
+              loading={crudType === CRUDTYPES.ADD ? addLoading : updateLoading}
               htmlType="submit"
               style={{
                 backgroundColor: '#6E431D',

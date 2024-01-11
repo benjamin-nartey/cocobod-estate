@@ -26,16 +26,14 @@ import state from '../../store/store';
 import { CRUDTYPES } from '../../store/modalSlice';
 
 const UsersTable = () => {
-  const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
-  const [recordsPerPage, setRecordsPerPage] = useState(1);
+
   const [page, setPage] = useState(1);
-  const [rolePage, setRolePage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+
   const [searchText, setSearchText] = useState('');
-  const [loading, setLoading] = useState(false);
+
   const [form] = Form.useForm();
-  const [confirmLoading, setConfirmLoading] = useState(false);
+
   const [messageApi, contextHolder] = message.useMessage();
   const [formFields, setformFields] = useState({
     name: '',
@@ -49,34 +47,6 @@ const UsersTable = () => {
   };
   const cancel = (e) => {};
 
-  const { name, email, roleIds, id } = formFields;
-
-  const showModal = () => {
-    setOpen(true);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
-  const success = () => {
-    messageApi.open({
-      type: 'success',
-      content: 'User updated successfully',
-    });
-  };
-
-  const errorMessage = () => {
-    messageApi.open({
-      type: 'error',
-      content: 'Error updating user',
-    });
-  };
-
-  const handleOk = () => {
-    //an empty function to keep the modal working
-  };
-
   const [paginatedData, props] = useGetPaginatedData(
     'users',
     '',
@@ -88,55 +58,6 @@ const UsersTable = () => {
     ...rec,
     key: rec?.id,
   }));
-
-  async function fetchRoles(rolePage) {
-    const response = await axiosInstance.get('/roles', {
-      params: {
-        pageNum: rolePage,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptions(dataRcord);
-  }
-
-  useEffect(() => {
-    fetchRoles(rolePage);
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const roles = roleIds.map((role) => role.value);
-
-    try {
-      await axiosInstance.patch(`/users/${id}`, {
-        name,
-        email,
-        roleIds: roles,
-      });
-
-      success();
-
-      clearInput();
-      handleCancel();
-    } catch (error) {
-      errorMessage();
-      throw new Error(`Error adding user edits ${error}`);
-    }
-  };
-
-  const clearInput = () => {
-    setformFields({ name: '', email: '', roleIds: [] });
-    form.resetFields();
-  };
 
   const columns = [
     {
@@ -159,6 +80,11 @@ const UsersTable = () => {
             .includes(value.toLowerCase())
         );
       },
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
       title: 'Department',

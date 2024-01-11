@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   getAllDepartments,
   getDepartmentByDivisionId,
-} from '../../http/depatment';
+} from '../../http/department';
 
 export const useGetAllDepartments = () => {
   return useQuery({

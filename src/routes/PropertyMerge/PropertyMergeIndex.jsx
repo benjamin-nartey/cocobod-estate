@@ -55,7 +55,7 @@ const PropertyMergeIndex = () => {
     {
       title: 'Region',
       key: 'region',
-      dataIndex: ['district', 'region', 'name'],
+      dataIndex: ['location', 'district', 'region', 'name'],
     },
     {
       title: 'Category',
@@ -65,7 +65,7 @@ const PropertyMergeIndex = () => {
     {
       title: 'District',
       key: 'district',
-      dataIndex: ['district', 'name'],
+      dataIndex: ['location', 'district', 'name'],
     },
     {
       title: 'Actions',

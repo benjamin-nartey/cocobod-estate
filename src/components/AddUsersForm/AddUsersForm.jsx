@@ -15,7 +15,7 @@ import { useGetAllDivisions } from '../../Hooks/query/divisions';
 import { useSnapshot } from 'valtio';
 import state from '../../store/store';
 import { CRUDTYPES } from '../../store/modalSlice';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateUser } from '../../http/users';
 
 const AddUsersForm = () => {
@@ -60,12 +60,15 @@ const AddUsersForm = () => {
     });
   };
 
+  const queryClient = useQueryClient();
+
   const { mutate: UpdateUserFn } = useMutation({
     mutationKey: 'updateUser',
     mutationFn: (data) => {
       updateUser(selectedRecord?.id, data);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: 'users' });
       state.modalSlice.selectedRecord = null;
       state.modalSlice.crudType = CRUDTYPES.RESET;
       state.modalSlice.toggleshowUserAddModal();
@@ -102,14 +105,6 @@ const AddUsersForm = () => {
     roleIds: [],
   });
 
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
-  console.log(selectedRecord?.roles?.map((role) => role?.id));
-
-  // console.log(initialValues);
-
   const handleSubmit = (values) => {
     try {
       crudType === CRUDTYPES.ADD
@@ -118,6 +113,7 @@ const AddUsersForm = () => {
               state.modalSlice.crudType = CRUDTYPES.RESET;
               state.modalSlice.toggleshowUserAddModal();
               success('User created successfully');
+              queryClient.invalidateQueries({ queryKey: 'users' });
               clearInput();
             },
           })
@@ -245,11 +241,13 @@ const AddUsersForm = () => {
           <Form.Item
             label="Department"
             name="departmentId"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
+            rules={
+              [
+                // {
+                //   required: true,
+                // },
+              ]
+            }
           >
             <Select
               loading={isLoading}
@@ -288,32 +286,34 @@ const AddUsersForm = () => {
               }}
             />
           </Form.Item>
-          <Form.Item
-            label="Status"
-            name="status"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Select
-              placeholder="Set Status"
-              options={[
+          {crudType === CRUDTYPES.EDIT && (
+            <Form.Item
+              label="Status"
+              name="status"
+              rules={[
                 {
-                  label: 'ACTIVE',
-                  value: 'ACTIVE',
-                },
-                {
-                  label: 'INACTIVE',
-                  value: 'INACTIVE',
+                  required: true,
                 },
               ]}
-              style={{
-                width: '100%',
-              }}
-            />
-          </Form.Item>
+            >
+              <Select
+                placeholder="Set Status"
+                options={[
+                  {
+                    label: 'ACTIVE',
+                    value: 'ACTIVE',
+                  },
+                  {
+                    label: 'INACTIVE',
+                    value: 'INACTIVE',
+                  },
+                ]}
+                style={{
+                  width: '100%',
+                }}
+              />
+            </Form.Item>
+          )}
 
           <Form.Item label=" ">
             <Button

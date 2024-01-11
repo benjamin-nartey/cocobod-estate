@@ -50,4 +50,8 @@ export const modalSlice = {
   toggleshowUserAddModal() {
     this.showUserAddModal = !this.showUserAddModal;
   },
+  showDepartmentModal: false,
+  toggleshowDepartmentModal() {
+    this.showDepartmentModal = !this.showDepartmentModal;
+  },
 };
