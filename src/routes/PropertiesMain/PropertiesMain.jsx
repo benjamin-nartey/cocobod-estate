@@ -70,7 +70,7 @@ const PropertiesMain = () => {
               size={22}
               onClick={() => {
                 state.modalSlice.selectedRecord = record;
-                navigate(`/property-units-main`);
+                navigate(`/property-units-main/${value}`);
               }}
             />
             <BiEdit

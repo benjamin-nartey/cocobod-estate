@@ -31,6 +31,7 @@ const PropertyReferences = () => {
   const columns = [
     {
       title: 'lot',
+      width: '7%',
       dataIndex: 'lot',
       filteredValue: [searchText],
       onFilter: (value, record) => {

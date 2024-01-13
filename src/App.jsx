@@ -360,7 +360,10 @@ function App() {
             />
           }
         >
-          <Route path="/property-units-main" element={<PropertyUnitsMain />} />
+          <Route
+            path="/property-units-main/:propertyId"
+            element={<PropertyUnitsMain />}
+          />
         </Route>
 
         {/******* Property-reference Routes ********/}

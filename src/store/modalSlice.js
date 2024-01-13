@@ -54,4 +54,8 @@ export const modalSlice = {
   toggleshowDepartmentModal() {
     this.showDepartmentModal = !this.showDepartmentModal;
   },
+  showPropertyUnitModal: false,
+  toggleshowPropertyUnitModal() {
+    this.showPropertyUnitModal = !this.showPropertyUnitModal;
+  },
 };

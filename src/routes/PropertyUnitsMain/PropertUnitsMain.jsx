@@ -7,18 +7,20 @@ import { getModerationPopertyUnitList } from '../../http/moderation';
 import state from '../../store/store';
 import { getPaginatedPropertyUnits } from '../../http/propertyUnits';
 import { useSnapshot } from 'valtio';
+import PropertyUnitModal from '../../components/modals/propertyUnits/propertyUnits';
 
 const PropertyUnitsMain = () => {
   const [pageNum, setPageNum] = useState(1);
+  const { propertyId } = useParams();
   const navigate = useNavigate();
 
   const snap = useSnapshot(state);
-  const { selectedRecord } = snap.modalSlice;
+  const { selectedRecord, showPropertyUnitModal } = snap.modalSlice;
 
   const [paginatedData, props] = useGetPaginatedData(
     'property-units',
     '',
-    { pageNum, propertyFilter: selectedRecord?.id, statusFilter: 'ACTIVE' },
+    { pageNum, propertyFilter: propertyId, statusFilter: 'ACTIVE' },
     getPaginatedPropertyUnits
   );
 
@@ -58,7 +60,8 @@ const PropertyUnitsMain = () => {
             className="text-sky-400 cursor-pointer"
             onClick={() => {
               state.modalSlice.selectedRecord = record;
-              navigate(`/moderation/properties/review/${value}`);
+              // navigate(`/moderation/properties/review/${value}`);
+              state.modalSlice.toggleshowPropertyUnitModal();
             }}
           />
         );
@@ -83,6 +86,7 @@ const PropertyUnitsMain = () => {
           }}
         />
       </div>
+      {showPropertyUnitModal && <PropertyUnitModal />}
     </div>
   );
 };

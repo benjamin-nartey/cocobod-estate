@@ -14,6 +14,7 @@ import { useGetProperty } from '../../Hooks/query/properties';
 import { useMutation } from '@tanstack/react-query';
 import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
 import state from '../../store/store';
+import { setPropertyFeaturedPhoto } from '../../http/properties';
 
 function PropertyDetail() {
   const sliderRef = useRef();
@@ -27,7 +28,6 @@ function PropertyDetail() {
   const { data: property } = useGetProperty(propId);
 
   const propertyId = property?.data?.id;
-  console.log(propertyId);
 
   const { data: propertyUnits } = useGetPropertyUnits(
     {

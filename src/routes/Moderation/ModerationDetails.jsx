@@ -277,41 +277,17 @@ const ModerationDetails = () => {
                     />
                   </Form.Item>
 
-                  {/* <Form.Item
-                    label={'Tenancy Agreement Start Datae'}
-                    {...restField}
-                    name={[name, 'leaseStartsOn']}
-                  >
-                    <DatePicker style={{ width: '100%' }} />
-                  </Form.Item>
-                  <Form.Item
-                    label={'Tenancy Agreement End Datae'}
-                    {...restField}
-                    name={[name, 'leaseExpiresOn']}
-                  >
-                    <DatePicker style={{ width: '100%' }} />
-                  </Form.Item> */}
                   <Tooltip title={'Remove Occupancy'}>
-                    <MinusCircleOutlined
-                      size={64}
-                      onClick={() => remove(name)}
-                      className="text-xl"
-                    />
+                    <div className="flex justify-center">
+                      <MinusCircleOutlined
+                        size={64}
+                        onClick={() => remove(name)}
+                        className="text-xl text-center"
+                      />
+                    </div>
                   </Tooltip>
                 </div>
               ))}
-              <Form.Item>
-                <Button
-                  className="w-[68%]"
-                  type="dashed"
-                  onClick={() => add()}
-                  block
-                  icon={<PlusOutlined />}
-                  style={{ width: '100%' }}
-                >
-                  Add New Occupant
-                </Button>
-              </Form.Item>
             </>
           )}
         </Form.List>

@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Select, Spin, message } from 'antd';
+import { Button, Form, Input, Modal, Select, Space, Spin, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
@@ -13,12 +13,14 @@ import {
 } from '../../../../http/properties';
 import Dragger from 'antd/es/upload/Dragger';
 import { FileAddOutlined, PlusOutlined } from '@ant-design/icons';
+import Loader from '../../../Loader/Loader';
 
 const EditModerationProperties = () => {
   const snap = useSnapshot(state);
   const { data: towns } = useGetAllTowns();
   const { data: propertyTypes } = useGetPropertyTypes();
   const { showEditPropertyModal, selectedRecord } = snap.modalSlice;
+  const [loading, setLoading] = useState(false);
 
   const { data: property, isLoading: propertyLoading } = useGetProperty(
     selectedRecord?.id
@@ -69,7 +71,7 @@ const EditModerationProperties = () => {
   const onSubmit = (values) => {
     delete values.file;
 
-    mutate(values);
+    mutate({ ...values, lat: `${values.lat}`, long: `${values.long}` });
   };
 
   useEffect(() => {
@@ -78,6 +80,30 @@ const EditModerationProperties = () => {
     }
   }, [property?.data]);
   // console.log({ selectedRecord });
+
+  const handleLocation = () => {
+    setLoading(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log(latitude, longitude);
+          // setLocation({ latitude, longitude });
+          form.setFieldValue('lat', latitude);
+          form.setFieldValue('long', longitude);
+          // console.log(longitude, latitude);
+          setLoading(false);
+        },
+        (error) => {
+          message.error('Error getting location', error.message);
+        }
+      );
+    } else {
+      setLoading(false);
+      message.error('Geolocation is not supported by this browser');
+    }
+    // setLoading(false);
+  };
 
   const props = {
     // onRemove: (file) => {
@@ -182,12 +208,61 @@ const EditModerationProperties = () => {
               />
             </Form.Item>
             <div className="flex">
-              <Form.Item name={'lat'} label={'Latitude'}>
-                <Input />
-              </Form.Item>
-              <Form.Item name={'long'} label={'Longitude'}>
-                <Input />
-              </Form.Item>
+              <Space.Compact>
+                <Form.Item
+                  label="Latitude"
+                  name="lat"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Input
+                    readOnly
+                    type="text"
+                    placeholder="latitude"
+                    // value={location?.latitude}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  label="Longitude"
+                  name="long"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <Input
+                    readOnly
+                    type="text"
+                    placeholder="longitude"
+                    // value={location?.longitude}
+                  />
+                </Form.Item>
+
+                <Form.Item label=" ">
+                  <Button
+                    className=""
+                    type="primary"
+                    htmlType="button"
+                    style={{ backgroundColor: '#6E431D', color: '#fff' }}
+                    onClick={handleLocation}
+                  >
+                    {loading ? (
+                      <Loader
+                        width="w-5"
+                        height="h-5"
+                        fillColor="fill-[#6E431D]"
+                      />
+                    ) : (
+                      'Generate'
+                    )}
+                  </Button>
+                </Form.Item>
+              </Space.Compact>
             </div>
             <Form.Item name={'landmark'} label={'Landmark'}>
               <Input />
