@@ -74,10 +74,7 @@ function App() {
   const isOnLine = useOnlineStatus();
 
   const { getAll: getOfflineUser } = useIndexedDB("offlineUser");
-  const [offlineUser, setOfflineUser] = useLocalStorage(
-    "offlineUser",
-    null
-  );
+  const [offlineUser, setOfflineUser] = useLocalStorage("offlineUser", null);
 
   // useEffect(() => {
   //   getOfflineUser().then((data) => setOfflineUser(data[0]));
@@ -192,7 +189,12 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedPermissions={["list.role", "view.role", "create.role,"]}
+              allowedPermissions={[
+                "list.role",
+                "view.role",
+                "create.role,",
+                "update.role",
+              ]}
             />
           }
         >
@@ -208,6 +210,7 @@ function App() {
                 "view.user",
                 "create.user",
                 "list.user.staff",
+                "update.user",
               ]}
             />
           }
@@ -224,6 +227,7 @@ function App() {
                 "view.department",
                 "create.department",
                 "delete.department",
+                "update.department",
               ]}
             />
           }
@@ -240,6 +244,7 @@ function App() {
                 "view.division",
                 "create.division",
                 "delete.division",
+                "update.division",
               ]}
             />
           }
@@ -256,6 +261,7 @@ function App() {
                 "view.location",
                 "create.location",
                 "delete.location",
+                "update.location",
               ]}
             />
           }
@@ -273,6 +279,7 @@ function App() {
                 "view.deployment",
                 "create.deployment",
                 "delete.deployment",
+                "update.deployment",
               ]}
             />
           }
@@ -292,6 +299,7 @@ function App() {
                 "view.district",
                 "create.district",
                 "delete.district",
+                "update.district",
               ]}
             />
           }
@@ -327,6 +335,7 @@ function App() {
                 "view.property-type",
                 "create.property-type",
                 "delete.property-type",
+                "update.property-type",
               ]}
             />
           }
@@ -343,6 +352,7 @@ function App() {
                 "view.property",
                 "create.property",
                 "delete.property",
+                "update.property",
               ]}
             />
           }
@@ -359,6 +369,7 @@ function App() {
                 "view.property-unit",
                 "create.property-unit",
                 "delete.property-unit",
+                "update.property-unit",
               ]}
             />
           }
@@ -375,6 +386,7 @@ function App() {
                 "view.property-reference",
                 "create.property-reference",
                 "delete.property-reference",
+                "update.property-reference",
               ]}
             />
           }
@@ -385,7 +397,14 @@ function App() {
         {/*******Moderation Route******/}
         <Route
           element={
-            <RequireAuth allowedPermissions={["update.property-unit"]} />
+            <RequireAuth
+              allowedPermissions={[
+                "list.property",
+                "list.property-unit",
+                "view.property-unit",
+                
+              ]}
+            />
           }
         >
           <Route path="moderation">
@@ -405,11 +424,17 @@ function App() {
           </Route>
         </Route>
 
-        {/*******Merge******/}
+        {/*******Merge Route******/}
         <Route
           element={
             <RequireAuth
-              allowedPermissions={["create.property-reference-category"]}
+              allowedPermissions={[
+                "list.property-reference",
+                "list.property-reference-category",
+                "update.property-reference-category",
+                "delete.property-reference-category",
+                "create.property-reference-category",
+              ]}
             />
           }
         >

@@ -72,6 +72,7 @@ const Dashboard = () => {
 
       if (response.status === 200) {
         setAllocationData(response.data.region);
+        state.auth.currentUser.deployedRegion = response.data.region;
       }
     } catch (error) {
       console.log(error);
@@ -144,7 +145,8 @@ const Dashboard = () => {
               id: property?.id,
               name: property?.name,
               propertyType: property?.propertyType,
-              district: property?.district,
+              location: property?.location,
+              division: property?.division,
             }).then(() =>
               console.log("propertyReferenceCategories downloaded successfully")
             );
@@ -234,27 +236,6 @@ const Dashboard = () => {
         console.error("Error downloading Resources ", error);
       });
   };
-
-  const cardItems = [
-    {
-      name: "Properties",
-      value: allProperty.length,
-      icon: <BsBuildingFillCheck size={20} />,
-      link: "/properties",
-    },
-    {
-      name: "Users",
-      value: 0,
-      icon: <BsBuildingFillCheck size={20} />,
-      link: "/users",
-    },
-    {
-      name: "Users",
-      value: 0,
-      icon: <BsBuildingFillCheck size={20} />,
-      link: "/users",
-    },
-  ];
 
   return (
     <section className="w-full flex flex-col gap-8 p-6">

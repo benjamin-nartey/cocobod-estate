@@ -33,7 +33,7 @@ const Capture = () => {
   const handleChange = (districtType) => {
     let _data = tempData;
     const filteredData = _data.filter(
-      (result) => result.district.name === districtType
+      (result) => result?.location?.district.name === districtType
     );
 
     setData(filteredData);

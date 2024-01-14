@@ -14,7 +14,7 @@ import {
 } from "antd";
 import Upload from "antd/es/upload/Upload";
 
-import { UserOutlined } from "@ant-design/icons";
+import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { MdOutlineEmail } from "react-icons/md";
 
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
@@ -26,6 +26,7 @@ import { useAddPropertyData } from "../../Hooks/useAddFetch";
 import { useIndexedDB } from "react-indexed-db-hook";
 import Loader from "../Loader/Loader";
 import { get } from "lodash";
+import Dragger from "antd/es/upload/Dragger";
 
 const PropertyForm = (id) => {
   const [propertyUnitReference, setPropertyUnitRefernce] = useState(null);
@@ -227,8 +228,8 @@ const PropertyForm = (id) => {
       }
     } catch (error) {
       message.error(error);
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -276,39 +277,8 @@ const PropertyForm = (id) => {
       long: `${values?.long.toFixed(10)}`,
       landmark: values?.landmark,
       politicalDistrictId: values?.politicalDistrict,
-      // propertyUnits: values?.propertyUnits?.length
-      //   ? values?.propertyUnits?.map((propertyUnit) => ({
-      //       descriptionPerFixedAssetReport:
-      //         propertyUnit.descriptionPerFixedAssetReport,
-      //       description: propertyUnit.description,
-      //       propertyCode: propertyUnit.propertyCode,
-      //       plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
-      //       floorArea: propertyUnit.floorArea
-      //         ? propertyUnit.floorArea
-      //         : undefined,
-      //       propertyTypeId: propertyUnit.propertyTypeId,
-      //       propertyReferenceId: propertyUnit?.id,
-      //       propertyOccupancy: propertyUnit.occupants?.length
-      //         ? propertyUnit.occupants?.map((occupant) => ({
-      //             name: occupant.occupantName
-      //               ? occupant.occupantName
-      //               : undefined,
-      //             category: occupant?.occupantType,
-      //             clientOccupantId: occupant.occupantId
-      //               ? occupant.occupantId
-      //               : undefined,
-      //           }))
-      //         : [],
-      //       propertyUnitStates: [
-      //         {
-      //           condition: propertyUnit?.condition,
-      //           remarks: propertyUnit?.remarks,
-      //         },
-      //       ],
-      //     }))
-      //   : [],
+      photos: values.photos,
 
-      // photos: fileList,
       propertyUnits: values?.propertyUnits?.length
         ? values?.propertyUnits?.map((propertyUnit) => {
             const data = {
@@ -350,13 +320,10 @@ const PropertyForm = (id) => {
             return data;
           })
         : [],
-
-      photos: fileList,
     };
 
     addProperty(data).then(
       () => {
-        // success(`${values.name} saved successfully`);
         message.success(`${values.name} saved successfully`);
         // form.resetFields();
         // setpropertyReferenceCategories(null);
@@ -649,12 +616,25 @@ const PropertyForm = (id) => {
 
             <Divider />
 
-            <Form.Item label=" " name="photos">
-              <PhotosUploader
-                props={props}
-                handleChange={handleChange}
-                fileList={fileList}
-              />
+            <Form.Item label="photos" name="photos">
+              <Dragger
+                multiple
+                accept={"image/png, image/jpeg, image/jpg"}
+                listType="picture"
+                {...props}
+                // onChange={handleChange}
+                // fileList={fileList}
+              >
+                <p className="ant-upload-drag-icon">
+                  <PlusOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  Click or drag image files to this area to upload
+                </p>
+                <p className="ant-upload-hint">
+                  Support for a single or bulk upload.
+                </p>
+              </Dragger>
             </Form.Item>
 
             <Divider orientation="left">Property Units</Divider>

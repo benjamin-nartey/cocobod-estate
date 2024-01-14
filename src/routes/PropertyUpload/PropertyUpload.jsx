@@ -14,7 +14,10 @@ import Loader from "../../components/Loader/Loader";
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { useAddPropertyUploadData } from "../../Hooks/useAddFetch";
+import {
+  useAddPropertyPhotos,
+  useAddPropertyUploadData,
+} from "../../Hooks/useAddFetch";
 
 const PropertyUpload = () => {
   const { getAll: getAllProperty } = useIndexedDB("property");
@@ -29,6 +32,7 @@ const PropertyUpload = () => {
   const [pageNum, setPageNum] = useState(1);
 
   const { mutate } = useAddPropertyUploadData();
+  const  uploadPhotos  = useAddPropertyPhotos();
 
   // useEffect(() => {
   //   getAllProperty()
@@ -129,8 +133,26 @@ const PropertyUpload = () => {
             propertyUnits: property?.propertyUnits,
           };
           mutate(propertyData, {
-            onSuccess: () => {
+            onSuccess: (result) => {
               data.map((property) => {
+                if (property.photos.fileList.length > 0) {
+                  const formData = new FormData();
+                  const photoData = property.photos.fileList.forEach(
+                    (photo) => {
+                      formData.append("photos", photo.originFileObj);
+                    }
+                  );
+                  uploadPhotos.mutate((result.id, photoData), {
+                    onSuccess: () => {
+                      message.success("Photos added successfully");
+                    },
+
+                    onError: () => {
+                      message.error("Error adding photos");
+                    },
+                  });
+                }
+
                 const queryClient = useQueryClient();
                 deletePropertyRecord(property.id)
                   .then(() => message.success("Property uploaded successfully"))

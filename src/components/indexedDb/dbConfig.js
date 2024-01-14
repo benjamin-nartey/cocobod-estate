@@ -13,7 +13,8 @@ export const ESTATE_DB_CONFIG = {
           keypath: "propertyType",
           options: { unique: false },
         },
-        { name: "district", keypath: "district", options: { unique: false } },
+        { name: "location", keypath: "location", options: { unique: false } },
+        { name: "division", keypath: "division", options: { unique: false } },
       ],
     },
     {

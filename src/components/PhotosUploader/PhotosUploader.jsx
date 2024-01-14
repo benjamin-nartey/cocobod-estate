@@ -11,8 +11,8 @@ const PhotosUploader = ({ props, handleChange, fileList }) => {
       accept={"image/png, image/jpeg, image/jpg"}
       listType="picture"
       {...props}
-      onChange={handleChange}
-      fileList={fileList}
+      // onChange={handleChange}
+      // fileList={fileList}
     >
       <p className="ant-upload-drag-icon">
         <PlusOutlined />

@@ -1,31 +1,31 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState } from "react";
 
-import { HiArrowDown, HiMenu } from 'react-icons/hi';
-import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
+import { HiArrowDown, HiMenu } from "react-icons/hi";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import {
   AiFillCloseCircle,
   AiOutlineDown,
   AiOutlinePoweroff,
-} from 'react-icons/ai';
+} from "react-icons/ai";
 
-import Sidebar from '../../components/Sidebar/Sidebar';
-import navBg from '../../assets/navbg.png';
-import { LogoutContext } from '../../context/logout.context';
-import { useLocalStorage } from '../../Hooks/useLocalStorage';
-import { useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { getContrastingColor } from '../../config/helpers';
-import state from '../../store/store';
-import Loader from '../../components/Loader/Loader';
+import Sidebar from "../../components/Sidebar/Sidebar";
+import navBg from "../../assets/navbg.png";
+import { LogoutContext } from "../../context/logout.context";
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { getContrastingColor } from "../../config/helpers";
+import state from "../../store/store";
+import Loader from "../../components/Loader/Loader";
 
-import { useSnapshot } from 'valtio';
-import { Outlet } from 'react-router-dom/dist';
+import { useSnapshot } from "valtio";
+import { Outlet } from "react-router-dom/dist";
 
 function Navigation() {
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [toggleLogout, setToggleLogout] = useState(false);
-  const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null);
-  const [accessToken, setAccessToken] = useLocalStorage('accessToken', null);
+  const [refreshToken, setRefreshToken] = useLocalStorage("refreshToken", null);
+  const [accessToken, setAccessToken] = useLocalStorage("accessToken", null);
   const [avatarBackground, setAvatarBackground] = useState(getRandomColor());
   const [avatarText, setAvatarText] = useState(
     getContrastingColor(avatarBackground)
@@ -37,8 +37,8 @@ function Navigation() {
 
   const snap = useSnapshot(state);
   function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
+    const letters = "0123456789ABCDEF";
+    let color = "#";
     for (let i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
@@ -55,12 +55,12 @@ function Navigation() {
           >
             {snap.auth.loadingState ? (
               <>
-                {' '}
+                {" "}
                 <Loader
                   width="w-5"
                   height="h-5"
                   fillColor="fill-[#6E431D]"
-                />{' '}
+                />{" "}
                 Loging...
               </>
             ) : (
@@ -83,9 +83,17 @@ function Navigation() {
             className="bg-cover navigation flex h-[18vh] w-full justify-between items-center shadow-md sticky top-0 z-10"
           >
             <div
-              style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}
-              className="w-full h-full p-5"
+              style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+              className="w-full relative h-full p-5"
             >
+              <div className="flex flex-col absolute left-6 bottom-[1rem] text-gray-300 md:hidden">
+                  <span className="font-semibold text-base">
+                    {snap?.auth?.currentUser?.name}
+                  </span>
+                  <span className="font-normal text-sm">
+                    {snap?.auth?.currentUser?.deployedRegion?.name}
+                  </span>
+                </div>
               <div className="w-full flex justify-between items-center">
                 <HiMenu
                   onClick={() => setToggleSidebar(true)}
@@ -117,6 +125,7 @@ function Navigation() {
                     </div>
                   </div>
                 </div>
+                
               </div>
             </div>
           </div>
