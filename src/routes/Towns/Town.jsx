@@ -1,4 +1,4 @@
-import { Button, Input, Popconfirm, Table, message } from 'antd';
+import { Button, Input, Popconfirm, Table, Tooltip, message } from 'antd';
 import React, { useState } from 'react';
 import { useGetPaginatedDistricts } from '../../Hooks/query/district';
 import { useSnapshot } from 'valtio';
@@ -13,6 +13,8 @@ import { useGetPaginatedData } from '../../Hooks/query/generics';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteTown, getPaginatedLocation } from '../../http/location';
 import AddLocation from '../../components/modals/Location/location';
+import UploadCSV from '../../components/modals/uploads/uploadCsv';
+import { MdOutlineUpload } from 'react-icons/md';
 
 const Town = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -45,7 +47,7 @@ const Town = () => {
 
   const snap = useSnapshot(state);
 
-  const { showLocationModal } = snap.modalSlice;
+  const { showLocationModal, showUploadModal } = snap.modalSlice;
 
   const removeLocation = (id) => {
     mutate(id);
@@ -104,7 +106,14 @@ const Town = () => {
 
   return (
     <div className="w-[90%] mt-5 mx-auto">
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-4 gap-3">
+        <Tooltip title={'Upload CSV'}>
+          <MdOutlineUpload
+            size={32}
+            className="text-[#6E431D] cursor-pointer"
+            onClick={() => state.modalSlice.toggleshowUploadModal()}
+          />
+        </Tooltip>
         <Button
           type="primary"
           onClick={() => {
@@ -135,6 +144,12 @@ const Town = () => {
       />
 
       {showLocationModal && <AddLocation />}
+      {showUploadModal && (
+        <UploadCSV
+          fieldName={'bulk-file'}
+          uploadUrl={'/location/bulk-import'}
+        />
+      )}
     </div>
   );
 };

@@ -64,7 +64,7 @@ const ReportFilter = () => {
           <Form
             layout={'vertical'}
             form={form}
-            initialValues={state.modalSlice?.reportFilters}
+            // initialValues={state.modalSlice?.reportFilters}
             onFinish={(values) => handleFilterSubmit(values)}
           >
             <Form.Item name={'regionFilter'} label={'Region'}>

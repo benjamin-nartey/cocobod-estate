@@ -59,7 +59,7 @@ export const useAddPropertyTypeData = () => {
 
 //Add user hook
 const addUser = (user) => {
-  return axiosInstance.post("/users", user);
+  return axiosInstance.post('/users/staff', user);
 };
 
 export const useAddUserData = () => {
@@ -85,27 +85,12 @@ export const useAddRoleData = () => {
 };
 
 const addPropertyUpload = (property) => {
-  return axiosInstance.post("/properties/field-capture", property);
+  return axiosInstance.post('/properties/field-capture', property);
 };
 
 export const useAddPropertyUploadData = () => {
   const queryClient = useQueryClient();
   return useMutation(addPropertyUpload, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("property-upload");
-    },
-  });
-};
-
-const addPropertyPhotos = (propertyId, data) => {
-  return axiosInstance.post(`/properties/${propertyId}/photos`, data);
-};
-
-export const useAddPropertyPhotos = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: "uploadPhotos",
-    mutationFn: (data) => addPropertyPhotos(...data),
     onSuccess: () => {
       queryClient.invalidateQueries("property-upload");
     },

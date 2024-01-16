@@ -1,7 +1,7 @@
 import { axiosInstance } from '../axios/axiosInstance';
 
-export const uploadReferences = (data) => {
-  return axiosInstance.post('property-references/batch-upload', data, {
+export const uploadData = (data, uploadUrl) => {
+  return axiosInstance.post(`${uploadUrl}`, data, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

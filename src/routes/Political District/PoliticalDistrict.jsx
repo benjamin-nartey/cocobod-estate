@@ -1,4 +1,4 @@
-import { Button, Input, Popconfirm, Table, message } from 'antd';
+import { Button, Input, Popconfirm, Table, Tooltip, message } from 'antd';
 import React, { useState } from 'react';
 import { useGetPaginatedDistricts } from '../../Hooks/query/district';
 import { useSnapshot } from 'valtio';
@@ -16,6 +16,8 @@ import {
   getPaginatedPoliticalDistricts,
 } from '../../http/politicalDistrict';
 import AddPoliticalDistrict from '../../components/modals/politicalDistrict/add';
+import { MdOutlineUpload } from 'react-icons/md';
+import UploadCSV from '../../components/modals/uploads/uploadCsv';
 
 const PoliticalDistrict = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -48,7 +50,7 @@ const PoliticalDistrict = () => {
 
   const snap = useSnapshot(state);
 
-  const { showPoliticalDistrictModal } = snap.modalSlice;
+  const { showPoliticalDistrictModal, showUploadModal } = snap.modalSlice;
 
   const removePoliticalDistrict = (id) => {
     mutate(id);
@@ -107,7 +109,14 @@ const PoliticalDistrict = () => {
 
   return (
     <div className="w-[90%] mt-5 mx-auto">
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-4 gap-3">
+        <Tooltip title={'Upload CSV'}>
+          <MdOutlineUpload
+            size={32}
+            className="text-[#6E431D] cursor-pointer"
+            onClick={() => state.modalSlice.toggleshowUploadModal()}
+          />
+        </Tooltip>
         <Button
           type="primary"
           onClick={() => {
@@ -137,6 +146,13 @@ const PoliticalDistrict = () => {
         }}
       />
       {showPoliticalDistrictModal && <AddPoliticalDistrict />};
+      {showUploadModal && (
+        <UploadCSV
+          fieldName={'bulk-file'}
+          uploadUrl={'/political-district/bulk-import'}
+          queryKey={'politicalDistricts'}
+        />
+      )}
     </div>
   );
 };

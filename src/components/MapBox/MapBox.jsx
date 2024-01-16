@@ -8,18 +8,31 @@ import { getCenter } from 'geolib';
 
 import { MdLocationPin } from 'react-icons/md';
 
-import { SearchResultContext } from '../../context/searchResult.context';
-
 import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import { useGetAllProperties } from '../../Hooks/query/properties';
+import { useSnapshot } from 'valtio';
+import state from '../../store/store';
 
 function MapBox({}) {
-  const { searchResult } = useContext(SearchResultContext);
   // const [propertyData, setPropertyData] = useLocalStorage('propertyData', null);
   const [center, setCenter] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState({});
   const [animateBounce, setAnimateBounce] = useState(-1);
   const [sl, setSl] = useState(false);
   const markerRef = useRef();
+
+  const snap = useSnapshot(state);
+  const { selectedProperty } = snap.mapSlice;
+
+  let data;
+
+  const { data: properties } = useGetAllProperties();
+
+  if (!selectedProperty) {
+    data = properties?.data;
+  } else {
+    data = selectedProperty;
+  }
 
   const handleClickOutsideMarker = (e) => {
     if (!markerRef?.current?.contains(e.target)) {
@@ -32,13 +45,15 @@ function MapBox({}) {
   }, []);
 
   useEffect(() => {
-    const coordinates = searchResult?.map((result) => ({
-      latitude: parseFloat(result?.lat),
-      longitude: parseFloat(result?.long),
-    }));
+    if (data?.length) {
+      const coordinates = data?.map((result) => ({
+        latitude: parseFloat(result?.lat),
+        longitude: parseFloat(result?.long),
+      }));
 
-    setCenter(getCenter(coordinates));
-  }, [searchResult]);
+      setCenter(getCenter(coordinates));
+    }
+  }, [data.length]);
 
   const [viewState, setViewState] = useState({
     latitude: center && center?.latitude,
@@ -50,7 +65,7 @@ function MapBox({}) {
     setViewState({
       latitude: center && center?.latitude,
       longitude: center && center?.longitude,
-      zoom: 6,
+      zoom: data.length > 1 ? 6 : 12,
     });
   }, [center]);
 
@@ -69,8 +84,8 @@ function MapBox({}) {
       mapStyle="mapbox://styles/brightarhin/clje8v5tp005d01qsaa1ya2u8"
       mapboxAccessToken={import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN}
     >
-      {searchResult &&
-        searchResult.map((result, idx) => (
+      {data &&
+        data.map((result, idx) => (
           <div key={result?.long}>
             <Marker
               longitude={Number(result?.long)}

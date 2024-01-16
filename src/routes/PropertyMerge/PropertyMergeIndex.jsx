@@ -7,10 +7,11 @@ import {
 } from '../../http/propertiesMerge';
 import { useNavigate } from 'react-router-dom';
 import { DeleteOutlined } from '@ant-design/icons';
-import { BiEdit } from 'react-icons/bi';
+import { BiBullseye, BiEdit, BiSleepy } from 'react-icons/bi';
 import state from '../../store/store';
 import { CRUDTYPES } from '../../store/modalSlice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AiOutlineEye } from 'react-icons/ai';
 
 const PropertyMergeIndex = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -54,7 +55,7 @@ const PropertyMergeIndex = () => {
     {
       title: 'Region',
       key: 'region',
-      dataIndex: ['district', 'region', 'name'],
+      dataIndex: ['location', 'district', 'region', 'name'],
     },
     {
       title: 'Category',
@@ -64,7 +65,7 @@ const PropertyMergeIndex = () => {
     {
       title: 'District',
       key: 'district',
-      dataIndex: ['district', 'name'],
+      dataIndex: ['location', 'district', 'name'],
     },
     {
       title: 'Actions',
@@ -72,6 +73,12 @@ const PropertyMergeIndex = () => {
       render: (value, record) => {
         return (
           <div className="flex items-center gap-4">
+            <AiOutlineEye
+              size={22}
+              className="text-sky-400 cursor-pointer"
+              onClick={() => navigate(`/merge/${value}`)}
+            />
+
             <BiEdit
               size={22}
               className="cursor-pointer text-gray-600"

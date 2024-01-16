@@ -42,8 +42,20 @@ export const modalSlice = {
   toggleshowReportModal() {
     this.showReportModal = !this.showReportModal;
   },
-  showReferencesUploadModal: false,
-  toggleshowReferencesUploadModal() {
-    this.showReferencesUploadModal = !this.showReferencesUploadModal;
+  showUploadModal: false,
+  toggleshowUploadModal() {
+    this.showUploadModal = !this.showUploadModal;
+  },
+  showUserAddModal: false,
+  toggleshowUserAddModal() {
+    this.showUserAddModal = !this.showUserAddModal;
+  },
+  showDepartmentModal: false,
+  toggleshowDepartmentModal() {
+    this.showDepartmentModal = !this.showDepartmentModal;
+  },
+  showPropertyUnitModal: false,
+  toggleshowPropertyUnitModal() {
+    this.showPropertyUnitModal = !this.showPropertyUnitModal;
   },
 };

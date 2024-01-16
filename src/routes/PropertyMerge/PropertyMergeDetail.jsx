@@ -6,32 +6,26 @@ import state from '../../store/store';
 import { capitalize } from '../../utils/typography';
 import { useSnapshot } from 'valtio';
 
-import { useGetReferences } from '../../Hooks/query/properties';
-import UploadCSV from '../../components/modals/uploads/uploadCsv';
+import { useParams } from 'react-router-dom';
 
-const PropertyReferences = () => {
+const PropertyMergeDetail = () => {
   const [pageNum, setPageNum] = useState(1);
+  const [searchText, setSearchText] = useState('');
+  const { id } = useParams();
   const [paginatedData, props] = useGetPaginatedData(
     'properReferenceList',
     '',
-    { pageNum },
+    { pageNum, propertyReferenceCategoryFilter: id },
     getPagionatedPropertyUnitReferenceList
   );
-
-  const [searchText, setSearchText] = useState('');
-
-  const snap = useSnapshot(state);
-  const { showUploadModal } = snap.modalSlice;
 
   const data = props.data?.data?.records?.map((rec) => ({
     ...rec,
     key: rec?.id,
   }));
-
   const columns = [
     {
-      title: 'lot',
-      width: '7%',
+      title: 'Lot#',
       dataIndex: 'lot',
       filteredValue: [searchText],
       onFilter: (value, record) => {
@@ -52,34 +46,27 @@ const PropertyReferences = () => {
             .includes(value.toLowerCase())
         );
       },
+      render: (text) => <a>{text}</a>,
     },
     {
       title: 'Town',
       dataIndex: 'locationOrTown',
-      render: (value) => (
-        <span>{value && capitalize(value?.toLowerCase())}</span>
-      ),
+      render: (value) => <span>{capitalize(value.toLowerCase())}</span>,
     },
     {
       title: 'Region',
       dataIndex: ['region', 'name'],
-      render: (value) => (
-        <span>{value && capitalize(value?.toLowerCase())}</span>
-      ),
+      render: (value) => <span>{capitalize(value.toLowerCase())}</span>,
     },
     {
       title: 'Description',
       dataIndex: 'description',
-      render: (value) => (
-        <span>{value && capitalize(value?.toLowerCase())}</span>
-      ),
+      render: (value) => <span>{capitalize(value.toLowerCase())}</span>,
     },
     {
       title: 'Category/Class Asset',
       dataIndex: ['propertyType', 'name'],
-      render: (value) => (
-        <span>{value && capitalize(value?.toLowerCase())}</span>
-      ),
+      render: (value) => <span>{capitalize(value.toLowerCase())}</span>,
     },
     {
       title: 'Plot Size',
@@ -98,19 +85,12 @@ const PropertyReferences = () => {
       dataIndex: 'currentUsefulLife',
     },
   ];
+
   return (
     <div className="w-[90%] mt-5 mx-auto">
-      <div className="flex justify-end mb-4">
-        <Button
-          type="primary"
-          onClick={() => {
-            state.modalSlice.toggleshowUploadModal();
-          }}
-          style={{ backgroundColor: '#6E431D', color: '#fff' }}
-        >
-          Upload Properties
-        </Button>
-      </div>
+      <h3 className="font-semibold mb-10 text-slate-500">
+        {data && data[0]?.propertyReferenceCategory?.name?.toUpperCase()}
+      </h3>
       <Input.Search
         placeholder="Search records..."
         onSearch={(value) => setSearchText(value)}
@@ -128,15 +108,8 @@ const PropertyReferences = () => {
           setPageNum(pagination.current);
         }}
       />
-      {showUploadModal && (
-        <UploadCSV
-          fieldName={'batch-property-reference'}
-          uploadUrl={'/property-references/batch-upload'}
-          queryKey={'properReferenceList'}
-        />
-      )}
     </div>
   );
 };
 
-export default PropertyReferences;
+export default PropertyMergeDetail;

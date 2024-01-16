@@ -1,16 +1,14 @@
-import { useLocation, Navigate, Outlet } from "react-router-dom";
+import { useLocation, Navigate, Outlet } from 'react-router-dom';
 
-import { useSnapshot } from "valtio";
+import { useSnapshot } from 'valtio';
 
-import state from "../../store/store";
+import state from '../../store/store';
 
 function RequireAuth({ allowedPermissions }) {
   const snap = useSnapshot(state);
 
   const currentUser = snap.auth.currentUser;
   const loadingState = snap.auth.loadingState;
-
-  console.log({ currentUser });
 
   const location = useLocation();
 

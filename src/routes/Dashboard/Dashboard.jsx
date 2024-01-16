@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import FloatButtonComponent from "../../components/FloatButtonComponent/FloatButtonComponent";
-import { axiosInstance } from "../../axios/axiosInstance";
-import { useIndexedDB } from "react-indexed-db-hook";
-import { BsBuildingFillCheck } from "react-icons/bs";
-import { message } from "antd";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import FloatButtonComponent from '../../components/FloatButtonComponent/FloatButtonComponent';
+import { axiosInstance } from '../../axios/axiosInstance';
+import { useIndexedDB } from 'react-indexed-db-hook';
+import { BsBuildingFillCheck } from 'react-icons/bs';
+import { message } from 'antd';
+import { NavLink } from 'react-router-dom';
 
-import { useGetDashboard } from "../../Hooks/query/dashboard";
+import { useGetDashboard } from '../../Hooks/query/dashboard';
 
-import ReportLineChart from "../../components/charts/LineChart/ReportLineChart";
-import ReportPieChart from "../../components/charts/PieChart/ReportPieChart";
-import nodata from "../../assets/nodata.json";
-import Lottie from "lottie-react";
-import { useSnapshot } from "valtio";
-import state from "../../store/store";
+import ReportLineChart from '../../components/charts/LineChart/ReportLineChart';
+import ReportPieChart from '../../components/charts/PieChart/ReportPieChart';
+import nodata from '../../assets/nodata.json';
+import Lottie from 'lottie-react';
+import { useSnapshot } from 'valtio';
+import state from '../../store/store';
 
 const Card = ({ allProperty }) => {
   return (
@@ -36,8 +36,10 @@ const Dashboard = () => {
 
   const [allocationData, setAllocationData] = useState(null);
 
+  const [loading, setLoading] = useState(false);
+
   const { add: addPropertyReferenceCategories } = useIndexedDB(
-    "propertyReferenceCategories"
+    'propertyReferenceCategories'
   );
 
   const { data: dashboard, isLoading } = useGetDashboard();
@@ -50,15 +52,15 @@ const Dashboard = () => {
     }, 0);
   }
 
-  const { add: addPropertyReferences } = useIndexedDB("propertyReferences");
-  const { add: addDistricts } = useIndexedDB("districts");
-  const { add: addPolitcalDistricts } = useIndexedDB("politcalDistricts");
-  const { add: addPolitcalRegions } = useIndexedDB("politcalRegions");
-  const { add: addLocations } = useIndexedDB("locations");
-  const { add: addPropertyTypes } = useIndexedDB("propertyTypes");
-  const { add: addClientOccupants } = useIndexedDB("clientOccupants");
+  const { add: addPropertyReferences } = useIndexedDB('propertyReferences');
+  const { add: addDistricts } = useIndexedDB('districts');
+  const { add: addPolitcalDistricts } = useIndexedDB('politcalDistricts');
+  const { add: addPolitcalRegions } = useIndexedDB('politcalRegions');
+  const { add: addLocations } = useIndexedDB('locations');
+  const { add: addPropertyTypes } = useIndexedDB('propertyTypes');
+  const { add: addClientOccupants } = useIndexedDB('clientOccupants');
 
-  const { getAll: getAllProperty } = useIndexedDB("property");
+  const { getAll: getAllProperty } = useIndexedDB('property');
 
   useEffect(() => {
     getAllProperty().then((data) => setAllProperty(data));
@@ -66,9 +68,9 @@ const Dashboard = () => {
 
   const fetchUserAlocation = async () => {
     try {
-      const response = await axiosInstance.get("/allocation/me");
-      console.log({ response });
-      console.log(response.data?.region?.id);
+      const response = await axiosInstance.get('/allocation/me');
+
+      console.log(response.data.region.id);
 
       if (response.status === 200) {
         setAllocationData(response.data.region);
@@ -88,46 +90,47 @@ const Dashboard = () => {
   console.log({ allocationData });
 
   const handleDownloadAllResources = async () => {
+    setLoading(true);
     // console.log(auth.currentUser)?.allocationData.id;
     await Promise.all([
-      axiosInstance.get("/property-reference-categories/all", {
+      axiosInstance.get('/property-reference-categories/all', {
         params: {
           regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
-      axiosInstance.get("/property-references/all", {
+      axiosInstance.get('/property-references/all', {
         params: {
           regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
-      axiosInstance.get("/district/all", {
+      axiosInstance.get('/district/all', {
         params: {
           regionFilter: auth.currentUser?.allocationData?.id,
         },
       }),
 
-      axiosInstance.get("/location/all", {
+      axiosInstance.get('/location/all', {
         params: {
           regionFilter: allocationData?.region?.id,
         },
       }),
 
-      axiosInstance.get("/property-types/all", {
+      axiosInstance.get('/property-types/all', {
         params: {
           regionFilter: allocationData?.region?.id,
         },
       }),
 
-      axiosInstance.get("/client-occupants/all", {
+      axiosInstance.get('/client-occupants/all', {
         params: {
           regionFilter: allocationData?.region?.id,
         },
       }),
 
-      axiosInstance.get("/political-district/all"),
-      axiosInstance.get("/political-region/all"),
+      axiosInstance.get('/political-district/all'),
+      axiosInstance.get('/political-region/all'),
     ])
       .then(
         ([
@@ -148,7 +151,7 @@ const Dashboard = () => {
               location: property?.location,
               division: property?.division,
             }).then(() =>
-              console.log("propertyReferenceCategories downloaded successfully")
+              console.log('propertyReferenceCategories downloaded successfully')
             );
           });
 
@@ -170,7 +173,7 @@ const Dashboard = () => {
               // propertyUnit: references?.propertyUnit,
               propertyType: references?.propertyType,
             }).then(() =>
-              console.log("propertyReferences downloaded successfully")
+              console.log('propertyReferences downloaded successfully')
             );
           });
 
@@ -180,7 +183,7 @@ const Dashboard = () => {
               name: district?.name,
               regionId: district?.regionId,
               districtType: district?.districtType,
-            }).then(() => console.log("districts downloaded successfully"));
+            }).then(() => console.log('districts downloaded successfully'));
           });
 
           politicalDistrictResponse.data.map((district) => {
@@ -189,7 +192,7 @@ const Dashboard = () => {
               name: district?.name,
               politicalRegion: district?.politicalRegion,
             }).then(() =>
-              console.log("political districts downloaded successfully")
+              console.log('political districts downloaded successfully')
             );
           });
 
@@ -198,7 +201,7 @@ const Dashboard = () => {
               id: region?.id,
               name: region?.name,
             }).then(() =>
-              console.log("political region downloaded successfully")
+              console.log('political region downloaded successfully')
             );
           });
 
@@ -207,7 +210,7 @@ const Dashboard = () => {
               id: location?.id,
               name: location?.name,
               districtId: location?.districtId,
-            }).then(() => console.log("locations downloaded successfully"));
+            }).then(() => console.log('locations downloaded successfully'));
           });
 
           propertyTypesResponse.data.map((propertyType) => {
@@ -215,7 +218,7 @@ const Dashboard = () => {
               id: propertyType?.id,
               name: propertyType?.name,
               attributes: propertyType?.attributes,
-            }).then(() => console.log("propertyTypes downloaded successfully"));
+            }).then(() => console.log('propertyTypes downloaded successfully'));
           });
 
           clientOccupantsResponse.data.map((propertyType) => {
@@ -226,14 +229,14 @@ const Dashboard = () => {
               email: propertyType?.email,
               phoneNumber: propertyType?.phoneNumber,
             }).then(() => {
-              console.log("clientOccupants downloaded successfully");
-              message.success("Resources downloaded successfully");
+              console.log('clientOccupants downloaded successfully');
+              message.success('Resources downloaded successfully');
             });
           });
         }
       )
       .catch((error) => {
-        console.error("Error downloading Resources ", error);
+        console.error('Error downloading Resources ', error);
       });
   };
 

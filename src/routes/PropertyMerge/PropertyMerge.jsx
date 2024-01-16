@@ -53,7 +53,7 @@ const PropertyMerge = () => {
     borderRadius: token.borderRadiusLG,
     border: `1px dashed ${token.colorBorder}`,
     marginTop: 16,
-    minHeight: '500px',
+    minHeight: '40rem',
   };
   return (
     <div className="w-[90%] mx-auto mt-6">

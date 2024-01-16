@@ -40,7 +40,7 @@ const ModerationPoperties = () => {
       title: 'Property Description',
       dataIndex: 'description',
       render: (value) => {
-        return <p>{capitalize(value?.toLowerCase())}</p>;
+        return <p>{value && capitalize(value?.toLowerCase())}</p>;
       },
     },
 

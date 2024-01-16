@@ -1,5 +1,5 @@
 import { DeleteOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Table, message } from 'antd';
+import { Button, Input, Popconfirm, Table, Tooltip, message } from 'antd';
 import React, { useState } from 'react';
 import { BiEdit } from 'react-icons/bi';
 import state from '../../store/store';
@@ -13,12 +13,14 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deletePoliticalDistrict } from '../../http/politicalDistrict';
 import { CRUDTYPES } from '../../store/modalSlice';
+import UploadCSV from '../../components/modals/uploads/uploadCsv';
+import { MdOutlineUpload } from 'react-icons/md';
 
 const PoliticalRegion = () => {
   const snap = useSnapshot(state);
   const [pageNum, setPageNum] = useState(1);
 
-  const { showPoliticalRegionModal } = snap.modalSlice;
+  const { showPoliticalRegionModal, showUploadModal } = snap.modalSlice;
 
   const [paginatedData, props] = useGetPaginatedData(
     'politicalRegions',
@@ -103,7 +105,15 @@ const PoliticalRegion = () => {
     <div className="w-[80%] mx-auto mt-10">
       <div className="flex justify-between items-center">
         <h3 className="font-semibold text-slate-500">POLITICAL REGIONS</h3>
-        <div className="flex justify-end mb-4">
+
+        <div className="flex justify-end gap-3 mb-4">
+          <Tooltip title={'Upload CSV'}>
+            <MdOutlineUpload
+              size={32}
+              className="text-[#6E431D] cursor-pointer"
+              onClick={() => state.modalSlice.toggleshowUploadModal()}
+            />
+          </Tooltip>
           <Button
             type="primary"
             onClick={() => {
@@ -132,6 +142,13 @@ const PoliticalRegion = () => {
         loading={props?.isLoading || props?.isFetching}
       />
       {showPoliticalRegionModal && <AddPoliticalRegion />}
+      {showUploadModal && (
+        <UploadCSV
+          fieldName={'bulk-file'}
+          uploadUrl={'/political-region/bulk-import'}
+          queryKey={'politicalRegions'}
+        />
+      )}
     </div>
   );
 };
