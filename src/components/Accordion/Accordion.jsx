@@ -26,17 +26,25 @@ const Accordion = ({ id, form }) => {
       );
 
       const data = getPropertyUnitsByPropPseudoId.map((propertyUnit) => {
+        console.log(propertyUnit.propertyType.attributes[0]);
         return {
           id: propertyUnit?.id,
           description: propertyUnit?.description,
           descriptionPerFixedAssetReport:
             propertyUnit?.descriptionPerFixedAssetReport,
-          floorArea: propertyUnit?.floorArea,
-          plotSize: propertyUnit?.plotSize,
+          [propertyUnit.propertyType.attributes[0] === 'floorArea'
+            ? 'floorSize'
+            : 'plotSize']:
+            propertyUnit.propertyType.attributes[0] === 'floorArea'
+              ? propertyUnit.floorSize
+              : propertyUnit.plotSize,
+
           propertyTypeId: propertyUnit?.propertyType?.id,
           occupants: [],
         };
       });
+
+      console.log(data);
 
       form.setFieldsValue({
         propertyUnits: data,

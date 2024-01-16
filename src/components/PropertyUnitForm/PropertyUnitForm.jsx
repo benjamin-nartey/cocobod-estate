@@ -152,11 +152,11 @@ const PropertyUnitForm = ({ name, unitFormKey }) => {
         <Form.Item
           label="Discription Per FAR"
           name={[name, 'descriptionPerFixedAssetReport']}
-          rules={[
-            {
-              required: true,
-            },
-          ]}
+          // rules={[
+          //   {
+          //     required: true,
+          //   },
+          // ]}
         >
           <Input
             disabled
@@ -240,7 +240,7 @@ const PropertyUnitForm = ({ name, unitFormKey }) => {
           ) : (
             <Form.Item
               label="Floor Area"
-              name={[name, 'floorArea']}
+              name={[name, 'floorSize']}
               // rules={[
               //   {
               //     required: true,

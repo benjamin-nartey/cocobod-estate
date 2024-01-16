@@ -140,17 +140,17 @@ const PropertyUnitMerge = () => {
     {
       title: 'Location/Town',
       dataIndex: 'locationOrTown',
-      render: (value) => <p>{capitalize(value.toLowerCase())}</p>,
+      render: (value) => <p>{value && capitalize(value.toLowerCase())}</p>,
     },
     {
       title: 'Description',
       dataIndex: 'description',
-      render: (value) => <p>{capitalize(value.toLowerCase())}</p>,
+      render: (value) => <p>{value && capitalize(value.toLowerCase())}</p>,
     },
     {
       title: 'Category',
       dataIndex: ['propertyType', 'name'],
-      render: (value) => <p>{capitalize(value.toLowerCase())}</p>,
+      render: (value) => <p>{value && capitalize(value.toLowerCase())}</p>,
     },
     {
       title: 'PlotSize',

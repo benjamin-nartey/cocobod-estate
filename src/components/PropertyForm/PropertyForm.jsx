@@ -14,8 +14,8 @@ import {
 } from 'antd';
 import Upload from 'antd/es/upload/Upload';
 
-import { PlusOutlined, UserOutlined } from "@ant-design/icons";
-import { MdOutlineEmail } from "react-icons/md";
+import { PlusOutlined, UserOutlined } from '@ant-design/icons';
+import { MdOutlineEmail } from 'react-icons/md';
 
 import CustomSelect from '../../components/CustomSelect/CustomSelect';
 import PhotosUploader from '../../components/PhotosUploader/PhotosUploader';
@@ -26,6 +26,7 @@ import { useAddPropertyData } from '../../Hooks/useAddFetch';
 import { useIndexedDB } from 'react-indexed-db-hook';
 import Loader from '../Loader/Loader';
 import { useNavigate } from 'react-router-dom';
+import Dragger from 'antd/es/upload/Dragger';
 
 const PropertyForm = (id) => {
   const [propertyUnitReference, setPropertyUnitRefernce] = useState(null);
@@ -261,62 +262,68 @@ const PropertyForm = (id) => {
   };
 
   const handleSubmit = async (values) => {
-    const data = {
-      name: values?.name,
-      description: values?.description,
-      propertyCode: values?.digitalAddress,
-      digitalAddress: values?.digitalAddress,
-      propertyTypeId: values?.propertyTypeId,
-      locationId: values?.locationId,
-      propertyReferenceCategoryId: propertyReferenceCategories?.id,
-      lat: `${values?.lat.toFixed(10)}`,
-      long: `${values?.long.toFixed(10)}`,
-      landmark: values?.landmark,
-      politicalDistrictId: values?.politicalDistrict,
-      photos: values.photos,
+    console.log(values);
 
-      propertyUnits: values?.propertyUnits?.length
-        ? values?.propertyUnits?.map((propertyUnit) => {
-            const data = {
-              descriptionPerFixedAssetReport:
-                propertyUnit.descriptionPerFixedAssetReport,
-              description: propertyUnit.description,
-              // propertyCode: propertyUnit.propertyCode,
-              // plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
-              // floorArea: propertyUnit.floorArea
-              //   ? propertyUnit.floorArea
-              //   : undefined,
-              propertyTypeId: propertyUnit.propertyTypeId,
-              propertyReferenceId: propertyUnit?.id,
-              propertyOccupancy: propertyUnit.occupants?.length
-                ? propertyUnit.occupants?.map((occupant) => ({
-                    name: occupant.occupantName
-                      ? occupant.occupantName
-                      : undefined,
-                    category: occupant?.occupantType,
-                    clientOccupantId: occupant.occupantId
-                      ? occupant.occupantId
-                      : undefined,
-                  }))
-                : [],
-              propertyUnitStates: [
-                {
-                  condition: propertyUnit?.condition,
-                  remarks: propertyUnit?.remarks,
-                },
-              ],
-            };
+    // const data = {
+    //   name: values?.name,
+    //   description: values?.description,
+    //   propertyCode: values?.digitalAddress,
+    //   digitalAddress: values?.digitalAddress,
+    //   propertyTypeId: values?.propertyTypeId,
+    //   locationId: values?.locationId,
+    //   propertyReferenceCategoryId: propertyReferenceCategories?.id,
+    //   lat: `${values?.lat.toFixed(10)}`,
+    //   long: `${values?.long.toFixed(10)}`,
+    //   landmark: values?.landmark,
+    //   politicalDistrictId: values?.politicalDistrict,
+    //   photos: values.photos,
 
-            if (!propertyUnit.plotSize) {
-              data.floorSize = propertyUnit.floorArea;
-            } else {
-              data.plotSize = propertyUnit.plotSize;
-            }
+    //   propertyUnits: values?.propertyUnits?.length
+    //     ? values?.propertyUnits?.map((propertyUnit) => {
+    //         const data = {
+    //           descriptionPerFixedAssetReport:
+    //             propertyUnit.descriptionPerFixedAssetReport,
+    //           description: propertyUnit.description,
+    //           // propertyCode: propertyUnit.propertyCode,
+    //           // plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
+    //           // floorArea: propertyUnit.floorArea
+    //           //   ? propertyUnit.floorArea
+    //           //   : undefined,
+    //           propertyTypeId: propertyUnit.propertyTypeId,
+    //           propertyReferenceId: propertyUnit?.id,
+    //           propertyOccupancy: propertyUnit.occupants?.length
+    //             ? propertyUnit.occupants?.map((occupant) => ({
+    //                 name: occupant.occupantName
+    //                   ? occupant.occupantName
+    //                   : undefined,
+    //                 category: occupant?.occupantType,
+    //                 clientOccupantId: occupant.occupantId
+    //                   ? occupant.occupantId
+    //                   : undefined,
+    //               }))
+    //             : [],
+    //           propertyUnitStates: [
+    //             {
+    //               condition: propertyUnit?.condition,
+    //               remarks: propertyUnit?.remarks,
+    //             },
+    //           ],
+    //         };
 
-            return data;
-          })
-        : [],
-    };
+    //         if (propertyUnit.plotSize === null) {
+    //           data.plotSize = '0';
+    //         } else if (propertyUnit.plotSize) {
+    //           data.plotSize = propertyUnit.plotSize;
+    //         } else if (propertyUnit.floorSize === null) {
+    //           data.floorSize = '0';
+    //         } else if (propertyUnit.floorSize) {
+    //           data.floorSize = propertyUnit.floorSize;
+    //         }
+
+    //         return data;
+    //       })
+    //     : [],
+    // };
 
     addProperty(data).then(
       () => {
@@ -616,7 +623,7 @@ const PropertyForm = (id) => {
             <Form.Item label="photos" name="photos">
               <Dragger
                 multiple
-                accept={"image/png, image/jpeg, image/jpg"}
+                accept={'image/png, image/jpeg, image/jpg'}
                 listType="picture"
                 {...props}
                 // onChange={handleChange}

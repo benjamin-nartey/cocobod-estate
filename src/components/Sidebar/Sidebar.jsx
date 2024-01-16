@@ -92,9 +92,7 @@ function Sidebar({ closeToggle }) {
             <AiFillHome size={18} />
             Home
           </NavLink>
-          {snap?.auth?.currentUser?.roles.find((role) =>
-            allowedRoles.includes(role.name)
-          ) && (
+          {
             <>
               <NavLink
                 to="/dashboard"
@@ -236,7 +234,7 @@ function Sidebar({ closeToggle }) {
                 <MdAreaChart size={25} />
                 Cocoa Regions
               </NavLink>
-              
+
               <NavLink
                 to="/political-regions"
                 className={({ isActive }) =>
@@ -299,7 +297,7 @@ function Sidebar({ closeToggle }) {
                 Category
               </NavLink>
             </>
-          )}
+          }
           <NavLink
             to="/tenancy"
             className={({ isActive }) =>

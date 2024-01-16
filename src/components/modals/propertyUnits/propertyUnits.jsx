@@ -53,7 +53,7 @@ const PropertyUnitModal = () => {
       form.setFieldValue('propertyCode', data?.data.propertyCode);
       form.setFieldValue('description', data?.data?.description);
       form.setFieldValue('plotSize', data?.data?.plotSize);
-      form.setFieldValue('floorArea', data?.data?.floorArea);
+      form.setFieldValue('floorSize', data?.data?.floorSize);
       form.setFieldValue('condition', data?.data?.propertyStates[0]?.condition);
       form.setFieldValue('remarks', data?.data?.propertyStates[0]?.remarks);
       form.setFieldValue('propertyOccupancies', initValues);

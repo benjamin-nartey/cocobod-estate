@@ -30,6 +30,7 @@ const PropertyUpload = () => {
   const [loading, setLoading] = useState(false);
   const { regionId } = useParams();
   const [pageNum, setPageNum] = useState(1);
+  const [data, setData] = useState(null);
 
   const { mutate } = useAddPropertyUploadData();
   const { mutate: uploadPhotos } = useAddPropertyPhotos();
@@ -71,16 +72,18 @@ const PropertyUpload = () => {
     return fetchedData;
   };
 
-  const { data, status, error } = useQuery(['property-upload'], () =>
-    fetchProperty()
-  );
+  const {
+    data: property,
+    status,
+    error,
+  } = useQuery(['property-upload'], () => fetchProperty());
 
   const handleUploadAll = () => {
     try {
       setLoading(true);
 
       Promise.allSettled([
-        data.map(async (property) => {
+        property.map(async (property) => {
           const propertyData = {
             name: property?.name,
             description: property?.description,
@@ -99,7 +102,7 @@ const PropertyUpload = () => {
             onSuccess: (result) => {
               console.log('Result', result?.data?.id);
               data.map((property) => {
-                if (property.photos.fileList.length > 0) {
+                if (property?.photos?.fileList.length > 0) {
                   const formData = new FormData();
                   console.log(property.photos);
 
