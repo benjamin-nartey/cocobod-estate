@@ -28,8 +28,8 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  // baseURL: 'https://estate-api-2.onrender.com/api/v1',
-  baseURL: 'http://localhost:3000/api/v1',
+  baseURL: 'https://estate-api-2.onrender.com/api/v1',
+  // baseURL: 'http://localhost:3000/api/v1',
 });
 
 function LoginForm() {
@@ -105,21 +105,21 @@ function LoginForm() {
           },
         });
 
-        const allocationResponse = await API.get('/allocation/me', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${response?.data?.accessToken}`,
-          },
-        });
+        // const allocationResponse = await API.get('/allocation/me', {
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //     Authorization: `Bearer ${response?.data?.accessToken}`,
+        //   },
+        // });
 
-        if (userResponse || allocationResponse) {
+        if (userResponse) {
           const currentUser = {
             id: userResponse.data.id,
             name: userResponse.data.name,
             email: userResponse.data.email,
             staff: userResponse.data.staff,
             roles: userResponse.data.roles,
-            allocationData: allocationResponse.data.region,
+            // allocationData: allocationResponse.data.region,
           };
 
           state.auth.currentUser = currentUser;

@@ -12,6 +12,7 @@ import { CRUDTYPES } from '../../store/modalSlice';
 import { useGetPropertyTypes } from '../../Hooks/query/propertyType';
 import { getDistrictsByRegionId } from '../../http/district';
 import { useGetLocationByDisrictId } from '../../Hooks/query/locations';
+import { capitalize } from '../../utils/typography';
 
 const PropertyCreateForm = ({ move }) => {
   const { data } = useGetPropertyTypes();
@@ -151,7 +152,7 @@ const PropertyCreateForm = ({ move }) => {
             onChange={(value) => setSelectedDistrictId(value)}
             placeholder={'Select District'}
             options={district?.data.map((dist) => ({
-              label: dist.name,
+              label: dist && capitalize(dist?.name.toLowerCase()),
               value: dist.id,
             }))}
           />
