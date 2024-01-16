@@ -96,15 +96,15 @@ function App() {
     try {
       if (isOnLine) {
         const response = await axiosInstance.get("/auth/user");
-        const allocationResponse = await axiosInstance.get("/allocation/me");
+        // const allocationResponse = await axiosInstance.get("/allocation/me");
 
-        if (response.status === 200 && allocationResponse.status === 200) {
+        if (response.status === 200 ) {
           const currentUser = {
             name: response.data.name,
             email: response.data.email,
             staff: response.data.staff,
             roles: response.data.roles,
-            allocationData: allocationResponse.data.region,
+            // allocationData: allocationResponse.data.region,
           };
 
           state.auth.currentUser = currentUser;

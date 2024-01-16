@@ -268,7 +268,7 @@ const PropertyForm = (id) => {
     const data = {
       name: values?.name,
       description: values?.description,
-      propertyCode: values?.propertyCode,
+      propertyCode: values?.digitalAddress,
       digitalAddress: values?.digitalAddress,
       propertyTypeId: values?.propertyTypeId,
       locationId: values?.locationId,
@@ -285,7 +285,7 @@ const PropertyForm = (id) => {
               descriptionPerFixedAssetReport:
                 propertyUnit.descriptionPerFixedAssetReport,
               description: propertyUnit.description,
-              propertyCode: propertyUnit.propertyCode,
+              // propertyCode: propertyUnit.propertyCode,
               // plotSize: propertyUnit.plotSize ? propertyUnit.plotSize : undefined,
               // floorArea: propertyUnit.floorArea
               //   ? propertyUnit.floorArea
@@ -389,7 +389,7 @@ const PropertyForm = (id) => {
               />
             </Form.Item>
 
-            <Form.Item
+            {/* <Form.Item
               label="Property Code"
               name="propertyCode"
               rules={[
@@ -404,7 +404,7 @@ const PropertyForm = (id) => {
                 placeholder="Enter property code"
                 prefix={<MdOutlineEmail />}
               />
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item
               label="Description"

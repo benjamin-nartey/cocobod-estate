@@ -103,7 +103,9 @@ const addPropertyPhotos = (propertyId, data) => {
 
 export const useAddPropertyPhotos = () => {
   const queryClient = useQueryClient();
-  return useMutation(addPropertyPhotos, {
+  return useMutation({
+    mutationKey: "uploadPhotos",
+    mutationFn: (data) => addPropertyPhotos(...data),
     onSuccess: () => {
       queryClient.invalidateQueries("property-upload");
     },

@@ -32,7 +32,7 @@ const PropertyUpload = () => {
   const [pageNum, setPageNum] = useState(1);
 
   const { mutate } = useAddPropertyUploadData();
-  const  uploadPhotos  = useAddPropertyPhotos();
+  const { mutate: uploadPhotos } = useAddPropertyPhotos();
 
   // useEffect(() => {
   //   getAllProperty()
@@ -71,47 +71,6 @@ const PropertyUpload = () => {
     fetchProperty()
   );
 
-  // const handleUploadAll = () => {
-  //   setLoading(true);
-  //   Promise.allSettled([
-  //     data.map(async (property) => {
-  //       const data = {
-  //         name: property?.name,
-  //         description: property?.description,
-  //         propertyCode: property?.propertyCode,
-  //         digitalAddress: property?.digitalAddress,
-  //         propertyTypeId: property?.propertyTypeId,
-  //         locationId: property?.locationId,
-  //         propertyReferenceCategoryId: property?.propertyReferenceCategoryId,
-  //         lat: property?.lat,
-  //         long: property?.long,
-  //         landmark: property?.landmark,
-  //         politicalDistrictId: property?.politicalDistrictId,
-  //         propertyUnits: property?.propertyUnits,
-  //       };
-  //       return await axiosInstance.post("/properties/field-capture", data);
-  //     }),
-  //   ])
-  //     //   .then((response) =>
-  //     //     response.forEach((result) => {
-  //     //       if (result.status === "fulfilled") {
-  //     //         data.map((property) => {
-  //     //           deletePropertyRecord(property.id).then(() =>
-  //     //             console.log("deleted")
-  //     //           );
-  //     //         });
-  //     //       } else if (result.status === "rejected") {
-  //     //         console.log(result.reason);
-  //     //       }
-  //     //     })
-  //     //   )
-  //     //   .catch((error) => message.error(error))
-  //     .finally(() => {
-  //       setLoading(false);
-  //       message.success("Properties uploaded successfully");
-  //     });
-  // };
-
   const handleUploadAll = () => {
     try {
       setLoading(true);
@@ -134,15 +93,17 @@ const PropertyUpload = () => {
           };
           mutate(propertyData, {
             onSuccess: (result) => {
+              console.log("Result", result?.data?.id);
               data.map((property) => {
                 if (property.photos.fileList.length > 0) {
                   const formData = new FormData();
-                  const photoData = property.photos.fileList.forEach(
-                    (photo) => {
-                      formData.append("photos", photo.originFileObj);
-                    }
-                  );
-                  uploadPhotos.mutate((result.id, photoData), {
+                  console.log(property.photos);
+
+                  property.photos.fileList.forEach((photo) => {
+                    formData.append("photos", photo.originFileObj);
+                  });
+
+                  uploadPhotos({id: result.data.id, data:formData}, {
                     onSuccess: () => {
                       message.success("Photos added successfully");
                     },
@@ -159,6 +120,10 @@ const PropertyUpload = () => {
                   .then(() => queryClient.invalidateQueries("property-upload"))
                   .then(() => setLoading(false));
               });
+            },
+            onError: (err) => {
+              data.map((property)=>console.log(property.photos))
+              message.error(err.response?.data?.message);
             },
           });
         }),

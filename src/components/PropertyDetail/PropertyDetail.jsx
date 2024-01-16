@@ -12,6 +12,8 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useGetProperty } from '../../Hooks/query/properties';
 // import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
 import { useGetPropertyUnitsForProperty } from '../../Hooks/query/properties';
+import { useMutation } from '@tanstack/react-query';
+import { setPropertyFeaturedPhoto } from '../../http/properties';
 
 function PropertyDetail() {
   const sliderRef = useRef();

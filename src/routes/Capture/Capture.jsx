@@ -79,11 +79,11 @@ const Capture = () => {
     },
     {
       title: "Region",
-      dataIndex: ["district", "region", "name"],
+      dataIndex: ["location", "district", "region", "name"],
     },
     {
       title: "District",
-      dataIndex: ["district", "name"],
+      dataIndex: ["location", "district", "name"],
       // filters: districts,
       // onFilter: (_, record) => record.district.name.includes(districtType),
     },

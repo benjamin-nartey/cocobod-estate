@@ -4,7 +4,7 @@ import Property from '../Property/Property';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getPaginatedProperties } from '../../http/properties';
 import ShimmerGrid from '../ShimmerGrid/ShimmerGrid';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { useInView } from 'react-intersection-observer';
 
 function GridLayout({ id }) {
@@ -43,7 +43,7 @@ function GridLayout({ id }) {
   if (status === 'loading') {
     return <ShimmerGrid />;
   } else if (status === 'error') {
-    return message.error(error.message);
+    return message.error(error.response.data.message);
   } else {
     const properties = data?.pages.map((page) => {
       return page?.data?.records?.map((r) => r);
