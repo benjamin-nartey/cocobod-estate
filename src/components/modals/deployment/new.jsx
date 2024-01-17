@@ -7,7 +7,7 @@ import { addDeployment } from '../../../http/deployment';
 
 const NewDeployment = () => {
   const snap = useSnapshot(state);
-  const { showNewDeploymentModal } = snap.modalSlice;
+  const { showNewDeploymentModal, selectedRecord } = snap.modalSlice;
 
   const queryClient = useQueryClient();
 

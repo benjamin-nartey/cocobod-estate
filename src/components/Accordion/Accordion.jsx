@@ -32,7 +32,7 @@ const Accordion = ({ id, form }) => {
           description: propertyUnit?.description,
           descriptionPerFixedAssetReport:
             propertyUnit?.descriptionPerFixedAssetReport,
-          [propertyUnit.propertyType.attributes[0] === 'floorArea'
+          [propertyUnit.propertyType.attributes[0] === 'floorSize'
             ? 'floorSize'
             : 'plotSize']:
             propertyUnit.propertyType.attributes[0] === 'floorArea'

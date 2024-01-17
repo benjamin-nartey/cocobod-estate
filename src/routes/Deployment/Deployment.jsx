@@ -19,6 +19,7 @@ import {
   updateDeployment,
 } from '../../http/deployment';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CRUDTYPES } from '../../store/modalSlice';
 
 const Deployment = () => {
   const snap = useSnapshot(state);
@@ -58,6 +59,7 @@ const Deployment = () => {
       return deleteDeployment(id);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: 'deployment' });
       message.success('Deployment deleted successfully');
     },
 
@@ -139,7 +141,15 @@ const Deployment = () => {
               </Tooltip>
             )}
             <Tooltip title={'Edit Deployment'}>
-              <BiEdit size={22} className="cursor-pointer text-gray-600" />
+              <BiEdit
+                size={22}
+                className="cursor-pointer text-gray-600"
+                onClick={() => {
+                  state.modalSlice.selectedRecord = record;
+                  state.modalSlice.crudType = CRUDTYPES.EDIT;
+                  state.modalSlice.toggleShowNewDeploymentModal();
+                }}
+              />
             </Tooltip>
             <Tooltip title={'Delete Deplolyment'}>
               <Popconfirm
@@ -176,6 +186,8 @@ const Deployment = () => {
           type="primary"
           onClick={() => {
             state.modalSlice.toggleShowNewDeploymentModal();
+            state.modalSlice.selectedRecord = null;
+            state.modalSlice.crudType = CRUDTYPES.ADD;
           }}
           style={{ backgroundColor: '#6E431D', color: '#fff' }}
         >

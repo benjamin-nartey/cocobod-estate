@@ -186,7 +186,7 @@ const Dashboard = () => {
             regionId: district?.regionId,
             districtType: district?.districtType,
           });
-          message.success(' Districts  downloaded successfully');
+          // message.success(' Districts  downloaded successfully');
         } catch (err) {
           message.error(err.message);
         }

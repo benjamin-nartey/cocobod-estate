@@ -77,6 +77,7 @@ const PropertyUpload = () => {
     status,
     error,
   } = useQuery(['property-upload'], () => fetchProperty());
+  const queryClient = useQueryClient();
 
   const handleUploadAll = () => {
     try {
@@ -110,21 +111,31 @@ const PropertyUpload = () => {
                     formData.append('photos', photo.originFileObj);
                   });
 
-                  uploadPhotos(
-                    { id: result.data.id, data: formData },
-                    {
-                      onSuccess: () => {
-                        message.success('Photos added successfully');
-                      },
+                  console.log(formData);
 
-                      onError: () => {
-                        message.error('Error adding photos');
-                      },
-                    }
-                  );
+                  axiosInstance
+                    .post(`/properties/${result?.data?.id}/photos`, formData)
+                    .then((response) => {
+                      message.success('Photos added successfully');
+                    })
+                    .catch((error) => {
+                      message.error(error?.response?.data?.message);
+                    });
+
+                  // uploadPhotos(
+                  //   { id: result.data.id, data: formData },
+                  //   {
+                  //     onSuccess: () => {
+                  //       message.success('Photos added successfully');
+                  //     },
+
+                  //     onError: () => {
+                  //       message.error('Error adding photos');
+                  //     },
+                  //   }
+                  // );
                 }
 
-                const queryClient = useQueryClient();
                 deletePropertyRecord(property.id)
                   .then(() => message.success('Property uploaded successfully'))
                   .then(() => queryClient.invalidateQueries('property-upload'))
