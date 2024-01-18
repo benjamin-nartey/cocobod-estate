@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useContext } from 'react';
 
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 
 import { MdChevronRight, MdChevronLeft, MdLocationOff } from 'react-icons/md';
 
@@ -15,6 +15,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useGetPropertyUnits } from '../../Hooks/query/propertyUnits';
 import state from '../../store/store';
 import { setPropertyFeaturedPhoto } from '../../http/properties';
+import { Tooltip } from 'antd';
 
 function PropertyDetail() {
   const sliderRef = useRef();
@@ -22,6 +23,8 @@ function PropertyDetail() {
   const [endOfScroll, setEndOfScroll] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const { setSearchResult } = useContext(SearchResultContext);
+
+  const navigate = useNavigate();
 
   const { propId } = useParams();
 
@@ -42,6 +45,12 @@ function PropertyDetail() {
     mutationKey: 'setFeaturedPhoto',
     mutationFn: (photoId) => {
       return setPropertyFeaturedPhoto(photoId, propertyId);
+    },
+    onSuccess: () => {
+      message.success('Image set as featured photo');
+    },
+    onError: (err) => {
+      message.error(err?.response?.message);
     },
   });
 
@@ -67,6 +76,10 @@ function PropertyDetail() {
       setShowAll(false);
     }
   };
+
+  const featuredPhoto = property?.data?.photos.find(
+    (photo) => photo.isFeatured == true
+  );
 
   useEffect(() => {
     showAllGallery();
@@ -105,8 +118,8 @@ function PropertyDetail() {
                   Digital Address
                 </h3>
                 <span className="text-[13px] text-[#6E431D] capitalize">
-                  {property?.data?.digitalAddres ? (
-                    property?.data?.digitalAddress
+                  {property?.data?.propertyCode ? (
+                    property?.data?.propertyCode
                   ) : (
                     <span>&nbsp;</span>
                   )}
@@ -163,7 +176,12 @@ function PropertyDetail() {
                 <h3 className="text-[15px] text-[#6E431D] font-semibold capitalize">
                   PropertyUnits
                 </h3>
-                <span className="flex justify-center text-2xl text-center text-[#6E431D] capitalize font-normal">
+                <span
+                  className="flex justify-center text-2xl text-center text-[#6E431D] capitalize font-normal cursor-pointer"
+                  onClick={() =>
+                    navigate(`/property-units-main/${property?.data?.id}`)
+                  }
+                >
                   {propertyUnits?.data?.length ? (
                     propertyUnits?.data?.length
                   ) : (
@@ -266,7 +284,7 @@ function PropertyDetail() {
             <LazyLoadImage
               effect="blur"
               className="rounded-2xl h-full w-full object-cover"
-              src={property?.data?.photos[0]?.url}
+              src={featuredPhoto?.url}
               alt="property-image"
               height="100%"
               width="100%"

@@ -20,6 +20,7 @@ import {
 } from '../../http/deployment';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CRUDTYPES } from '../../store/modalSlice';
+import { MdUndo } from 'react-icons/md';
 
 const Deployment = () => {
   const snap = useSnapshot(state);
@@ -40,12 +41,12 @@ const Deployment = () => {
 
   const { mutate } = useMutation({
     mutationKey: 'completeDeployment',
-    mutationFn: (id) => {
-      return updateDeployment(id, { completed: true });
+    mutationFn: (data) => {
+      return updateDeployment(data?.id, { completed: data?.status });
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: 'deployment' });
-      message.success('Deployment marked as completed successfully');
+      message.success('Deployment updated successfully');
     },
 
     onError: (e) => {
@@ -68,8 +69,8 @@ const Deployment = () => {
     },
   });
 
-  const completeDeployment = (id) => {
-    mutate(id);
+  const completeDeployment = (id, status) => {
+    mutate({ id, status });
   };
 
   const handleDeletion = (id) => {
@@ -130,13 +131,22 @@ const Deployment = () => {
                 onClick={() => navigate(`/deployment/${id}`)}
               />
             </Tooltip>
-            {record.completed === false && (
+            {record.completed === false ? (
               <Tooltip title={'Complete Deployment'}>
                 <HiCheck
                   size={22}
                   color="green"
                   className="cursor-pointer"
-                  onClick={() => completeDeployment(id)}
+                  onClick={() => completeDeployment(id, true)}
+                />
+              </Tooltip>
+            ) : (
+              <Tooltip title={'Undo Completion'}>
+                <MdUndo
+                  size={22}
+                  color="green"
+                  className="cursor-pointer"
+                  onClick={() => completeDeployment(id, false)}
                 />
               </Tooltip>
             )}

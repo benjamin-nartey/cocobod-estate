@@ -25,9 +25,26 @@ const PropertyUnitMerge = () => {
   });
   const { crudType } = snap.modalSlice;
 
-  console.log(addedProperty);
-
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (selectedRowsInTable) {
+      const sortedDataSource = [...data].sort((a, b) => {
+        const aSelected = selectedRowsInTable.includes(a.key);
+        const bSelected = selectedRowsInTable.includes(b.key);
+
+        if (aSelected && !bSelected) {
+          return -1;
+        } else if (!aSelected && bSelected) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+
+      setData(sortedDataSource);
+    }
+  }, [selectedRowsInTable]);
 
   useEffect(() => {
     if (!referenceLoading && references?.data?.length) {
@@ -40,8 +57,6 @@ const PropertyUnitMerge = () => {
 
       setData(_data);
 
-      console.log({ references: references?.data });
-
       const records =
         references &&
         references?.data
@@ -49,7 +64,6 @@ const PropertyUnitMerge = () => {
             (record) =>
               record.propertyReferenceCategory?.id === addedProperty?.id
           )
-
           .map((r) => r.id);
 
       if (records && crudType === CRUDTYPES.EDIT) {

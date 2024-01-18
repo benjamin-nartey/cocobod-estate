@@ -1,13 +1,16 @@
 import { Button, DatePicker, Form, Input, Modal, message } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import state from '../../../store/store';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addDeployment } from '../../../http/deployment';
+import { addDeployment, updateDeployment } from '../../../http/deployment';
+import dayjs from 'dayjs';
+import { CRUDTYPES } from '../../../store/modalSlice';
 
 const NewDeployment = () => {
   const snap = useSnapshot(state);
-  const { showNewDeploymentModal, selectedRecord } = snap.modalSlice;
+  const { showNewDeploymentModal, selectedRecord, crudType } = snap.modalSlice;
+  const [form] = Form.useForm();
 
   const queryClient = useQueryClient();
 
@@ -20,20 +23,49 @@ const NewDeployment = () => {
     onSuccess: (result) => {
       console.log(result);
       state.modalSlice.toggleShowNewDeploymentModal();
-      message.success('Deployment created successfully');
       queryClient.invalidateQueries({ queryKey: 'getAllDeployments' });
+      message.success('Deployment created successfully');
     },
     onError: (e) => {
       message.error(e?.response?.data.message);
     },
   });
+  const { mutate: updateDeploymentFn, isLoading: isLoadingUpdate } =
+    useMutation({
+      mutationKey: 'create-deployment',
+      mutationFn: (data) => {
+        return updateDeployment(selectedRecord?.id, data);
+      },
+
+      onSuccess: (result) => {
+        console.log(result);
+        state.modalSlice.toggleShowNewDeploymentModal();
+        queryClient.invalidateQueries({ queryKey: 'getAllDeployments' });
+        message.success('Deployment updated successfully');
+      },
+      onError: (e) => {
+        message.error(e?.response?.data.message);
+      },
+    });
 
   const handleSubmit = (values) => {
     values['startDate'] = values['startDate'].toISOString();
     values['endDate'] = values['endDate'].toISOString();
 
-    mutate(values);
+    crudType === CRUDTYPES.ADD
+      ? mutate(values)
+      : updateDeploymentFn({ ...values, completed: false });
   };
+
+  useEffect(() => {
+    if (selectedRecord) {
+      form.setFieldsValue({
+        name: selectedRecord?.name,
+        startDate: dayjs(selectedRecord?.startDate),
+        endDate: dayjs(selectedRecord?.endDate),
+      });
+    }
+  }, [selectedRecord]);
 
   return (
     <div>
@@ -47,6 +79,7 @@ const NewDeployment = () => {
           layout="vertical"
           className="mt-10"
           onFinish={handleSubmit}
+          form={form}
         >
           <Form.Item name={'name'} label={'Name'} rules={[{ required: true }]}>
             <Input />
@@ -66,7 +99,11 @@ const NewDeployment = () => {
             <DatePicker className="w-full" />
           </Form.Item>
 
-          <Button htmlType="submit" className="w-full mt-5" loading={isLoading}>
+          <Button
+            htmlType="submit"
+            className="w-full mt-5"
+            loading={crudType === CRUDTYPES.ADD ? isLoading : isLoadingUpdate}
+          >
             Submit
           </Button>
         </Form>

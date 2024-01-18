@@ -29,7 +29,7 @@ const AddUsersForm = () => {
   const snap = useSnapshot(state);
   const { showUserAddModal, selectedRecord, crudType } = snap.modalSlice;
 
-  const { mutate } = useAddUserData();
+  const { mutate, isLoading: isLoadingUserAdd } = useAddUserData();
   const { data: roles } = useGetRoles();
 
   const { data: divisions } = useGetAllDivisions();
@@ -62,10 +62,10 @@ const AddUsersForm = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate: UpdateUserFn } = useMutation({
+  const { mutate: UpdateUserFn, isLoading: isLoadingUserUpdate } = useMutation({
     mutationKey: 'updateUser',
     mutationFn: (data) => {
-      updateUser(selectedRecord?.id, data);
+      return updateUser(selectedRecord?.id, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: 'users' });
@@ -317,6 +317,11 @@ const AddUsersForm = () => {
 
           <Form.Item label=" ">
             <Button
+              loading={
+                crudType === CRUDTYPES.ADD
+                  ? isLoadingUserAdd
+                  : isLoadingUserUpdate
+              }
               className="w-full"
               type="primary"
               htmlType="submit"

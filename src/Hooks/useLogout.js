@@ -7,8 +7,8 @@ export const useLogout = async () => {
   const [logoutResponse, setLogoutResponse] = useState('');
   const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
   const api = axios.create({
-    baseURL: 'https://estate-api-2.onrender.com/api/v1/',
-    // baseURL: 'http://localhost:3000/api/v1/',
+    // baseURL: 'https://estate-api-2.onrender.com/api/v1/'
+    baseURL: 'http://localhost:3000/api/v1/',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${refreshToken}`,
