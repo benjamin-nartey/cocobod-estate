@@ -1,16 +1,16 @@
-import { Fragment, useEffect, useState } from 'react';
-import PropertyUnitForm from '../PropertyUnitForm/PropertyUnitForm';
-import { Button, Form } from 'antd';
-import { useIndexedDB } from 'react-indexed-db-hook';
+import { Fragment, useEffect, useState } from "react";
+import PropertyUnitForm from "../PropertyUnitForm/PropertyUnitForm";
+import { Button, Form } from "antd";
+import { useIndexedDB } from "react-indexed-db-hook";
 
 const Accordion = ({ id, form }) => {
   const [selected, setSelected] = useState(null);
-  const [selectedPropType, setSelectedPropType] = useState('');
+  const [selectedPropType, setSelectedPropType] = useState("");
   const [propertyUnits, setPropertyUnits] = useState([]);
 
   // const form = Form.useFormInstance();
   const { getAll: getAllpropertyReferences } =
-    useIndexedDB('propertyReferences');
+    useIndexedDB("propertyReferences");
 
   const toggle = (idx) => {
     if (selected === idx) {
@@ -32,10 +32,10 @@ const Accordion = ({ id, form }) => {
           description: propertyUnit?.description,
           descriptionPerFixedAssetReport:
             propertyUnit?.descriptionPerFixedAssetReport,
-          [propertyUnit.propertyType.attributes[0] === 'floorSize'
-            ? 'floorSize'
-            : 'plotSize']:
-            propertyUnit.propertyType.attributes[0] === 'floorArea'
+          [propertyUnit.propertyType.attributes[0] === "floorSize"
+            ? "floorSize"
+            : "plotSize"]:
+            propertyUnit.propertyType.attributes[0] === "floorArea"
               ? propertyUnit.floorSize
               : propertyUnit.plotSize,
 
@@ -83,25 +83,35 @@ const Accordion = ({ id, form }) => {
                       <div className="accordion-item bg-[#f0Ebe1] mb-[5px] py-[10px] px-[20px]">
                         <div
                           onClick={() => toggle(key)}
-                          onDoubleClickCapture={() => remove(name)}
                           className="accordion-title flex justify-between items-center cursor-pointer"
                         >
                           <h2 className="text-base font-semibold">{`Property Unit ${
                             key + 1
                           }`}</h2>
                           <span className="text-lg font-semibold">
-                            {selected === key ? '-' : '+'}
+                            {selected === key ? "-" : "+"}
                           </span>
                         </div>
                         <div
                           className={
                             selected === key
-                              ? 'accordion-content show max-h-0 ease-in duration-300 overflow-hidden'
-                              : 'accordion-content max-h-0 overflow-hidden ease-out duration-300'
+                              ? "accordion-content show max-h-0 ease-in duration-300 overflow-hidden"
+                              : "accordion-content max-h-0 overflow-hidden ease-out duration-300"
                           }
                         >
                           <PropertyUnitForm name={name} unitFormKey={key} />
                         </div>
+                        <Button
+                          onClick={() => remove(name)}
+                          style={{ backgroundColor: "#6E431D", color: "#fff" }}
+                          className={
+                            selected === key
+                              ? "delete-btn w-full show overflow-hidden text-center p-1 ]"
+                              : "max-h-0 hidden"
+                          }
+                        >
+                          Remove Unit
+                        </Button>
                       </div>
                     </div>
                   </div>

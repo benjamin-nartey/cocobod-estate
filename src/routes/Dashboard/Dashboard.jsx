@@ -1,19 +1,22 @@
-import { useEffect, useState } from 'react';
-import FloatButtonComponent from '../../components/FloatButtonComponent/FloatButtonComponent';
-import { axiosInstance } from '../../axios/axiosInstance';
-import { useIndexedDB } from 'react-indexed-db-hook';
-import { BsBuildingFillCheck } from 'react-icons/bs';
-import { Spin, message } from 'antd';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import FloatButtonComponent from "../../components/FloatButtonComponent/FloatButtonComponent";
+import { axiosInstance } from "../../axios/axiosInstance";
+import { initDB, useIndexedDB } from "react-indexed-db-hook";
+import { BsBuildingFillCheck } from "react-icons/bs";
+import { Spin, message } from "antd";
+import { NavLink } from "react-router-dom";
 
-import { useGetDashboard } from '../../Hooks/query/dashboard';
+import { useGetDashboard } from "../../Hooks/query/dashboard";
 
-import ReportLineChart from '../../components/charts/LineChart/ReportLineChart';
-import ReportPieChart from '../../components/charts/PieChart/ReportPieChart';
-import nodata from '../../assets/nodata.json';
-import Lottie from 'lottie-react';
-import { useSnapshot } from 'valtio';
-import state from '../../store/store';
+import ReportLineChart from "../../components/charts/LineChart/ReportLineChart";
+import ReportPieChart from "../../components/charts/PieChart/ReportPieChart";
+import nodata from "../../assets/nodata.json";
+import Lottie from "lottie-react";
+import { useSnapshot } from "valtio";
+import state from "../../store/store";
+import { useLocalStorage } from "../../Hooks/useLocalStorage";
+import { initializeConfig } from "../../components/indexedDb/dbConfig";
+import { reinitializeIndexedDB } from "../../utils/helper";
 
 const Card = ({ allProperty }) => {
   return (
@@ -39,7 +42,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
 
   const { add: addPropertyReferenceCategories } = useIndexedDB(
-    'propertyReferenceCategories'
+    "propertyReferenceCategories"
   );
 
   const { data: dashboard, isLoading } = useGetDashboard();
@@ -52,15 +55,15 @@ const Dashboard = () => {
     }, 0);
   }
 
-  const { add: addPropertyReferences } = useIndexedDB('propertyReferences');
-  const { add: addDistricts } = useIndexedDB('districts');
-  const { add: addPolitcalDistricts } = useIndexedDB('politcalDistricts');
-  const { add: addPolitcalRegions } = useIndexedDB('politcalRegions');
-  const { add: addLocations } = useIndexedDB('locations');
-  const { add: addPropertyTypes } = useIndexedDB('propertyTypes');
-  const { add: addClientOccupants } = useIndexedDB('clientOccupants');
+  const { add: addPropertyReferences } = useIndexedDB("propertyReferences");
+  const { add: addDistricts } = useIndexedDB("districts");
+  const { add: addPolitcalDistricts } = useIndexedDB("politcalDistricts");
+  const { add: addPolitcalRegions } = useIndexedDB("politcalRegions");
+  const { add: addLocations } = useIndexedDB("locations");
+  const { add: addPropertyTypes } = useIndexedDB("propertyTypes");
+  const { add: addClientOccupants } = useIndexedDB("clientOccupants");
 
-  const { getAll: getAllProperty } = useIndexedDB('property');
+  const { getAll: getAllProperty } = useIndexedDB("property");
 
   useEffect(() => {
     getAllProperty().then((data) => setAllProperty(data));
@@ -68,7 +71,7 @@ const Dashboard = () => {
 
   const fetchUserAlocation = async () => {
     try {
-      const response = await axiosInstance.get('/allocation/me');
+      const response = await axiosInstance.get("/allocation/me");
 
       if (response.status === 200) {
         setAllocationData(response.data.region);
@@ -88,6 +91,18 @@ const Dashboard = () => {
 
   const handleDownloadAllResources = async () => {
     setLoading(true);
+
+    let versionNumber = parseInt(localStorage.getItem("versionNumber"));
+
+    versionNumber = versionNumber + 1;
+
+    console.log(versionNumber);
+
+    if (versionNumber !== 1) {
+      localStorage.setItem("versionNumber", `${versionNumber}`);
+      reinitializeIndexedDB(versionNumber);
+    }
+
     // console.log(auth.currentUser)?.allocationData.id;
     try {
       const [
@@ -100,44 +115,44 @@ const Dashboard = () => {
         politicalDistrictResponse,
         PoliticalRegionResponse,
       ] = await Promise.all([
-        axiosInstance.get('/property-reference-categories/all', {
+        axiosInstance.get("/property-reference-categories/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/property-references/all', {
+        axiosInstance.get("/property-references/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/district/all', {
+        axiosInstance.get("/district/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/location/all', {
+        axiosInstance.get("/location/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/property-types/all', {
+        axiosInstance.get("/property-types/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/client-occupants/all', {
+        axiosInstance.get("/client-occupants/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/political-district/all'),
-        axiosInstance.get('/political-region/all'),
+        axiosInstance.get("/political-district/all"),
+        axiosInstance.get("/political-region/all"),
       ]);
 
       propertyRefereceCategoriesResponse.data.map(async (property) => {
@@ -150,7 +165,8 @@ const Dashboard = () => {
             division: property?.division,
           });
         } catch (err) {
-          message.error(err.message);
+          message.error(err);
+          console.log(err);
         }
       });
 
@@ -174,7 +190,8 @@ const Dashboard = () => {
             propertyType: references?.propertyType,
           });
         } catch (err) {
-          message.error(err.message);
+          message.error(err);
+          console.log(err);
         }
       });
 
@@ -188,7 +205,8 @@ const Dashboard = () => {
           });
           // message.success(' Districts  downloaded successfully');
         } catch (err) {
-          message.error(err.message);
+          message.error(err);
+          console.log(err);
         }
       });
 
@@ -200,7 +218,8 @@ const Dashboard = () => {
             politicalRegion: district?.politicalRegion,
           });
         } catch (err) {
-          message.error(err.message);
+          message.error(err);
+          console.log(err);
         }
       });
 
@@ -211,7 +230,8 @@ const Dashboard = () => {
             name: region?.name,
           });
         } catch (err) {
-          message.error(err.message);
+          message.error(err);
+          console.log(err);
         }
       });
 
@@ -223,7 +243,8 @@ const Dashboard = () => {
             districtId: location?.districtId,
           });
         } catch (err) {
-          message.error(err.message);
+          message.error(err);
+          console.log(err);
         }
       });
 
@@ -235,7 +256,8 @@ const Dashboard = () => {
             attributes: propertyType?.attributes,
           });
         } catch (err) {
-          message.error(err.message);
+          message.error(err);
+          console.log(err);
         }
       });
 
@@ -249,19 +271,21 @@ const Dashboard = () => {
             phoneNumber: propertyType?.phoneNumber,
           });
         } catch (err) {
-          message.error(err.message);
+          message.error(err);
+          console.log(err);
         }
       });
 
-      message.success('PropertyReference Categories downloaded successfully');
-      message.success('Property references downloaded successfully');
-      message.success('Political Districts downloaded successfully');
-      message.success('Politcal regions downloaded successfully');
-      message.success('Locations downloaded successfully');
-      message.success('Property types downloaded successfully');
-      message.success('Client Occupants downloaded successfully');
+      message.success("PropertyReference Categories downloaded successfully");
+      message.success("Property references downloaded successfully");
+      message.success("Political Districts downloaded successfully");
+      message.success("Politcal regions downloaded successfully");
+      message.success("Locations downloaded successfully");
+      message.success("Property types downloaded successfully");
+      message.success("Client Occupants downloaded successfully");
     } catch (error) {
-      message.error(error.message);
+      message.error(error);
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -326,7 +350,7 @@ const Dashboard = () => {
   //         districtType: district?.districtType,
   //       })
   //         .then(() => message.success('districts downloaded successfully'))
-  //         .catch((err) => message.error(err.message));
+  //         .catch((err) => message.error(err));
   //     });
 
   //     politicalDistrictResponse.data.map((district) => {

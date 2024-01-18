@@ -1,71 +1,77 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from "react";
 
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  json,
+} from "react-router-dom";
 
-import FetchingPage from './routes/FetchingPage/FetchingPage';
-import Navigation from './routes/Navigation/Navigation';
-import { useOnlineStatus } from './Hooks/useIsOnlineStatus';
+import FetchingPage from "./routes/FetchingPage/FetchingPage";
+import Navigation from "./routes/Navigation/Navigation";
+import { useOnlineStatus } from "./Hooks/useIsOnlineStatus";
 
-import { axiosInstance } from './axios/axiosInstance';
-import state from './store/store';
+import { axiosInstance } from "./axios/axiosInstance";
+import state from "./store/store";
 
-import Deployment from './routes/Deployment/Deployment';
+import Deployment from "./routes/Deployment/Deployment";
 
-import Capture from './routes/Capture/Capture';
-import Home from './routes/Home/Home';
-import Users from './routes/Users/Users';
-import Departments from './routes/Departments/Departments';
-import Divisions from './routes/Divisions/Divisions';
-import Roles from './routes/Roles/Roles';
-import Properties from './routes/Properties/Properties';
+import Capture from "./routes/Capture/Capture";
+import Home from "./routes/Home/Home";
+import Users from "./routes/Users/Users";
+import Departments from "./routes/Departments/Departments";
+import Divisions from "./routes/Divisions/Divisions";
+import Roles from "./routes/Roles/Roles";
+import Properties from "./routes/Properties/Properties";
 // import Property from './routes/Property/Property';
-import Locations from './routes/Locations/Locations';
-import Areas from './routes/Areas/Areas';
-import PropertyTypes from './routes/PropertyTypes/PropertyTypes';
-import PropertyDetailsPage from './routes/PropertyDetailsPage/PropertyDetailsPage';
-import PropertyMerge from './routes/PropertyMerge/PropertyMerge';
+import Locations from "./routes/Locations/Locations";
+import Areas from "./routes/Areas/Areas";
+import PropertyTypes from "./routes/PropertyTypes/PropertyTypes";
+import PropertyDetailsPage from "./routes/PropertyDetailsPage/PropertyDetailsPage";
+import PropertyMerge from "./routes/PropertyMerge/PropertyMerge";
 
-import DeploymentDetail from './routes/Deployment/DeploymentDetail';
+import DeploymentDetail from "./routes/Deployment/DeploymentDetail";
 
-import District from './routes/District/District';
+import District from "./routes/District/District";
 
-import PropertyMergeIndex from './routes/PropertyMerge/PropertyMergeIndex';
+import PropertyMergeIndex from "./routes/PropertyMerge/PropertyMergeIndex";
 
-import ModerationDetails from './routes/Moderation/ModerationDetails';
+import ModerationDetails from "./routes/Moderation/ModerationDetails";
 
-import ModerationDashboard from './routes/Moderation/ModerationDashboard';
+import ModerationDashboard from "./routes/Moderation/ModerationDashboard";
 
-import ModerationPopertyUnitList from './routes/Moderation/ModerationPopertyUnitList';
+import ModerationPopertyUnitList from "./routes/Moderation/ModerationPopertyUnitList";
 
-import ModerationPoperties from './routes/Moderation/ModerationProperties';
+import ModerationPoperties from "./routes/Moderation/ModerationProperties";
 
-import Authentication from './routes/Authentication/Authentication';
+import Authentication from "./routes/Authentication/Authentication";
 
-import PropertyDetail from './components/PropertyDetail/PropertyDetail';
-import Gallery from './routes/Gallery/Gallery';
-import PropertyMap from './routes/PropertyMap/PropertyMap';
-import RequireAuth from './components/RequireAuth/RequireAuth';
-import Dashboard from './routes/Dashboard/Dashboard';
+import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
+import Gallery from "./routes/Gallery/Gallery";
+import PropertyMap from "./routes/PropertyMap/PropertyMap";
+import RequireAuth from "./components/RequireAuth/RequireAuth";
+import Dashboard from "./routes/Dashboard/Dashboard";
 
-import Unauthorized from './routes/Unauthorized/Unauthorized';
+import Unauthorized from "./routes/Unauthorized/Unauthorized";
 
-import NotExistPage from './routes/NotExistPage/NotExistPage';
-import PropertiesMain from './routes/PropertiesMain/PropertiesMain';
-import PropertyUnitsMain from './routes/PropertyUnitsMain/PropertUnitsMain';
-import Report from './routes/Report/Report';
-import PropertyReferences from './routes/PropertyReferences/PropertyReferences';
-import PropertyCapture from './routes/PropertyCapture/PropertyCapture';
+import NotExistPage from "./routes/NotExistPage/NotExistPage";
+import PropertiesMain from "./routes/PropertiesMain/PropertiesMain";
+import PropertyUnitsMain from "./routes/PropertyUnitsMain/PropertUnitsMain";
+import Report from "./routes/Report/Report";
+import PropertyReferences from "./routes/PropertyReferences/PropertyReferences";
+import PropertyCapture from "./routes/PropertyCapture/PropertyCapture";
 
 // import state from "./store/store";
-import { useSnapshot } from 'valtio';
-import { useLocalStorage } from './Hooks/useLocalStorage';
-import Property from './components/Property/Property';
-import PropertyUpload from './routes/PropertyUpload/PropertyUpload';
-import Town from './routes/Towns/Town';
-import PoliticalDistrict from './routes/Political District/PoliticalDistrict';
-import PoliticalRegion from './routes/Political Region/PoliticalRegion';
-import PropertyMergeDetail from './routes/PropertyMerge/PropertyMergeDetail';
-import { useIndexedDB } from 'react-indexed-db-hook';
+import { useSnapshot } from "valtio";
+import { useLocalStorage } from "./Hooks/useLocalStorage";
+import Property from "./components/Property/Property";
+import PropertyUpload from "./routes/PropertyUpload/PropertyUpload";
+import Town from "./routes/Towns/Town";
+import PoliticalDistrict from "./routes/Political District/PoliticalDistrict";
+import PoliticalRegion from "./routes/Political Region/PoliticalRegion";
+import PropertyMergeDetail from "./routes/PropertyMerge/PropertyMergeDetail";
+import { initDB, useIndexedDB } from "react-indexed-db-hook";
 
 function App() {
   // const [offlineUser, setOfflineUser] = useState(null);
@@ -76,6 +82,12 @@ function App() {
 
   const { getAll: getOfflineUser } = useIndexedDB("offlineUser");
   const [offlineUser, setOfflineUser] = useLocalStorage("offlineUser", null);
+
+  useEffect(() => {
+    localStorage.getItem("versionNumber")
+      ? localStorage.getItem("versionNumber")
+      : localStorage.setItem("versionNumber", `1`);
+  }, []);
 
   // useEffect(() => {
   //   getOfflineUser().then((data) => setOfflineUser(data[0]));
@@ -99,7 +111,7 @@ function App() {
         const response = await axiosInstance.get("/auth/user");
         // const allocationResponse = await axiosInstance.get("/allocation/me");
 
-        if (response.status === 200 ) {
+        if (response.status === 200) {
           const currentUser = {
             name: response.data.name,
             email: response.data.email,
@@ -141,7 +153,7 @@ function App() {
 
       <Route element={<Navigation />}>
         {/********* Home Routes **********/}
-        <Route element={<RequireAuth allowedPermissions={['view.property']} />}>
+        <Route element={<RequireAuth allowedPermissions={["view.property"]} />}>
           <Route element={<Home />}>
             <Route path="/home" element={<Properties />} />
             <Route path="/home/*" element={<NotExistPage />} />
@@ -165,14 +177,14 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'view.allocation',
-                'list.district',
-                'list.location',
-                'list.property-type',
-                'create.property-capture',
-                ' list.property-reference',
-                'list.property-reference-category',
-                'list.client-occupant',
+                "view.allocation",
+                "list.district",
+                "list.location",
+                "list.property-type",
+                "create.property-capture",
+                " list.property-reference",
+                "list.property-reference-category",
+                "list.client-occupant",
               ]}
             />
           }
@@ -406,7 +418,6 @@ function App() {
                 "list.property",
                 "list.property-unit",
                 "view.property-unit",
-                
               ]}
             />
           }
@@ -450,7 +461,7 @@ function App() {
         </Route>
 
         {/*******Report******/}
-        <Route element={<RequireAuth allowedPermissions={['view.property']} />}>
+        <Route element={<RequireAuth allowedPermissions={["view.property"]} />}>
           <Route path="/report" element={<Report />} />
         </Route>
       </Route>
