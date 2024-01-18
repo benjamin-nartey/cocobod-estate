@@ -1,12 +1,10 @@
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-import {objectStoresMeta} from '../components/indexedDb/dbConfig'
-
-
+import { objectStoresMeta } from "../components/indexedDb/dbConfig";
 
 export const reinitializeIndexedDB = (version) => {
   const dbName = "ESTATEDB";
@@ -42,14 +40,11 @@ export const reinitializeIndexedDB = (version) => {
   request.onsuccess = (event) => {
     const db = event.target.result;
     db.close();
-    console.log('IndexedDB reinitialized successfully.');
+    console.log("IndexedDB reinitialized successfully.");
+    callback();
   };
 
   request.onerror = (event) => {
-    console.error('Error reinitializing IndexedDB:', event.target.error);
+    console.error("Error reinitializing IndexedDB:", event.target.error);
   };
 };
-
-
-
-

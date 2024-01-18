@@ -251,7 +251,8 @@ export const objectStoresMeta = [
 ];
 
 export const initializeConfig = () => {
-  const versionNumber = parseInt(localStorage.getItem("versionNumber"));
+ 
+  const versionNumber = parseInt(localStorage.getItem("versionNumber")) || 1;
 
   console.log(versionNumber);
   return {

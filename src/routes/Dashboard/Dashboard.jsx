@@ -41,7 +41,7 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const { add: addPropertyReferenceCategories } = useIndexedDB(
+  const { add: addPropertyReferenceCategories, clear:clearPropertyReferenceCategories } = useIndexedDB(
     "propertyReferenceCategories"
   );
 
@@ -55,13 +55,15 @@ const Dashboard = () => {
     }, 0);
   }
 
-  const { add: addPropertyReferences } = useIndexedDB("propertyReferences");
-  const { add: addDistricts } = useIndexedDB("districts");
-  const { add: addPolitcalDistricts } = useIndexedDB("politcalDistricts");
-  const { add: addPolitcalRegions } = useIndexedDB("politcalRegions");
-  const { add: addLocations } = useIndexedDB("locations");
-  const { add: addPropertyTypes } = useIndexedDB("propertyTypes");
-  const { add: addClientOccupants } = useIndexedDB("clientOccupants");
+  const { add: addPropertyReferences, clear: clearPropertyReference } = useIndexedDB("propertyReferences");
+  const { add: addDistricts,clear:clearDistricts } = useIndexedDB("districts");
+  const { add: addPolitcalDistricts, clear:clearPoliticalDistricts } = useIndexedDB("politcalDistricts");
+  const { add: addPolitcalRegions, clear:PoliticalRegions } = useIndexedDB("politcalRegions");
+  const { add: addLocations, clear:clearLocations } = useIndexedDB("locations");
+  const { add: addPropertyTypes, clear:clearPropertyTypes } = useIndexedDB("propertyTypes");
+  const { add: addClientOccupants, clear:clearClientOccupants } = useIndexedDB("clientOccupants");
+
+  
 
   const { getAll: getAllProperty } = useIndexedDB("property");
 
@@ -102,6 +104,13 @@ const Dashboard = () => {
       localStorage.setItem("versionNumber", `${versionNumber}`);
       reinitializeIndexedDB(versionNumber);
     }
+
+    clearClientOccupants()
+    clearDistricts()
+    clearLocations()
+    clearPoliticalDistricts()
+    clearPropertyReference()
+    clearPropertyReferenceCategories()
 
     // console.log(auth.currentUser)?.allocationData.id;
     try {

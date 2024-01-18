@@ -15,6 +15,8 @@ import { initDB } from "react-indexed-db-hook";
 
 // localStorage.setItem("versionNumber", "1");
 
+
+
 initDB(initializeConfig());
 
 registerSW({ immediate: true });
