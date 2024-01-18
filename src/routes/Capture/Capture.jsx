@@ -1,4 +1,4 @@
-import { Button, Input, Popconfirm, Table } from "antd";
+import { Button, Input, Popconfirm, Select, Table } from "antd";
 import React, { useEffect, useState, useContext } from "react";
 import { PropertyPseudoContext } from "../../context/propertyPseudo.context";
 
@@ -13,6 +13,7 @@ import { useSnapshot } from "valtio";
 import { useIndexedDB } from "react-indexed-db-hook";
 import { axiosInstance } from "../../axios/axiosInstance";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
+import { capitalize } from "../../utils/typography";
 
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
 
@@ -48,7 +49,7 @@ const Capture = () => {
     getAllDistricts().then((allDistricts) => {
       const data = allDistricts.map((district) => {
         return {
-          text: district?.name,
+          label: district && capitalize(district?.name?.toLowerCase()),
           value: district?.name,
         };
       });
@@ -84,6 +85,9 @@ const Capture = () => {
     {
       title: "District",
       dataIndex: ["location", "district", "name"],
+      render: (value) => {
+        return <span>{value && capitalize(value.toLowerCase())}</span>;
+      },
       // filters: districts,
       // onFilter: (_, record) => record.district.name.includes(districtType),
     },
@@ -119,8 +123,9 @@ const Capture = () => {
       </div>
 
       <div className="flex flex-col">
-        <CustomSelect
-          mode="single"
+        <Select
+          showSearch
+          optionFilterProp="label"
           placeholder="Select district"
           options={districts}
           style={{

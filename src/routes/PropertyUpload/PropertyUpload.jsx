@@ -1,36 +1,38 @@
-import { Button, Input, Popconfirm, Table, message } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { BiEdit } from 'react-icons/bi';
+import { Button, Input, Popconfirm, Table, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { BiEdit } from "react-icons/bi";
 // import { useGetPaginatedData } from "../../Hooks/query/generics";
 // import { getPaginatedProperties } from "../../http/properties";
-import { HiEye } from 'react-icons/hi';
-import { useNavigate, useParams } from 'react-router-dom';
+import { HiEye } from "react-icons/hi";
+import { useNavigate, useParams } from "react-router-dom";
 // import { capitalize } from "../../utils/typography";
-import state from '../../store/store';
-import { useSnapshot } from 'valtio';
-import { useIndexedDB } from 'react-indexed-db-hook';
-import { axiosInstance } from '../../axios/axiosInstance';
-import Loader from '../../components/Loader/Loader';
+import state from "../../store/store";
+import { useSnapshot } from "valtio";
+import { useIndexedDB } from "react-indexed-db-hook";
+import { axiosInstance } from "../../axios/axiosInstance";
+import Loader from "../../components/Loader/Loader";
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   useAddPropertyPhotos,
   useAddPropertyUploadData,
-} from '../../Hooks/useAddFetch';
+} from "../../Hooks/useAddFetch";
 
 const PropertyUpload = () => {
-  const { getAll: getAllProperty } = useIndexedDB('property');
-  const { deleteRecord: deletePropertyRecord } = useIndexedDB('property');
-  const { getAll: getAllLocations } = useIndexedDB('locations');
-  const { getAll: getAllPropertyTypes } = useIndexedDB('propertyTypes');
+  const { getAll: getAllProperty } = useIndexedDB("property");
+  const { deleteRecord: deletePropertyRecord } = useIndexedDB("property");
+  const { getAll: getAllLocations } = useIndexedDB("locations");
+  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
   const [result, setResult] = useState([]);
-  const [location, setLocation] = useState('');
-  const [propertyType, setPropertyType] = useState('');
+  const [location, setLocation] = useState("");
+  const [propertyType, setPropertyType] = useState("");
   const [loading, setLoading] = useState(false);
   const { regionId } = useParams();
   const [pageNum, setPageNum] = useState(1);
   const [data, setData] = useState(null);
+
+  const navigate = useNavigate()
 
   const { mutate } = useAddPropertyUploadData();
   const { mutate: uploadPhotos } = useAddPropertyPhotos();
@@ -76,7 +78,7 @@ const PropertyUpload = () => {
     data: property,
     status,
     error,
-  } = useQuery(['property-upload'], () => fetchProperty());
+  } = useQuery(["property-upload"], () => fetchProperty());
   const queryClient = useQueryClient();
 
   const handleUploadAll = () => {
@@ -101,14 +103,14 @@ const PropertyUpload = () => {
           };
           mutate(propertyData, {
             onSuccess: (result) => {
-              console.log('Result', result?.data?.id);
+              console.log("Result", result?.data?.id);
               data.map((property) => {
                 if (property?.photos?.fileList.length > 0) {
                   const formData = new FormData();
                   console.log(property.photos);
 
                   property.photos.fileList.forEach((photo) => {
-                    formData.append('photos', photo.originFileObj);
+                    formData.append("photos", photo.originFileObj);
                   });
 
                   console.log(formData);
@@ -116,7 +118,7 @@ const PropertyUpload = () => {
                   axiosInstance
                     .post(`/properties/${result?.data?.id}/photos`, formData)
                     .then((response) => {
-                      message.success('Photos added successfully');
+                      message.success("Photos added successfully");
                     })
                     .catch((error) => {
                       message.error(error?.response?.data?.message);
@@ -137,8 +139,8 @@ const PropertyUpload = () => {
                 }
 
                 deletePropertyRecord(property.id)
-                  .then(() => message.success('Property uploaded successfully'))
-                  .then(() => queryClient.invalidateQueries('property-upload'))
+                  .then(() => message.success("Property uploaded successfully"))
+                  .then(() => queryClient.invalidateQueries("property-upload"))
                   .then(() => setLoading(false));
               });
             },
@@ -160,52 +162,39 @@ const PropertyUpload = () => {
   // const { showEditPropertyModal } = snap.modalSlice;
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
+      title: "Name",
+      dataIndex: "name",
     },
     {
-      title: 'Property Description',
-      dataIndex: 'description',
+      title: "Property Description",
+      dataIndex: "description",
       render: (value) => {
         return <p>{value.toLowerCase()}</p>;
       },
     },
     {
-      title: 'Town',
-      dataIndex: ['location', 'name'],
+      title: "Town",
+      dataIndex: ["locationId"],
     },
     {
-      title: 'Property Type',
-      dataIndex: ['propertyType', 'name'],
+      title: "Digital Address",
+      dataIndex: "digitalAddress",
     },
     {
-      title: 'Digital Address',
-      dataIndex: 'digitalAddress',
+      title: "Property Code",
+      dataIndex: "propertyCode",
     },
     {
-      title: 'Property Code',
-      dataIndex: 'propertyCode',
-    },
-    {
-      title: 'Actions',
-      dataIndex: 'id',
+      title: "Actions",
+      dataIndex: "id",
       render: (value, record) => {
         return (
           <div className="flex items-center gap-4">
-            <HiEye
-              className="text-blue-500 cursor-pointer"
-              size={22}
-              onClick={() => {
-                // state.modalSlice.selectedRecord = record;
-                // navigate(`/property-units-main`);
-              }}
-            />
             <BiEdit
               size={22}
               className="cursor-pointer text-gray-600"
               onClick={() => {
-                state.modalSlice.selectedRecord = record;
-                state.modalSlice.toggleshowEditPropertyModal();
+                navigate(`/property-capture/${value}`);
               }}
             />
           </div>
@@ -224,14 +213,14 @@ const PropertyUpload = () => {
           {loading ? (
             <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
           ) : (
-            'Upload'
+            "Upload"
           )}
         </button>
       </div>
       <div className="flex flex-col">
         <Input.Search placeholder="Search records..." />
         <Table
-          loading={status === 'loading'}
+          loading={status === "loading"}
           // loading={props?.isLoading}
           columns={columns}
           dataSource={data}

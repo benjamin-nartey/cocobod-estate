@@ -80,6 +80,10 @@ html {
 .accordion-content.show {
   height: auto;
   max-height: 9999px;
+  max-height: 9999px;
+}
+.delete-btn.show{
+  height: auto;
 }
 /* transition: all 0.5s, cubic-bezier(0, 1, 0, 1); */
 .ant-steps .ant-steps-item-process .ant-steps-item-icon {
@@ -111,3 +115,4 @@ html {
   font-family: 'Quicksand', sans-serif;
   font-weight: 700;
 }
+
