@@ -15,6 +15,7 @@ const PropertyUnitMerge = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [isOrdering, setIsOrdering] = useState(false);
   const [selectedRowsInTable, setSelectedRowsInTable] = useState([]);
 
   const snap = useSnapshot(state);
@@ -28,7 +29,7 @@ const PropertyUnitMerge = () => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (selectedRowsInTable) {
+    if (isOrdering) {
       const sortedDataSource = [...data].sort((a, b) => {
         const aSelected = selectedRowsInTable.includes(a.key);
         const bSelected = selectedRowsInTable.includes(b.key);
@@ -44,7 +45,7 @@ const PropertyUnitMerge = () => {
 
       setData(sortedDataSource);
     }
-  }, [selectedRowsInTable]);
+  }, [isOrdering]);
 
   useEffect(() => {
     if (!referenceLoading && references?.data?.length) {
@@ -68,6 +69,7 @@ const PropertyUnitMerge = () => {
 
       if (records && crudType === CRUDTYPES.EDIT) {
         setSelectedRowsInTable(records);
+        setIsOrdering(true);
       }
     }
   }, [references?.data?.length, referenceLoading]);
@@ -77,6 +79,7 @@ const PropertyUnitMerge = () => {
     onChange: (selectedRowKeys, selectedRows) => {
       const changedRows = selectedRows.map((row) => row.key);
       setSelectedRowsInTable(changedRows);
+
       // setSelectedRowsInTable(selectedRows.map((row) => row.key));
     },
     getCheckboxProps: (record) =>
