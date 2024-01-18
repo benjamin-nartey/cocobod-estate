@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { Select, Space } from 'antd';
+import { Select, Space } from "antd";
 
 const CustomSelect = ({
   mode,
@@ -8,15 +8,16 @@ const CustomSelect = ({
   onChange,
   options,
   placeholder,
+  disabled,
   ...props
 }) => {
   const filterOption = (input, option) =>
-    (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
   return (
     <Space
       style={{
-        width: '100%',
+        width: "100%",
       }}
       direction="vertical"
     >
@@ -25,8 +26,9 @@ const CustomSelect = ({
         mode={mode}
         allowClear
         style={{
-          width: '100%',
+          width: "100%",
         }}
+        disabled={disabled}
         placeholder={placeholder}
         onChange={onChange}
         options={options}
