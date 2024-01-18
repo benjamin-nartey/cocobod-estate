@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
-import FloatButtonComponent from "../../components/FloatButtonComponent/FloatButtonComponent";
-import { axiosInstance } from "../../axios/axiosInstance";
-import { initDB, useIndexedDB } from "react-indexed-db-hook";
-import { BsBuildingFillCheck } from "react-icons/bs";
-import { Spin, message } from "antd";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import FloatButtonComponent from '../../components/FloatButtonComponent/FloatButtonComponent';
+import { axiosInstance } from '../../axios/axiosInstance';
+import { initDB, useIndexedDB } from 'react-indexed-db-hook';
+import { BsBuildingFillCheck } from 'react-icons/bs';
+import { Spin, message } from 'antd';
+import { NavLink } from 'react-router-dom';
 
-import { useGetDashboard } from "../../Hooks/query/dashboard";
+import { useGetDashboard } from '../../Hooks/query/dashboard';
 
-import ReportLineChart from "../../components/charts/LineChart/ReportLineChart";
-import ReportPieChart from "../../components/charts/PieChart/ReportPieChart";
-import nodata from "../../assets/nodata.json";
-import Lottie from "lottie-react";
-import { useSnapshot } from "valtio";
-import state from "../../store/store";
-import { useLocalStorage } from "../../Hooks/useLocalStorage";
-import { initializeConfig } from "../../components/indexedDb/dbConfig";
-import { reinitializeIndexedDB } from "../../utils/helper";
+import ReportLineChart from '../../components/charts/LineChart/ReportLineChart';
+import ReportPieChart from '../../components/charts/PieChart/ReportPieChart';
+import nodata from '../../assets/nodata.json';
+import Lottie from 'lottie-react';
+import { useSnapshot } from 'valtio';
+import state from '../../store/store';
+import { useLocalStorage } from '../../Hooks/useLocalStorage';
+import { initializeConfig } from '../../components/indexedDb/dbConfig';
+import { reinitializeIndexedDB } from '../../utils/helper';
 
 const Card = ({ allProperty }) => {
   return (
@@ -41,9 +41,10 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const { add: addPropertyReferenceCategories, clear:clearPropertyReferenceCategories } = useIndexedDB(
-    "propertyReferenceCategories"
-  );
+  const {
+    add: addPropertyReferenceCategories,
+    clear: clearPropertyReferenceCategories,
+  } = useIndexedDB('propertyReferenceCategories');
 
   const { data: dashboard, isLoading } = useGetDashboard();
 
@@ -55,17 +56,22 @@ const Dashboard = () => {
     }, 0);
   }
 
-  const { add: addPropertyReferences, clear: clearPropertyReference } = useIndexedDB("propertyReferences");
-  const { add: addDistricts,clear:clearDistricts } = useIndexedDB("districts");
-  const { add: addPolitcalDistricts, clear:clearPoliticalDistricts } = useIndexedDB("politcalDistricts");
-  const { add: addPolitcalRegions, clear:PoliticalRegions } = useIndexedDB("politcalRegions");
-  const { add: addLocations, clear:clearLocations } = useIndexedDB("locations");
-  const { add: addPropertyTypes, clear:clearPropertyTypes } = useIndexedDB("propertyTypes");
-  const { add: addClientOccupants, clear:clearClientOccupants } = useIndexedDB("clientOccupants");
+  const { add: addPropertyReferences, clear: clearPropertyReference } =
+    useIndexedDB('propertyReferences');
+  const { add: addDistricts, clear: clearDistricts } =
+    useIndexedDB('districts');
+  const { add: addPolitcalDistricts, clear: clearPoliticalDistricts } =
+    useIndexedDB('politcalDistricts');
+  const { add: addPolitcalRegions, clear: clearPoliticalRegions } =
+    useIndexedDB('politcalRegions');
+  const { add: addLocations, clear: clearLocations } =
+    useIndexedDB('locations');
+  const { add: addPropertyTypes, clear: clearPropertyTypes } =
+    useIndexedDB('propertyTypes');
+  const { add: addClientOccupants, clear: clearClientOccupants } =
+    useIndexedDB('clientOccupants');
 
-  
-
-  const { getAll: getAllProperty } = useIndexedDB("property");
+  const { getAll: getAllProperty } = useIndexedDB('property');
 
   useEffect(() => {
     getAllProperty().then((data) => setAllProperty(data));
@@ -73,7 +79,7 @@ const Dashboard = () => {
 
   const fetchUserAlocation = async () => {
     try {
-      const response = await axiosInstance.get("/allocation/me");
+      const response = await axiosInstance.get('/allocation/me');
 
       if (response.status === 200) {
         setAllocationData(response.data.region);
@@ -94,25 +100,6 @@ const Dashboard = () => {
   const handleDownloadAllResources = async () => {
     setLoading(true);
 
-    let versionNumber = parseInt(localStorage.getItem("versionNumber"));
-
-    versionNumber = versionNumber + 1;
-
-    console.log(versionNumber);
-
-    if (versionNumber !== 1) {
-      localStorage.setItem("versionNumber", `${versionNumber}`);
-      reinitializeIndexedDB(versionNumber);
-    }
-
-    clearClientOccupants()
-    clearDistricts()
-    clearLocations()
-    clearPoliticalDistricts()
-    clearPropertyReference()
-    clearPropertyReferenceCategories()
-
-    // console.log(auth.currentUser)?.allocationData.id;
     try {
       const [
         propertyRefereceCategoriesResponse,
@@ -124,312 +111,159 @@ const Dashboard = () => {
         politicalDistrictResponse,
         PoliticalRegionResponse,
       ] = await Promise.all([
-        axiosInstance.get("/property-reference-categories/all", {
+        axiosInstance.get('/property-reference-categories/all', {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get("/property-references/all", {
+        axiosInstance.get('/property-references/all', {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get("/district/all", {
+        axiosInstance.get('/district/all', {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get("/location/all", {
+        axiosInstance.get('/location/all', {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get("/property-types/all", {
+        axiosInstance.get('/property-types/all', {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get("/client-occupants/all", {
+        axiosInstance.get('/client-occupants/all', {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get("/political-district/all"),
-        axiosInstance.get("/political-region/all"),
+        axiosInstance.get('/political-district/all'),
+        axiosInstance.get('/political-region/all'),
       ]);
 
-      propertyRefereceCategoriesResponse.data.map(async (property) => {
-        try {
-          await addPropertyReferenceCategories({
-            id: property?.id,
-            name: property?.name,
-            propertyType: property?.propertyType,
-            location: property?.location,
-            division: property?.division,
-          });
-        } catch (err) {
-          message.error(err);
-          console.log(err);
-        }
-      });
+      await Promise.all([
+        clearClientOccupants(),
+        clearDistricts(),
+        clearLocations(),
+        clearPoliticalDistricts(),
+        clearPropertyReference(),
+        clearPropertyReferenceCategories(),
+        clearPoliticalRegions(),
+        clearPropertyTypes(),
+      ]);
 
-      propertyReferencesResponse.data.map(async (references) => {
-        try {
-          await addPropertyReferences({
-            id: references?.id,
-            locationOrTown: references?.locationOrTown,
-            lot: references?.lot,
-            marketValue: references?.marketValue,
-            currentUsefulLife: references?.currentUsefulLife,
-            description: references?.description,
-            descriptionPerFixedAssetReport:
-              references?.descriptionPerFixedAssetReport,
-            plotSize: references?.plotSize || null,
-            floorSize: references?.floorSize || null,
-            division: references?.division,
-            propertyReferenceCategory: references?.propertyReferenceCategory,
-            region: references?.region,
-            // propertyUnit: references?.propertyUnit,
-            propertyType: references?.propertyType,
-          });
-        } catch (err) {
-          message.error(err);
-          console.log(err);
-        }
-      });
+      message.success('Successfully cleared all data');
 
-      districtsResponse.data.map(async (district) => {
-        try {
-          await addDistricts({
-            id: district?.id,
-            name: district?.name,
-            regionId: district?.regionId,
-            districtType: district?.districtType,
-          });
-          // message.success(' Districts  downloaded successfully');
-        } catch (err) {
-          message.error(err);
-          console.log(err);
-        }
-      });
+      await Promise.all([
+        Promise.all(
+          propertyRefereceCategoriesResponse.data.map(async (property) => {
+            await addPropertyReferenceCategories({
+              id: property?.id,
+              name: property?.name,
+              propertyType: property?.propertyType,
+              location: property?.location,
+              division: property?.division,
+            });
+          })
+        ),
 
-      politicalDistrictResponse.data.map(async (district) => {
-        try {
-          await addPolitcalDistricts({
-            id: district?.id,
-            name: district?.name,
-            politicalRegion: district?.politicalRegion,
-          });
-        } catch (err) {
-          message.error(err);
-          console.log(err);
-        }
-      });
+        Promise.all(
+          propertyReferencesResponse.data.map(async (references) => {
+            await addPropertyReferences({
+              id: references?.id,
+              locationOrTown: references?.locationOrTown,
+              lot: references?.lot,
+              marketValue: references?.marketValue,
+              currentUsefulLife: references?.currentUsefulLife,
+              description: references?.description,
+              descriptionPerFixedAssetReport:
+                references?.descriptionPerFixedAssetReport,
+              plotSize: references?.plotSize || null,
+              floorSize: references?.floorSize || null,
+              division: references?.division,
+              propertyReferenceCategory: references?.propertyReferenceCategory,
+              region: references?.region,
+              // propertyUnit: references?.propertyUnit,
+              propertyType: references?.propertyType,
+            });
+          })
+        ),
 
-      PoliticalRegionResponse.data.map(async (region) => {
-        try {
-          await addPolitcalRegions({
-            id: region?.id,
-            name: region?.name,
-          });
-        } catch (err) {
-          message.error(err);
-          console.log(err);
-        }
-      });
-
-      locationsResponse.data.map(async (location) => {
-        try {
-          await addLocations({
-            id: location?.id,
-            name: location?.name,
-            districtId: location?.districtId,
-          });
-        } catch (err) {
-          message.error(err);
-          console.log(err);
-        }
-      });
-
-      propertyTypesResponse.data.map(async (propertyType) => {
-        try {
-          await addPropertyTypes({
-            id: propertyType?.id,
-            name: propertyType?.name,
-            attributes: propertyType?.attributes,
-          });
-        } catch (err) {
-          message.error(err);
-          console.log(err);
-        }
-      });
-
-      clientOccupantsResponse.data.map(async (propertyType) => {
-        try {
-          await addClientOccupants({
-            id: propertyType?.id,
-            name: propertyType?.name,
-            category: propertyType?.category,
-            email: propertyType?.email,
-            phoneNumber: propertyType?.phoneNumber,
-          });
-        } catch (err) {
-          message.error(err);
-          console.log(err);
-        }
-      });
-
-      message.success("PropertyReference Categories downloaded successfully");
-      message.success("Property references downloaded successfully");
-      message.success("Political Districts downloaded successfully");
-      message.success("Politcal regions downloaded successfully");
-      message.success("Locations downloaded successfully");
-      message.success("Property types downloaded successfully");
-      message.success("Client Occupants downloaded successfully");
-    } catch (error) {
-      message.error(error);
-      console.log(error);
+        Promise.all(
+          districtsResponse.data.map(async (district) => {
+            await addDistricts({
+              id: district?.id,
+              name: district?.name,
+              regionId: district?.regionId,
+              districtType: district?.districtType,
+            });
+          })
+        ),
+        Promise.all(
+          politicalDistrictResponse.data.map(async (district) => {
+            await addPolitcalDistricts({
+              id: district?.id,
+              name: district?.name,
+              politicalRegion: district?.politicalRegion,
+            });
+          })
+        ),
+        Promise.all(
+          locationsResponse.data.map(async (location) => {
+            await addLocations({
+              id: location?.id,
+              name: location?.name,
+              districtId: location?.districtId,
+            });
+          })
+        ),
+        Promise.all(
+          propertyTypesResponse.data.map(async (propertyType) => {
+            await addPropertyTypes({
+              id: propertyType?.id,
+              name: propertyType?.name,
+              attributes: propertyType?.attributes,
+            });
+          })
+        ),
+        Promise.all(
+          PoliticalRegionResponse.data.map(async (region) => {
+            await addPolitcalRegions({
+              id: region?.id,
+              name: region?.name,
+            });
+          })
+        ),
+        Promise.all(
+          clientOccupantsResponse.data.map(async (propertyType) => {
+            await addClientOccupants({
+              id: propertyType?.id,
+              name: propertyType?.name,
+              category: propertyType?.category,
+              email: propertyType?.email,
+              phoneNumber: propertyType?.phoneNumber,
+            });
+          })
+        ),
+      ]);
+      message.success('All data downloaded and persisted successfully');
+      setLoading(false);
+    } catch (err) {
+      message.error(err.message);
     } finally {
       setLoading(false);
     }
   };
-
-  // .then(
-  //   ([
-  //     propertyRefereceCategoriesResponse,
-  //     propertyReferencesResponse,
-  //     districtsResponse,
-  //     locationsResponse,
-  //     propertyTypesResponse,
-  //     clientOccupantsResponse,
-  //     politicalDistrictResponse,
-  //     PoliticalRegionResponse,
-  //   ]) => {
-  //     propertyRefereceCategoriesResponse.data.map((property) => {
-  //       addPropertyReferenceCategories({
-  //         id: property?.id,
-  //         name: property?.name,
-  //         propertyType: property?.propertyType,
-  //         location: property?.location,
-  //         division: property?.division,
-  //       })
-  //         .then(() =>
-  //           message.success(
-  //             'propertyReferenceCategories downloaded successfully'
-  //           )
-  //         )
-  //         .catch((err) => message.error(err));
-  //     });
-
-  //     propertyReferencesResponse.data.map((references) => {
-  //       addPropertyReferences({
-  //         id: references?.id,
-  //         locationOrTown: references?.locationOrTown,
-  //         lot: references?.lot,
-  //         marketValue: references?.marketValue,
-  //         currentUsefulLife: references?.currentUsefulLife,
-  //         description: references?.description,
-  //         descriptionPerFixedAssetReport:
-  //           references?.descriptionPerFixedAssetReport,
-  //         plotSize: references?.plotSize,
-  //         floorArea: references?.floorArea,
-  //         division: references?.division,
-  //         propertyReferenceCategory: references?.propertyReferenceCategory,
-  //         region: references?.region,
-  //         // propertyUnit: references?.propertyUnit,
-  //         propertyType: references?.propertyType,
-  //       })
-  //         .then(() =>
-  //           message.success('propertyReferences downloaded successfully')
-  //         )
-  //         .catch((error) => message.error(error.message));
-  //     });
-
-  //     districtsResponse.data.map((district) => {
-  //       addDistricts({
-  //         id: district?.id,
-  //         name: district?.name,
-  //         regionId: district?.regionId,
-  //         districtType: district?.districtType,
-  //       })
-  //         .then(() => message.success('districts downloaded successfully'))
-  //         .catch((err) => message.error(err));
-  //     });
-
-  //     politicalDistrictResponse.data.map((district) => {
-  //       addPolitcalDistricts({
-  //         id: district?.id,
-  //         name: district?.name,
-  //         politicalRegion: district?.politicalRegion,
-  //       })
-  //         .then(() =>
-  //           message.success('political districts downloaded successfully')
-  //         )
-  //         .catch((err) => message.error(err.message));
-  //     });
-
-  //     PoliticalRegionResponse.data.map((region) => {
-  //       addPolitcalRegions({
-  //         id: region?.id,
-  //         name: region?.name,
-  //       })
-  //         .then(() =>
-  //           message.success('political region downloaded successfully')
-  //         )
-  //         .catch((err) => message.error(err.message));
-  //     });
-
-  //     locationsResponse.data.map((location) => {
-  //       addLocations({
-  //         id: location?.id,
-  //         name: location?.name,
-  //         districtId: location?.districtId,
-  //       })
-  //         .then(() => message.success('locations downloaded successfully'))
-  //         .catch((err) => message.error(err.message));
-  //     });
-
-  //     propertyTypesResponse.data.map((propertyType) => {
-  //       addPropertyTypes({
-  //         id: propertyType?.id,
-  //         name: propertyType?.name,
-  //         attributes: propertyType?.attributes,
-  //       })
-  //         .then(() =>
-  //           message.success('propertyTypes downloaded successfully')
-  //         )
-  //         .catch((err) => message.error(err.message));
-  //     });
-
-  //     clientOccupantsResponse.data.map((propertyType) => {
-  //       addClientOccupants({
-  //         id: propertyType?.id,
-  //         name: propertyType?.name,
-  //         category: propertyType?.category,
-  //         email: propertyType?.email,
-  //         phoneNumber: propertyType?.phoneNumber,
-  //       })
-  //         .then(() => {
-  //           message.success('clientOccupants downloaded successfully');
-  //         })
-  //         .catch((err) => message.error(err.message));
-  //     });
-  //   }
-  // )
-  // .catch((error) => {
-  //   setLoading(false);
-  //   message.error('Error downloading Resources ', error);
-  // })
-  // .finally(() => {
-  //   setLoading(false);
-  // });
-
   {
     return loading ? (
       <Spin size="large" />
@@ -443,7 +277,7 @@ const Dashboard = () => {
             <Card allProperty={allProperty} />
           </NavLink>
           {/* <Card allProperty={allProperty} />
-          <Card allProperty={allProperty} /> */}
+        <Card allProperty={allProperty} /> */}
         </div>
         <div className=" grid grid-cols-2 w-full gap-10 max-md:flex max-md:flex-col">
           <div className="bg-white">
