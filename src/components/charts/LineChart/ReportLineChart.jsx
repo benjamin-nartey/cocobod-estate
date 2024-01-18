@@ -11,8 +11,6 @@ import {
 } from 'recharts';
 
 const ReportLineChart = (data) => {
-  console.log({ dataSet: data });
-
   const lineData = data?.data?.map((line) => ({
     name: line?.propertyTypeName,
     count: line?.propertyCount,

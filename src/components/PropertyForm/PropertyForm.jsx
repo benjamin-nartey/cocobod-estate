@@ -27,6 +27,7 @@ import { useIndexedDB } from 'react-indexed-db-hook';
 import Loader from '../Loader/Loader';
 import { useNavigate } from 'react-router-dom';
 import Dragger from 'antd/es/upload/Dragger';
+import { capitalize } from '../../utils/typography';
 
 const PropertyForm = (id) => {
   const [propertyUnitReference, setPropertyUnitRefernce] = useState(null);
@@ -76,14 +77,22 @@ const PropertyForm = (id) => {
   const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
     'propertyReferenceCategories'
   );
+  const { getByID: getPropertyById } = useIndexedDB('property');
 
   // const { getAll: getAllpropertyReferences } =
   //   useIndexedDB("propertyReferences");
 
   // console.log({ propertyReferenceCategories });
 
+  const isValidUUID = (uuid) => {
+    const uuidRegex =
+      /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
+    return uuidRegex.test(uuid);
+  };
+
   useEffect(() => {
     if (id) {
+      console.log(isValidUUID(id.id));
       getAllPropertyReferenceCategories().then(
         (allPropertyReferenceCategory) => {
           // console.log({ allPropertyReferenceCategory });
@@ -95,7 +104,6 @@ const PropertyForm = (id) => {
           setPropertyReferenceCategories(referencesCategories[0]);
         }
       );
-      // getAllPropertyUnits(id);
     }
 
     // getAllpropertyReferences().then((references) => {
@@ -154,7 +162,7 @@ const PropertyForm = (id) => {
 
       const data = getDistrictsByRegionId.map((record) => {
         return {
-          label: record?.name,
+          label: record && capitalize(record?.name.toLowerCase()),
           value: record?.id,
         };
       });
@@ -184,8 +192,10 @@ const PropertyForm = (id) => {
   };
 
   useEffect(() => {
-    getDomainTowns(districtId || propertyReferenceCategories?.district?.id);
-  }, [districtId, propertyReferenceCategories?.district?.id]);
+    getDomainTowns(
+      districtId || propertyReferenceCategories?.location?.district.id
+    );
+  }, [districtId, propertyReferenceCategories?.location?.district.id]);
 
   const fetchPropertyTypes = async () => {
     getAllPropertyTypes().then((propertyType) => {
@@ -340,7 +350,8 @@ const PropertyForm = (id) => {
     form.setFieldsValue({
       name: propertyReferenceCategories?.name,
       propertyTypeId: propertyReferenceCategories?.propertyType?.id,
-      districtId: propertyReferenceCategories?.district?.id,
+      districtId: propertyReferenceCategories?.location?.district?.id,
+      locationId: propertyReferenceCategories?.location?.name,
     });
   }, [propertyReferenceCategories]);
 
@@ -388,23 +399,6 @@ const PropertyForm = (id) => {
                 prefix={<UserOutlined />}
               />
             </Form.Item>
-
-            {/* <Form.Item
-              label="Property Code"
-              name="propertyCode"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input
-                name="propertyCode"
-                type="text"
-                placeholder="Enter property code"
-                prefix={<MdOutlineEmail />}
-              />
-            </Form.Item> */}
 
             <Form.Item
               label="Description"
@@ -464,13 +458,15 @@ const PropertyForm = (id) => {
             <Form.Item
               label="Cocoa District"
               name="districtId"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
+
+              // rules={[
+              //   {
+              //     required: true,
+              //   },
+              // ]}
             >
               <CustomSelect
+                disabled={true}
                 mode="single"
                 placeholder="Select District"
                 options={optionsDistrict}
@@ -523,13 +519,14 @@ const PropertyForm = (id) => {
             <Form.Item
               label="Town"
               name="locationId"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //   },
+              // ]}
             >
               <CustomSelect
+                disabled={true}
                 mode="single"
                 placeholder="Select Town"
                 options={optionsLocation}
