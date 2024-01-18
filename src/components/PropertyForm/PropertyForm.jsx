@@ -220,6 +220,7 @@ const PropertyForm = (id) => {
           setLoading(false);
         },
         (error) => {
+          setLoading(false);
           message.error('Error getting location', error.message);
         }
       );
@@ -254,11 +255,6 @@ const PropertyForm = (id) => {
 
       //   return isJpgOrPng || Upload.LIST_IGNORE;
     },
-  };
-
-  const handleChange = (info) => {
-    let newFileList = [...info.fileList];
-    setFileList(newFileList);
   };
 
   const handleSubmit = async (values) => {
