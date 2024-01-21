@@ -9,19 +9,26 @@ import { LogoutProvider } from "./context/logout.context.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { registerSW } from "virtual:pwa-register";
 import { CookiesProvider } from "react-cookie";
-import {  initializeConfig } from "./components/indexedDb/dbConfig.js";
+import { initializeConfig } from "./components/indexedDb/dbConfig.js";
 import { initDB } from "react-indexed-db-hook";
 // import ("../src/components/indexedDb/dbConfig.js");
 
 // localStorage.setItem("versionNumber", "1");
 
-
-
 initDB(initializeConfig());
 
 registerSW({ immediate: true });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      networkMode: "always",
+    },
+    mutations: {
+      networkMode: "always",
+    },
+  },
+});
 
 const timestamp = new Date().getTime();
 const expire = timestamp + 60 * 60 * 24 * 1000 * 14;
