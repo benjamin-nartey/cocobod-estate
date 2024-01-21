@@ -6,7 +6,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useSnapshot } from 'valtio';
 import { uploadData } from '../../../http/uploads';
-import { checkFile } from '../../../utils/common';
 
 const UploadCSV = ({ uploadUrl, fieldName, queryKey }) => {
   const snap = useSnapshot(state);

@@ -3,6 +3,7 @@ import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useSnapshot } from 'valtio';
 
 import state from '../../store/store';
+import { hasAllowedPermission } from '../../utils/common';
 
 function RequireAuth({ allowedPermissions }) {
   const snap = useSnapshot(state);
@@ -11,14 +12,6 @@ function RequireAuth({ allowedPermissions }) {
   const loadingState = snap.auth.loadingState;
 
   const location = useLocation();
-
-  function hasAllowedPermission(user, allowedPermissions) {
-    const userPermissions = user?.roles.flatMap((role) => role.permissions);
-
-    return userPermissions?.some((permission) =>
-      allowedPermissions?.includes(permission.name)
-    );
-  }
 
   if (
     hasAllowedPermission(currentUser, allowedPermissions) &&
