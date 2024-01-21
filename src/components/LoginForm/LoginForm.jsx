@@ -28,8 +28,8 @@ const hashedDefaultPassword = bcrypt.hashSync(
 );
 
 const API = axios.create({
-  // baseURL: 'https://estate-api-2.onrender.com/api/v1',
-  baseURL: 'http://localhost:3000/api/v1',
+  baseURL: 'https://estate-api-2.onrender.com/api/v1',
+  // baseURL: 'http://localhost:3000/api/v1',
 });
 
 function LoginForm() {
@@ -149,17 +149,17 @@ function LoginForm() {
         );
       }
     } catch (error) {
-      switch (error.response.data.statusCode) {
+      switch (error?.response?.data?.statusCode) {
         case 400:
-          message.error(`${error.response.data.message}`);
+          message.error(`${error?.response?.data?.message}`);
           break;
 
         case 403:
-          message.error(`${error.response.data.message}`);
+          message.error(`${error?.response?.data?.message}`);
           break;
 
         default:
-          message.error(`${error.response.data.message}`);
+          message.error(`${error?.response?.data?.message}`);
           break;
       }
       console.log(error);

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from "react";
 
 import {
   Routes,
@@ -6,72 +6,72 @@ import {
   useNavigate,
   useLocation,
   json,
-} from 'react-router-dom';
+} from "react-router-dom";
 
-import FetchingPage from './routes/FetchingPage/FetchingPage';
-import Navigation from './routes/Navigation/Navigation';
-import { useOnlineStatus } from './Hooks/useIsOnlineStatus';
+import FetchingPage from "./routes/FetchingPage/FetchingPage";
+import Navigation from "./routes/Navigation/Navigation";
+import { useOnlineStatus } from "./Hooks/useIsOnlineStatus";
 
-import { axiosInstance } from './axios/axiosInstance';
-import state from './store/store';
+import { axiosInstance } from "./axios/axiosInstance";
+import state from "./store/store";
 
-import Deployment from './routes/Deployment/Deployment';
+import Deployment from "./routes/Deployment/Deployment";
 
-import Capture from './routes/Capture/Capture';
-import Home from './routes/Home/Home';
-import Users from './routes/Users/Users';
-import Departments from './routes/Departments/Departments';
-import Divisions from './routes/Divisions/Divisions';
-import Roles from './routes/Roles/Roles';
-import Properties from './routes/Properties/Properties';
+import Capture from "./routes/Capture/Capture";
+import Home from "./routes/Home/Home";
+import Users from "./routes/Users/Users";
+import Departments from "./routes/Departments/Departments";
+import Divisions from "./routes/Divisions/Divisions";
+import Roles from "./routes/Roles/Roles";
+import Properties from "./routes/Properties/Properties";
 // import Property from './routes/Property/Property';
-import Locations from './routes/Locations/Locations';
-import Areas from './routes/Areas/Areas';
-import PropertyTypes from './routes/PropertyTypes/PropertyTypes';
-import PropertyDetailsPage from './routes/PropertyDetailsPage/PropertyDetailsPage';
-import PropertyMerge from './routes/PropertyMerge/PropertyMerge';
+import Locations from "./routes/Locations/Locations";
+import Areas from "./routes/Areas/Areas";
+import PropertyTypes from "./routes/PropertyTypes/PropertyTypes";
+import PropertyDetailsPage from "./routes/PropertyDetailsPage/PropertyDetailsPage";
+import PropertyMerge from "./routes/PropertyMerge/PropertyMerge";
 
-import DeploymentDetail from './routes/Deployment/DeploymentDetail';
+import DeploymentDetail from "./routes/Deployment/DeploymentDetail";
 
-import District from './routes/District/District';
+import District from "./routes/District/District";
 
-import PropertyMergeIndex from './routes/PropertyMerge/PropertyMergeIndex';
+import PropertyMergeIndex from "./routes/PropertyMerge/PropertyMergeIndex";
 
-import ModerationDetails from './routes/Moderation/ModerationDetails';
+import ModerationDetails from "./routes/Moderation/ModerationDetails";
 
-import ModerationDashboard from './routes/Moderation/ModerationDashboard';
+import ModerationDashboard from "./routes/Moderation/ModerationDashboard";
 
-import ModerationPopertyUnitList from './routes/Moderation/ModerationPopertyUnitList';
+import ModerationPopertyUnitList from "./routes/Moderation/ModerationPopertyUnitList";
 
-import ModerationPoperties from './routes/Moderation/ModerationProperties';
+import ModerationPoperties from "./routes/Moderation/ModerationProperties";
 
-import Authentication from './routes/Authentication/Authentication';
+import Authentication from "./routes/Authentication/Authentication";
 
-import PropertyDetail from './components/PropertyDetail/PropertyDetail';
-import Gallery from './routes/Gallery/Gallery';
-import PropertyMap from './routes/PropertyMap/PropertyMap';
-import RequireAuth from './components/RequireAuth/RequireAuth';
-import Dashboard from './routes/Dashboard/Dashboard';
+import PropertyDetail from "./components/PropertyDetail/PropertyDetail";
+import Gallery from "./routes/Gallery/Gallery";
+import PropertyMap from "./routes/PropertyMap/PropertyMap";
+import RequireAuth from "./components/RequireAuth/RequireAuth";
+import Dashboard from "./routes/Dashboard/Dashboard";
 
-import Unauthorized from './routes/Unauthorized/Unauthorized';
+import Unauthorized from "./routes/Unauthorized/Unauthorized";
 
-import NotExistPage from './routes/NotExistPage/NotExistPage';
-import PropertiesMain from './routes/PropertiesMain/PropertiesMain';
-import PropertyUnitsMain from './routes/PropertyUnitsMain/PropertUnitsMain';
-import Report from './routes/Report/Report';
-import PropertyReferences from './routes/PropertyReferences/PropertyReferences';
-import PropertyCapture from './routes/PropertyCapture/PropertyCapture';
+import NotExistPage from "./routes/NotExistPage/NotExistPage";
+import PropertiesMain from "./routes/PropertiesMain/PropertiesMain";
+import PropertyUnitsMain from "./routes/PropertyUnitsMain/PropertUnitsMain";
+import Report from "./routes/Report/Report";
+import PropertyReferences from "./routes/PropertyReferences/PropertyReferences";
+import PropertyCapture from "./routes/PropertyCapture/PropertyCapture";
 
 // import state from "./store/store";
-import { useSnapshot } from 'valtio';
-import { useLocalStorage } from './Hooks/useLocalStorage';
-import Property from './components/Property/Property';
-import PropertyUpload from './routes/PropertyUpload/PropertyUpload';
-import Town from './routes/Towns/Town';
-import PoliticalDistrict from './routes/Political District/PoliticalDistrict';
-import PoliticalRegion from './routes/Political Region/PoliticalRegion';
-import PropertyMergeDetail from './routes/PropertyMerge/PropertyMergeDetail';
-import { initDB, useIndexedDB } from 'react-indexed-db-hook';
+import { useSnapshot } from "valtio";
+import { useLocalStorage } from "./Hooks/useLocalStorage";
+import Property from "./components/Property/Property";
+import PropertyUpload from "./routes/PropertyUpload/PropertyUpload";
+import Town from "./routes/Towns/Town";
+import PoliticalDistrict from "./routes/Political District/PoliticalDistrict";
+import PoliticalRegion from "./routes/Political Region/PoliticalRegion";
+import PropertyMergeDetail from "./routes/PropertyMerge/PropertyMergeDetail";
+import { initDB, useIndexedDB } from "react-indexed-db-hook";
 
 function App() {
   // const [offlineUser, setOfflineUser] = useState(null);
@@ -80,8 +80,8 @@ function App() {
   const from = location.state?.from?.pathname;
   const isOnLine = useOnlineStatus();
 
-  const { getAll: getOfflineUser } = useIndexedDB('offlineUser');
-  const [offlineUser, setOfflineUser] = useLocalStorage('offlineUser', null);
+  const { getAll: getOfflineUser } = useIndexedDB("offlineUser");
+  const [offlineUser, setOfflineUser] = useLocalStorage("offlineUser", null);
 
   // useEffect(() => {
   //   localStorage.getItem("versionNumber")
@@ -108,7 +108,7 @@ function App() {
   const fetchUser = async () => {
     try {
       if (isOnLine) {
-        const response = await axiosInstance.get('/auth/user');
+        const response = await axiosInstance.get("/auth/user");
         // const allocationResponse = await axiosInstance.get("/allocation/me");
 
         if (response.status === 200) {
@@ -153,7 +153,7 @@ function App() {
 
       <Route element={<Navigation />}>
         {/********* Home Routes **********/}
-        <Route element={<RequireAuth allowedPermissions={['view.property']} />}>
+        <Route element={<RequireAuth allowedPermissions={["view.property"]} />}>
           <Route element={<Home />}>
             <Route path="/home" element={<Properties />} />
             <Route path="/home/*" element={<NotExistPage />} />
@@ -177,14 +177,14 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'view.allocation',
-                'list.district',
-                'list.location',
-                'list.property-type',
-                'create.property-capture',
-                ' list.property-reference',
-                'list.property-reference-category',
-                'list.client-occupant',
+                "view.allocation",
+                "list.district",
+                "list.location",
+                "list.property-type",
+                "create.property-capture",
+                " list.property-reference",
+                "list.property-reference-category",
+                "list.client-occupant",
               ]}
             />
           }
@@ -195,7 +195,10 @@ function App() {
             <Route index element={<Capture />} />
             <Route path=":id" element={<PropertyCapture />} />
           </Route>
-          <Route path="/property-upload" element={<PropertyUpload />} />
+          <Route path="/property-upload">
+            <Route index element={<PropertyUpload />} />
+            <Route path=":id" element={<PropertyCapture />} />
+          </Route>
         </Route>
 
         {/********* Roles Routes *******/}
@@ -203,10 +206,10 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.role',
-                'view.role',
-                'create.role,',
-                'update.role',
+                "list.role",
+                "view.role",
+                "create.role,",
+                "update.role",
               ]}
             />
           }
@@ -219,11 +222,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.user',
-                'view.user',
-                'create.user',
-                'list.user.staff',
-                'update.user',
+                "list.user",
+                "view.user",
+                "create.user",
+                "list.user.staff",
+                "update.user",
               ]}
             />
           }
@@ -236,11 +239,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.department',
-                'view.department',
-                'create.department',
-                'delete.department',
-                'update.department',
+                "list.department",
+                "view.department",
+                "create.department",
+                "delete.department",
+                "update.department",
               ]}
             />
           }
@@ -253,11 +256,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.division',
-                'view.division',
-                'create.division',
-                'delete.division',
-                'update.division',
+                "list.division",
+                "view.division",
+                "create.division",
+                "delete.division",
+                "update.division",
               ]}
             />
           }
@@ -270,11 +273,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.location',
-                'view.location',
-                'create.location',
-                'delete.location',
-                'update.location',
+                "list.location",
+                "view.location",
+                "create.location",
+                "delete.location",
+                "update.location",
               ]}
             />
           }
@@ -288,11 +291,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.deployment',
-                'view.deployment',
-                'create.deployment',
-                'delete.deployment',
-                'update.deployment',
+                "list.deployment",
+                "view.deployment",
+                "create.deployment",
+                "delete.deployment",
+                "update.deployment",
               ]}
             />
           }
@@ -308,11 +311,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.district',
-                'view.district',
-                'create.district',
-                'delete.district',
-                'update.district',
+                "list.district",
+                "view.district",
+                "create.district",
+                "delete.district",
+                "update.district",
               ]}
             />
           }
@@ -344,11 +347,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property-type',
-                'view.property-type',
-                'create.property-type',
-                'delete.property-type',
-                'update.property-type',
+                "list.property-type",
+                "view.property-type",
+                "create.property-type",
+                "delete.property-type",
+                "update.property-type",
               ]}
             />
           }
@@ -361,11 +364,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property',
-                'view.property',
-                'create.property',
-                'delete.property',
-                'update.property',
+                "list.property",
+                "view.property",
+                "create.property",
+                "delete.property",
+                "update.property",
               ]}
             />
           }
@@ -378,11 +381,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property-unit',
-                'view.property-unit',
-                'create.property-unit',
-                'delete.property-unit',
-                'update.property-unit',
+                "list.property-unit",
+                "view.property-unit",
+                "create.property-unit",
+                "delete.property-unit",
+                "update.property-unit",
               ]}
             />
           }
@@ -398,11 +401,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property-reference',
-                'view.property-reference',
-                'create.property-reference',
-                'delete.property-reference',
-                'update.property-reference',
+                "list.property-reference",
+                "view.property-reference",
+                "create.property-reference",
+                "delete.property-reference",
+                "update.property-reference",
               ]}
             />
           }
@@ -415,9 +418,9 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property',
-                'list.property-unit',
-                'view.property-unit',
+                "list.property",
+                "list.property-unit",
+                "view.property-unit",
               ]}
             />
           }
@@ -444,11 +447,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property-reference',
-                'list.property-reference-category',
-                'update.property-reference-category',
-                'delete.property-reference-category',
-                'create.property-reference-category',
+                "list.property-reference",
+                "list.property-reference-category",
+                "update.property-reference-category",
+                "delete.property-reference-category",
+                "create.property-reference-category",
               ]}
             />
           }
@@ -461,7 +464,7 @@ function App() {
         </Route>
 
         {/*******Report******/}
-        <Route element={<RequireAuth allowedPermissions={['view.property']} />}>
+        <Route element={<RequireAuth allowedPermissions={["view.property"]} />}>
           <Route path="/report" element={<Report />} />
         </Route>
       </Route>
