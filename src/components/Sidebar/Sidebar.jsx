@@ -38,10 +38,13 @@ import Loader from '../Loader/Loader';
 import { useSnapshot } from 'valtio';
 
 import state from '../../store/store';
+import { PERMISSIONS, hasAllowedPermission } from '../../utils/common';
+import { current } from '@reduxjs/toolkit';
 
 function Sidebar({ closeToggle }) {
-  const allowedRoles = ['Super Administrator', 'Divisional Administrator'];
   const snap = useSnapshot(state);
+  const { currentUser } = snap.auth;
+
   const { logout } = useContext(LogoutContext);
 
   const location = useLocation();
@@ -82,18 +85,21 @@ function Sidebar({ closeToggle }) {
       </div>
       <div className="flex flex-col h-[82%] justify-between gap-8 py-3">
         <nav className="flex flex-col gap-4 text-[15px] ">
-          <NavLink
-            to="/home"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={handleCloseSidebar}
-          >
-            <AiFillHome size={18} />
-            Home
-          </NavLink>
-          {
-            <>
+          {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_PROPERTY]) && (
+            <NavLink
+              to="/home"
+              className={({ isActive }) =>
+                isActive ? isActiveStyle : isNotActiveStyle
+              }
+              onClick={handleCloseSidebar}
+            >
+              <AiFillHome size={18} />
+              Home
+            </NavLink>
+          )}
+
+          <>
+            {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_PROPERTY]) && (
               <NavLink
                 to="/dashboard"
                 className={({ isActive }) =>
@@ -104,6 +110,11 @@ function Sidebar({ closeToggle }) {
                 <MdDashboard size={18} />
                 Dashboard
               </NavLink>
+            )}
+
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.LIST_PROPERTY_UNIT,
+            ]) && (
               <NavLink
                 to="/report"
                 className={({ isActive }) =>
@@ -114,7 +125,8 @@ function Sidebar({ closeToggle }) {
                 <MdPieChart size={18} />
                 Report
               </NavLink>
-
+            )}
+            {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_PROPERTY]) && (
               <NavLink
                 to="/properties-main"
                 className={({ isActive }) =>
@@ -125,8 +137,9 @@ function Sidebar({ closeToggle }) {
                 <AiFillCalendar size={18} />
                 Properties
               </NavLink>
+            )}
 
-              {/* <NavLink
+            {/* <NavLink
                 to="/property-capture"
                 className={({ isActive }) =>
                   isActive ? isActiveStyle : isNotActiveStyle
@@ -137,6 +150,11 @@ function Sidebar({ closeToggle }) {
                 Property Capture
               </NavLink> */}
 
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.CREATE_PROPERTY_CAPTURE,
+              PERMISSIONS.LIST_PROPERTY_REFERENCE,
+              PERMISSIONS.LIST_PROPERTY_REFERENCE_CATEGORY,
+            ]) && (
               <NavLink
                 to="/property-capture"
                 className={({ isActive }) =>
@@ -147,6 +165,11 @@ function Sidebar({ closeToggle }) {
                 <MdUpload size={18} />
                 Property Capture
               </NavLink>
+            )}
+
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.CREATE_PROPERTY_CAPTURE,
+            ]) && (
               <NavLink
                 to="/property-upload"
                 className={({ isActive }) =>
@@ -157,8 +180,9 @@ function Sidebar({ closeToggle }) {
                 <MdOutlineAddAPhoto size={18} />
                 Property Upload
               </NavLink>
+            )}
 
-              {/* <NavLink
+            {/* <NavLink
                 to="/property-capture"
                 className={({ isActive }) =>
                   isActive ? isActiveStyle : isNotActiveStyle
@@ -168,7 +192,9 @@ function Sidebar({ closeToggle }) {
                 <MdOutlineAddAPhoto size={18} />
                 Property Capture
               </NavLink> */}
-
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.LIST_USER_STAFF,
+            ]) && (
               <NavLink
                 to="/users"
                 className={({ isActive }) =>
@@ -179,7 +205,11 @@ function Sidebar({ closeToggle }) {
                 <HiUsers size={18} />
                 Users
               </NavLink>
+            )}
 
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.LIST_DEPARTMENT,
+            ]) && (
               <NavLink
                 to="/departments"
                 className={({ isActive }) =>
@@ -190,7 +220,9 @@ function Sidebar({ closeToggle }) {
                 <BsFillBuildingsFill size={18} />
                 Departments
               </NavLink>
+            )}
 
+            {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_DIVISION]) && (
               <NavLink
                 to="/divisions"
                 className={({ isActive }) =>
@@ -201,7 +233,9 @@ function Sidebar({ closeToggle }) {
                 <MdOutlineSafetyDivider size={25} />
                 Divisions
               </NavLink>
+            )}
 
+            {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_ROLE]) && (
               <NavLink
                 to="/roles"
                 className={({ isActive }) =>
@@ -212,7 +246,11 @@ function Sidebar({ closeToggle }) {
                 <MdWorkspacePremium size={25} />
                 Roles
               </NavLink>
+            )}
 
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.CREATE_LOCATION,
+            ]) && (
               <NavLink
                 to="/locations"
                 className={({ isActive }) =>
@@ -221,9 +259,11 @@ function Sidebar({ closeToggle }) {
                 onClick={handleCloseSidebar}
               >
                 <MdLocationPin size={25} />
-                Locations
+                Towns
               </NavLink>
+            )}
 
+            {hasAllowedPermission(currentUser, [PERMISSIONS.CREATE_REGION]) && (
               <NavLink
                 to="/areas"
                 className={({ isActive }) =>
@@ -234,7 +274,9 @@ function Sidebar({ closeToggle }) {
                 <MdAreaChart size={25} />
                 Cocoa Regions
               </NavLink>
+            )}
 
+            {hasAllowedPermission(currentUser, [PERMISSIONS.CREATE_REGION]) && (
               <NavLink
                 to="/political-regions"
                 className={({ isActive }) =>
@@ -245,6 +287,11 @@ function Sidebar({ closeToggle }) {
                 <MdAreaChart size={25} />
                 Political Regions
               </NavLink>
+            )}
+
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.CREATE_DISTRICT,
+            ]) && (
               <NavLink
                 to="/district"
                 className={({ isActive }) =>
@@ -255,6 +302,11 @@ function Sidebar({ closeToggle }) {
                 <MdAreaChart size={25} />
                 Cocoa Districts
               </NavLink>
+            )}
+
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.CREATE_DISTRICT,
+            ]) && (
               <NavLink
                 to="/political-districts"
                 className={({ isActive }) =>
@@ -265,16 +317,21 @@ function Sidebar({ closeToggle }) {
                 <MdAreaChart size={25} />
                 Political Districts
               </NavLink>
-              <NavLink
-                to="/moderation"
-                className={({ isActive }) =>
-                  isActive ? isActiveStyle : isNotActiveStyle
-                }
-                onClick={handleCloseSidebar}
-              >
-                <HiLightningBolt size={25} />
-                Moderation
-              </NavLink>
+            )}
+
+            <NavLink
+              to="/moderation"
+              className={({ isActive }) =>
+                isActive ? isActiveStyle : isNotActiveStyle
+              }
+              onClick={handleCloseSidebar}
+            >
+              <HiLightningBolt size={25} />
+              Moderation
+            </NavLink>
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.CREATE_PROPERTY_REFERENCE,
+            ]) && (
               <NavLink
                 to="property-references"
                 className={({ isActive }) =>
@@ -285,7 +342,10 @@ function Sidebar({ closeToggle }) {
                 <HiInbox size={25} />
                 References
               </NavLink>
-
+            )}
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.CREATE_PROPERTY_TYPE,
+            ]) && (
               <NavLink
                 to="/property-types"
                 className={({ isActive }) =>
@@ -296,9 +356,10 @@ function Sidebar({ closeToggle }) {
                 <MdProductionQuantityLimits size={25} />
                 Category
               </NavLink>
-            </>
-          }
-          <NavLink
+            )}
+          </>
+
+          {/* <NavLink
             to="/tenancy"
             className={({ isActive }) =>
               isActive ? isActiveStyle : isNotActiveStyle
@@ -317,50 +378,51 @@ function Sidebar({ closeToggle }) {
           >
             <GiAutoRepair size={18} />
             Maintenance
-          </NavLink>
-          <NavLink
-            to="/deployment"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={handleCloseSidebar}
-          >
-            <HiArrowsExpand size={18} />
-            Deployment
-          </NavLink>
-          <NavLink
-            to="/merge"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={handleCloseSidebar}
-          >
-            <HiScissors size={18} />
-            Property Merge
-          </NavLink>
-          {/* <NavLink
-            to="/reports"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={handleCloseSidebar}
-          >
-            <MdOutlineReceipt size={18} />
-            Reports
           </NavLink> */}
-          <NavLink
-            to="/map"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={() => {
-              state.mapSlice.selectedProperty = null;
-              handleCloseSidebar();
-            }}
-          >
-            <IoMdMap size={18} />
-            Map
-          </NavLink>
+
+          {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_DEPLOYMENT]) && (
+            <NavLink
+              to="/deployment"
+              className={({ isActive }) =>
+                isActive ? isActiveStyle : isNotActiveStyle
+              }
+              onClick={handleCloseSidebar}
+            >
+              <HiArrowsExpand size={18} />
+              Deployment
+            </NavLink>
+          )}
+
+          {hasAllowedPermission(currentUser, [
+            PERMISSIONS.CREATE_PROPERTY_REFERENCE_CATEGORY,
+          ]) && (
+            <NavLink
+              to="/merge"
+              className={({ isActive }) =>
+                isActive ? isActiveStyle : isNotActiveStyle
+              }
+              onClick={handleCloseSidebar}
+            >
+              <HiScissors size={18} />
+              Property Merge
+            </NavLink>
+          )}
+
+          {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_PROPERTY]) && (
+            <NavLink
+              to="/map"
+              className={({ isActive }) =>
+                isActive ? isActiveStyle : isNotActiveStyle
+              }
+              onClick={() => {
+                state.mapSlice.selectedProperty = null;
+                handleCloseSidebar();
+              }}
+            >
+              <IoMdMap size={18} />
+              Map
+            </NavLink>
+          )}
           <button
             onClick={logout}
             className={`${isNotActiveStyle} hidden max-md:flex`}

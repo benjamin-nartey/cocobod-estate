@@ -72,6 +72,7 @@ import PoliticalDistrict from './routes/Political District/PoliticalDistrict';
 import PoliticalRegion from './routes/Political Region/PoliticalRegion';
 import PropertyMergeDetail from './routes/PropertyMerge/PropertyMergeDetail';
 import { initDB, useIndexedDB } from 'react-indexed-db-hook';
+import { PERMISSIONS } from './utils/common';
 
 function App() {
   // const [offlineUser, setOfflineUser] = useState(null);
@@ -83,33 +84,10 @@ function App() {
   const { getAll: getOfflineUser } = useIndexedDB('offlineUser');
   const [offlineUser, setOfflineUser] = useLocalStorage('offlineUser', null);
 
-  // useEffect(() => {
-  //   localStorage.getItem("versionNumber")
-  //     ? localStorage.getItem("versionNumber")
-  //     : localStorage.setItem("versionNumber", `1`);
-  // }, []);
-
-  // useEffect(() => {
-  //   getOfflineUser().then((data) => setOfflineUser(data[0]));
-  // }, []);
-  // console.log({ offlineUser });
-  // const [currentUserState, setCurrentUserState] = useLocalStorage(
-  //   'currentUserState',
-  //   null
-  // );
-
-  // useEffect(() => {
-  //   if (location.pathname !== '/merge/create') {
-  //     state.mergeSlice.selectedRowsInTable = [];
-  //     console.log('reset');
-  //   }
-  // }, [location.pathname]);
-
   const fetchUser = async () => {
     try {
       if (isOnLine) {
         const response = await axiosInstance.get('/auth/user');
-        // const allocationResponse = await axiosInstance.get("/allocation/me");
 
         if (response.status === 200) {
           const currentUser = {
@@ -117,7 +95,6 @@ function App() {
             email: response.data.email,
             staff: response.data.staff,
             roles: response.data.roles,
-            // allocationData: allocationResponse.data.region,
           };
 
           state.auth.currentUser = currentUser;
@@ -177,14 +154,14 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'view.allocation',
-                'list.district',
-                'list.location',
-                'list.property-type',
-                'create.property-capture',
-                ' list.property-reference',
-                'list.property-reference-category',
-                'list.client-occupant',
+                PERMISSIONS.VIEW_ALLOCATION,
+                PERMISSIONS.LIST_DISTRICT,
+                PERMISSIONS.LIST_LOCATION,
+                PERMISSIONS.LIST_PROPERTY_TYPE,
+                PERMISSIONS.CREATE_PROPERTY_CAPTURE,
+                PERMISSIONS.LIST_PROPERTY_REFERENCE,
+                PERMISSIONS.LIST_PROPERTY_REFERENCE_CATEGORY,
+                PERMISSIONS.LIST_CLIENT_OCCUPANT,
               ]}
             />
           }
@@ -203,10 +180,10 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.role',
-                'view.role',
-                'create.role,',
-                'update.role',
+                PERMISSIONS.LIST_ROLE,
+                PERMISSIONS.VIEW_ROLE,
+                PERMISSIONS.CREATE_ROLE,
+                PERMISSIONS.UPDATE_ROLE,
               ]}
             />
           }
@@ -219,11 +196,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.user',
-                'view.user',
-                'create.user',
-                'list.user.staff',
-                'update.user',
+                PERMISSIONS.LIST_USER,
+                PERMISSIONS.VIEW_USER,
+                PERMISSIONS.CREATE_USER,
+                PERMISSIONS.LIST_USER_STAFF,
+                PERMISSIONS.UPDATE_USER,
               ]}
             />
           }
@@ -236,11 +213,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.department',
-                'view.department',
-                'create.department',
-                'delete.department',
-                'update.department',
+                PERMISSIONS.LIST_DEPARTMENT,
+                PERMISSIONS.VIEW_DEPARTMENT,
+                PERMISSIONS.CREATE_DEPARTMENT,
+                PERMISSIONS.DELETE_DEPARTMENT,
+                PERMISSIONS.UPDATE_DEPARTMENT,
               ]}
             />
           }
@@ -253,11 +230,12 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.division',
-                'view.division',
-                'create.division',
-                'delete.division',
-                'update.division',
+                PERMISSIONS.LIST_DIVISION,
+                ,
+                PERMISSIONS.VIEW_DIVISION,
+                PERMISSIONS.CREATE_DIVISION,
+                PERMISSIONS.DELETE_DIVISION,
+                PERMISSIONS.UPDATE_DIVISION,
               ]}
             />
           }
@@ -270,11 +248,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.location',
-                'view.location',
-                'create.location',
-                'delete.location',
-                'update.location',
+                PERMISSIONS.LIST_LOCATION,
+                PERMISSIONS.VIEW_LOCATION,
+                PERMISSIONS.CREATE_LOCATION,
+                PERMISSIONS.DELETE_LOCATION,
+                PERMISSIONS.UPDATE_LOCATION,
               ]}
             />
           }
@@ -288,11 +266,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.deployment',
-                'view.deployment',
-                'create.deployment',
-                'delete.deployment',
-                'update.deployment',
+                PERMISSIONS.LIST_DEPLOYMENT,
+                PERMISSIONS.VIEW_DEPLOYMENT,
+                PERMISSIONS.CREATE_DEPLOYMENT,
+                PERMISSIONS.DELETE_DEPLOYMENT,
+                PERMISSIONS.UPDATE_DEPLOYMENT,
               ]}
             />
           }
@@ -308,11 +286,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.district',
-                'view.district',
-                'create.district',
-                'delete.district',
-                'update.district',
+                PERMISSIONS.LIST_DISTRICT,
+                PERMISSIONS.VIEW_DISTRICT,
+                PERMISSIONS.CREATE_DISTRICT,
+                PERMISSIONS.DELETE_DISTRICT,
+                PERMISSIONS.UPDATE_DISTRICT,
               ]}
             />
           }
@@ -344,11 +322,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property-type',
-                'view.property-type',
-                'create.property-type',
-                'delete.property-type',
-                'update.property-type',
+                PERMISSIONS.LIST_PROPERTY_TYPE,
+                PERMISSIONS.VIEW_PROPERTY_TYPE,
+                PERMISSIONS.CREATE_PROPERTY_TYPE,
+                PERMISSIONS.DELETE_PROPERTY_TYPE,
+                PERMISSIONS.UPDATE_PROPERTY_TYPE,
               ]}
             />
           }
@@ -361,11 +339,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property',
-                'view.property',
-                'create.property',
-                'delete.property',
-                'update.property',
+                PERMISSIONS.LIST_PROPERTY,
+                PERMISSIONS.VIEW_PROPERTY,
+                PERMISSIONS.CREATE_PROPERTY,
+                PERMISSIONS.DELETE_PROPERTY,
+                PERMISSIONS.UPDATE_PROPERTY,
               ]}
             />
           }
@@ -378,11 +356,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property-unit',
-                'view.property-unit',
-                'create.property-unit',
-                'delete.property-unit',
-                'update.property-unit',
+                PERMISSIONS.LIST_PROPERTY_UNIT,
+                PERMISSIONS.VIEW_PROPERTY_UNIT,
+                PERMISSIONS.CREATE_PROPERTY_UNIT,
+                PERMISSIONS.DELETE_PROPERTY_UNIT,
+                PERMISSIONS.UPDATE_PROPERTY_UNIT,
               ]}
             />
           }
@@ -398,11 +376,9 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property-reference',
-                'view.property-reference',
-                'create.property-reference',
-                'delete.property-reference',
-                'update.property-reference',
+                PERMISSIONS.LIST_PROPERTY_REFERENCE,
+                PERMISSIONS.VIEW_PROPERTY_REFERENCE,
+                PERMISSIONS.CREATE_PROPERTY_REFERENCE_BATCH,
               ]}
             />
           }
@@ -415,9 +391,10 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property',
-                'list.property-unit',
-                'view.property-unit',
+                PERMISSIONS.LIST_PROPERTY,
+                PERMISSIONS.LIST_PROPERTY_UNIT,
+                PERMISSIONS.VIEW_PROPERTY_UNIT,
+                PERMISSIONS.UPDATE_PROPERTY_UNIT,
               ]}
             />
           }
@@ -444,11 +421,11 @@ function App() {
           element={
             <RequireAuth
               allowedPermissions={[
-                'list.property-reference',
-                'list.property-reference-category',
-                'update.property-reference-category',
-                'delete.property-reference-category',
-                'create.property-reference-category',
+                PERMISSIONS.LIST_PROPERTY_REFERENCE,
+                PERMISSIONS.LIST_PROPERTY_REFERENCE_CATEGORY,
+                PERMISSIONS.UPDATE_PROPERTY_REFERENCE_CATEGORY,
+                PERMISSIONS.DELETE_PROPERTY_REFERENCE_CATEGORY,
+                PERMISSIONS.CREATE_PROPERTY_REFERENCE_CATEGORY,
               ]}
             />
           }

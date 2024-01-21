@@ -3,7 +3,7 @@ import FloatButtonComponent from '../../components/FloatButtonComponent/FloatBut
 import { axiosInstance } from '../../axios/axiosInstance';
 import { initDB, useIndexedDB } from 'react-indexed-db-hook';
 import { BsBuildingFillCheck } from 'react-icons/bs';
-import { Spin, message } from 'antd';
+import { Modal, Spin, message } from 'antd';
 import { NavLink } from 'react-router-dom';
 
 import { useGetDashboard } from '../../Hooks/query/dashboard';
@@ -14,9 +14,8 @@ import nodata from '../../assets/nodata.json';
 import Lottie from 'lottie-react';
 import { useSnapshot } from 'valtio';
 import state from '../../store/store';
-import { useLocalStorage } from '../../Hooks/useLocalStorage';
-import { initializeConfig } from '../../components/indexedDb/dbConfig';
-import { reinitializeIndexedDB } from '../../utils/helper';
+import loadingAnimation from '../../assets/loading.json';
+import { PERMISSIONS, hasAllowedPermission } from '../../utils/common';
 
 const Card = ({ allProperty }) => {
   return (
@@ -40,6 +39,8 @@ const Dashboard = () => {
   const [allocationData, setAllocationData] = useState(null);
 
   const [loading, setLoading] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
 
   const {
     add: addPropertyReferenceCategories,
@@ -258,6 +259,7 @@ const Dashboard = () => {
       ]);
       message.success('All data downloaded and persisted successfully');
       setLoading(false);
+      setShowModal(false);
     } catch (err) {
       message.error(err.message);
     } finally {
@@ -266,11 +268,16 @@ const Dashboard = () => {
   };
   {
     return loading ? (
-      <Spin size="large" />
+      <div className="w-[10rem] h-[10rem] absolute top-[50%] left-[40%] mx-auto flex flex-col gap-6">
+        <span className="text-slate-500 text-xl mb-5 font-semibold">
+          Hang tight ....
+        </span>
+        <Lottie animationData={loadingAnimation} />
+      </div>
     ) : (
       <section className="w-full flex flex-col gap-8 p-6">
         {allocationData && (
-          <FloatButtonComponent handleClick={handleDownloadAllResources} />
+          <FloatButtonComponent handleClick={() => setShowModal(!showModal)} />
         )}
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-auto">
           <NavLink to="/property-upload">
@@ -279,42 +286,63 @@ const Dashboard = () => {
           {/* <Card allProperty={allProperty} />
         <Card allProperty={allProperty} /> */}
         </div>
-        <div className=" grid grid-cols-2 w-full gap-10 max-md:flex max-md:flex-col">
-          <div className="bg-white">
-            <div className="flex justify-between">
-              <div className="p-4">
-                <h2 className="text-[#af5c13] font-semibold">
-                  Property/Regions
-                </h2>
-              </div>
-              <div className="p-4">
-                <h2 className="text-[#af5c13] font-semibold">
-                  Total : {total}
-                </h2>
-              </div>
-            </div>
-            <div className="h-[30rem] w-full">
-              {dashboard?.data?.pieChartData.length ? (
-                <ReportPieChart data={dashboard?.data?.pieChartData} />
-              ) : (
-                <div className="flex items-center justify-center pt- pt-28">
-                  <Lottie animationData={nodata} />
-                </div>
-              )}
-            </div>
-          </div>
 
-          <div className="bg-white ">
-            <div className="p-4">
-              <h2 className="text-[#af5c13] font-semibold">
-                Property/PropertyType
-              </h2>
+        {hasAllowedPermission(auth.currentUser, [
+          PERMISSIONS.LIST_PROPERTY,
+        ]) && (
+          <div className=" grid grid-cols-2 w-full gap-10 max-md:flex max-md:flex-col">
+            <div className="bg-white">
+              <div className="flex justify-between">
+                <div className="p-4">
+                  <h2 className="text-[#af5c13] font-semibold">
+                    Property/Regions
+                  </h2>
+                </div>
+                <div className="p-4">
+                  <h2 className="text-[#af5c13] font-semibold">
+                    Total : {total}
+                  </h2>
+                </div>
+              </div>
+              <div className="h-[30rem] w-full">
+                {dashboard?.data?.pieChartData.length ? (
+                  <ReportPieChart data={dashboard?.data?.pieChartData} />
+                ) : (
+                  <div className="flex items-center justify-center pt- pt-28">
+                    <Lottie animationData={nodata} />
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="h-[30rem] p-4">
-              <ReportLineChart data={dashboard?.data?.lineChartData} />
+
+            <div className="bg-white ">
+              <div className="p-4">
+                <h2 className="text-[#af5c13] font-semibold">
+                  Property/PropertyType
+                </h2>
+              </div>
+              <div className="h-[30rem] p-4">
+                <ReportLineChart data={dashboard?.data?.lineChartData} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
+        <Modal
+          open={showModal}
+          onOk={handleDownloadAllResources}
+          onCancel={() => setShowModal(!showModal)}
+          centered
+        >
+          <div className="flex gap-4 flex-col items-center text-left mt-10 mb-10 justify-center">
+            <span className="font-semibold  text-zinc-500">
+              Downloading data will clear all existing data on the device
+            </span>
+            <span span className="font-semibold text-zinc-500">
+              Do you want to proceed?
+            </span>
+          </div>
+        </Modal>
       </section>
     );
   }
