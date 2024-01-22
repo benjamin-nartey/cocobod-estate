@@ -32,10 +32,10 @@ const PropertyUpload = () => {
   const [pageNum, setPageNum] = useState(1);
   const [data, setData] = useState(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { mutate } = useAddPropertyUploadData();
-  const { mutate: uploadPhotos } = useAddPropertyPhotos();
+  // const { mutate: uploadPhotos } = useAddPropertyPhotos();
 
   // useEffect(() => {
   //   getAllProperty()
@@ -194,7 +194,7 @@ const PropertyUpload = () => {
               size={22}
               className="cursor-pointer text-gray-600"
               onClick={() => {
-                navigate(`/property-capture/${value}`);
+                navigate(`/property-upload/${value}`);
               }}
             />
           </div>

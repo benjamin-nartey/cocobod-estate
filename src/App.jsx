@@ -172,7 +172,10 @@ function App() {
             <Route index element={<Capture />} />
             <Route path=":id" element={<PropertyCapture />} />
           </Route>
-          <Route path="/property-upload" element={<PropertyUpload />} />
+          <Route path="/property-upload">
+            <Route index element={<PropertyUpload />} />
+            <Route path=":id" element={<PropertyCapture />} />
+          </Route>
         </Route>
 
         {/********* Roles Routes *******/}
