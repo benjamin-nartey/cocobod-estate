@@ -2,15 +2,20 @@ import { Fragment, useEffect, useState } from "react";
 import PropertyUnitForm from "../PropertyUnitForm/PropertyUnitForm";
 import { Button, Form } from "antd";
 import { useIndexedDB } from "react-indexed-db-hook";
+import { useLocation } from "react-router-dom";
 
 const Accordion = ({ id, form }) => {
   const [selected, setSelected] = useState(null);
   const [selectedPropType, setSelectedPropType] = useState("");
   const [propertyUnits, setPropertyUnits] = useState([]);
+  const location = useLocation();
+  const pathName = location.pathname;
 
   // const form = Form.useFormInstance();
   const { getAll: getAllpropertyReferences } =
     useIndexedDB("propertyReferences");
+
+  const { getAll: getAllProperty } = useIndexedDB("property");
 
   const toggle = (idx) => {
     if (selected === idx) {
@@ -20,38 +25,81 @@ const Accordion = ({ id, form }) => {
   };
 
   const getAllPropertyUnits = () => {
-    getAllpropertyReferences().then((propertyReferences) => {
-      const getPropertyUnitsByPropPseudoId = propertyReferences.filter(
-        (references) => references?.propertyReferenceCategory?.id === id
-      );
+    if (id && pathName.includes("property-capture")) {
+      getAllpropertyReferences().then((propertyReferences) => {
+        const getPropertyUnitsByPropPseudoId = propertyReferences.filter(
+          (references) => references?.propertyReferenceCategory?.id === id
+        );
 
-      const data = getPropertyUnitsByPropPseudoId.map((propertyUnit) => {
-        console.log(propertyUnit.propertyType.attributes[0]);
-        return {
-          id: propertyUnit?.id,
-          description: propertyUnit?.description,
-          descriptionPerFixedAssetReport:
-            propertyUnit?.descriptionPerFixedAssetReport,
-          [propertyUnit.propertyType.attributes[0] === "floorSize"
-            ? "floorSize"
-            : "plotSize"]:
-            propertyUnit.propertyType.attributes[0] === "floorArea"
-              ? propertyUnit.floorSize
-              : propertyUnit.plotSize,
+        const data = getPropertyUnitsByPropPseudoId.map((propertyUnit) => {
+          console.log(propertyUnit.propertyType.attributes[0]);
+          return {
+            id: propertyUnit?.id,
+            description: propertyUnit?.description,
+            descriptionPerFixedAssetReport:
+              propertyUnit?.descriptionPerFixedAssetReport,
+            [propertyUnit.propertyType.attributes[0] === "floorSize"
+              ? "floorSize"
+              : "plotSize"]:
+              propertyUnit.propertyType.attributes[0] === "floorSize"
+                ? propertyUnit.floorSize
+                : propertyUnit.plotSize,
 
-          propertyTypeId: propertyUnit?.propertyType?.id,
-          occupants: [],
-        };
+            propertyTypeId: propertyUnit?.propertyType?.id,
+            occupants: [],
+          };
+        });
+
+        console.log(data);
+
+        form.setFieldsValue({
+          propertyUnits: data,
+        });
+
+        // setPropertyUnits(getPropertyUnitsByPropPseudoId);
       });
+    } else {
+      getAllProperty().then((properties) => {
+        const property = properties?.filter(
+          (property) => `${property?.id}` === `${id}`
+        );
 
-      console.log(data);
+        const data = property.map((prop) => {
+          return prop?.propertyUnits.map((unit) => {
+            console.log({ unit });
+            console.log(unit?.propertyOccupancy);
+            return {
+              id: unit?.propertyReferenceId,
+              description: unit?.description,
+              descriptionPerFixedAssetReport:
+                unit?.descriptionPerFixedAssetReport,
+              [unit?.floorSize ? "floorSize" : "plotSize"]: unit?.floorSize
+                ? unit.floorSize
+                : unit.plotSize,
 
-      form.setFieldsValue({
-        propertyUnits: data,
+              propertyTypeId: unit?.propertyTypeId,
+              occupants: unit?.propertyOccupancy.map((occupancy) => {
+                return {
+                  occupantType: occupancy?.category,
+                  [occupancy?.clientOccupantId ? "occupantId" : "occupantName"]:
+                    occupancy?.clientOccupantId
+                      ? occupancy?.clientOccupantId
+                      : occupancy?.name,
+                };
+              }),
+              condition: unit?.propertyUnitStates[0].condition,
+              remarks: unit?.propertyUnitStates[0]?.remarks,
+            };
+          });
+        });
+
+        console.log(data[0]);
+
+        form.setFieldsValue({
+          propertyUnits: data[0],
+        });
       });
-
-      // setPropertyUnits(getPropertyUnitsByPropPseudoId);
-    });
+    }
   };
 
   useEffect(() => {

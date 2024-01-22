@@ -25,7 +25,7 @@ import { useAddPropertyData } from '../../Hooks/useAddFetch';
 
 import { useIndexedDB } from 'react-indexed-db-hook';
 import Loader from '../Loader/Loader';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Dragger from 'antd/es/upload/Dragger';
 import { capitalize } from '../../utils/typography';
 
@@ -60,9 +60,8 @@ const PropertyForm = (id) => {
   ]);
 
   const navigate = useNavigate();
-  // const { propertyReferenceCategories, setpropertyReferenceCategories } = useContext(
-  //   propertyReferenceCategoriesContext
-  // );
+  const pathLocation = useLocation();
+  const pathName = pathLocation.pathname;
 
   const { getAll: getAllPropertyTypes } = useIndexedDB('propertyTypes');
   const { getAll: getAllDistricts } = useIndexedDB('districts');
@@ -77,7 +76,7 @@ const PropertyForm = (id) => {
   const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
     'propertyReferenceCategories'
   );
-  const { getByID: getPropertyById } = useIndexedDB('property');
+  const { getAll: getAllProperty } = useIndexedDB('property');
 
   // const { getAll: getAllpropertyReferences } =
   //   useIndexedDB("propertyReferences");
@@ -91,8 +90,7 @@ const PropertyForm = (id) => {
   };
 
   useEffect(() => {
-    if (id) {
-      console.log(isValidUUID(id.id));
+    if (id && pathName.includes('property-capture')) {
       getAllPropertyReferenceCategories().then(
         (allPropertyReferenceCategory) => {
           // console.log({ allPropertyReferenceCategory });
@@ -104,16 +102,21 @@ const PropertyForm = (id) => {
           setPropertyReferenceCategories(referencesCategories[0]);
         }
       );
-    }
+    } else if (id && pathName.includes('property-upload')) {
+      getAllProperty().then((properties) => {
+        const property = properties?.filter(
+          (property) => `${property?.id}` === `${id?.id}`
+        );
 
-    // getAllpropertyReferences().then((references) => {
-    //   setPropertyReferences(references);
-    // });
-    // console.log({ propertyReferenceCategories });
-    // console.log(propertyReferences);
+        setPropertyReferenceCategories(property[0]);
+      });
+    }
   }, [id]);
 
+  // console.log({ propertyReferenceCategories });
+
   const { add: addProperty } = useIndexedDB('property');
+  const { update: updateProperty } = useIndexedDB('property');
 
   // const getAllPropertyUnits = (id) => {
   //   getAllpropertyReferences().then((propertyReferences) => {
@@ -171,8 +174,10 @@ const PropertyForm = (id) => {
   };
 
   useEffect(() => {
-    getPolitcalDistricts(politicalRegionId);
-  }, [politicalRegionId]);
+    getPolitcalDistricts(
+      politicalRegionId || propertyReferenceCategories?.politicalRegionId
+    );
+  }, [politicalRegionId, propertyReferenceCategories?.politicalRegionId]);
 
   const getDomainTowns = (districtId) => {
     getAllLocations().then((locations) => {
@@ -193,9 +198,15 @@ const PropertyForm = (id) => {
 
   useEffect(() => {
     getDomainTowns(
-      districtId || propertyReferenceCategories?.location?.district.id
+      districtId ||
+        propertyReferenceCategories?.location?.district.id ||
+        propertyReferenceCategories?.cocoaDistrictId
     );
-  }, [districtId, propertyReferenceCategories?.location?.district.id]);
+  }, [
+    districtId,
+    propertyReferenceCategories?.location?.district.id,
+    propertyReferenceCategories?.cocoaDistrictId,
+  ]);
 
   const fetchPropertyTypes = async () => {
     getAllPropertyTypes().then((propertyType) => {
@@ -278,11 +289,15 @@ const PropertyForm = (id) => {
       propertyTypeId: values?.propertyTypeId,
       locationId: values?.locationId,
       propertyReferenceCategoryId: propertyReferenceCategories?.id,
-      lat: `${values?.lat.toFixed(10)}`,
-      long: `${values?.long.toFixed(10)}`,
+      lat: `${values?.lat?.length > 10 ? values.lat.toFixed(10) : values.lat}`,
+      long: `${
+        values?.long?.length > 10 ? values.long.toFixed(10) : values.long
+      }`,
       landmark: values?.landmark,
       politicalDistrictId: values?.politicalDistrict,
-      photos: values.photos,
+      photos: values?.photos,
+      cocoaDistrictId: values?.districtId,
+      politicalRegionId: values?.politicalRegion,
 
       propertyUnits: values?.propertyUnits?.length
         ? values?.propertyUnits?.map((propertyUnit) => {
@@ -299,13 +314,12 @@ const PropertyForm = (id) => {
               propertyReferenceId: propertyUnit?.id,
               propertyOccupancy: propertyUnit.occupants?.length
                 ? propertyUnit.occupants?.map((occupant) => ({
-                    name: occupant.occupantName
-                      ? occupant.occupantName
-                      : undefined,
+                    [occupant?.occupantName ? 'name' : 'clientOccupantId']:
+                      occupant.occupantName
+                        ? occupant.occupantName
+                        : occupant.occupantId,
+
                     category: occupant?.occupantType,
-                    clientOccupantId: occupant.occupantId
-                      ? occupant.occupantId
-                      : undefined,
                   }))
                 : [],
               propertyUnitStates: [
@@ -331,27 +345,54 @@ const PropertyForm = (id) => {
         : [],
     };
 
-    addProperty(data).then(
-      () => {
-        message.success(`${values.name} saved successfully`);
-        form.resetFields();
-        navigate('/property-upload');
+    if (id && pathName.includes('property-capture')) {
+      addProperty(data).then(
+        () => {
+          message.success(`${values.name} saved successfully`);
+          form.resetFields();
+          navigate('/property-upload');
 
-        // setpropertyReferenceCategories(null);
-      },
-      (error) => {
-        message.error(error.message);
-      }
-    );
+          // setpropertyReferenceCategories(null);
+        },
+        (error) => {
+          message.error(error.message);
+        }
+      );
+    } else {
+      updateProperty({ ...data, id: Number(id?.id) }).then(
+        () => {
+          message.success(`${values.name} edited successfully`);
+          form.resetFields();
+          navigate('/property-upload');
+
+          // setpropertyReferenceCategories(null);
+        },
+        (error) => {
+          message.error(error.message);
+        }
+      );
+    }
   };
 
   useEffect(() => {
-    // form.resetFields();
     form.setFieldsValue({
       name: propertyReferenceCategories?.name,
-      propertyTypeId: propertyReferenceCategories?.propertyType?.id,
-      districtId: propertyReferenceCategories?.location?.district?.id,
-      locationId: propertyReferenceCategories?.location?.name,
+      propertyTypeId:
+        propertyReferenceCategories?.propertyType?.id ||
+        propertyReferenceCategories?.propertyTypeId,
+      districtId:
+        propertyReferenceCategories?.location?.district?.id ||
+        propertyReferenceCategories?.cocoaDistrictId,
+      locationId:
+        propertyReferenceCategories?.location?.name ||
+        propertyReferenceCategories?.locationId,
+      long: propertyReferenceCategories?.long,
+      lat: propertyReferenceCategories?.lat,
+      landmark: propertyReferenceCategories?.landmark,
+      digitalAddress: propertyReferenceCategories?.digitalAddress,
+      description: propertyReferenceCategories?.description,
+      politicalRegion: propertyReferenceCategories?.politicalRegionId,
+      politicalDistrict: propertyReferenceCategories?.politicalDistrictId,
     });
   }, [propertyReferenceCategories]);
 
@@ -636,12 +677,7 @@ const PropertyForm = (id) => {
 
             <Divider orientation="left">Property Units</Divider>
 
-            <Accordion
-              form={form}
-              // propertyUnits={propertyUnits}
-              // setPropertyUnitRefernce={setPropertyUnitRefernce}
-              id={id.id}
-            />
+            <Accordion form={form} id={id.id} />
 
             <Button
               className="w-full"

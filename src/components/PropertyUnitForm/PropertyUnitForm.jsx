@@ -118,14 +118,20 @@ const PropertyUnitForm = ({ name, unitFormKey }) => {
   }, []);
 
   useEffect(() => {
-    getNamesByTypeOfOccupant(occupantType);
+    setOccupantType(propertyUnits?.[unitFormKey]?.occupants?.[0]?.occupantType)
+    getNamesByTypeOfOccupant(occupantType || propertyUnits?.[unitFormKey]?.occupants?.[0]?.occupantType);
   }, [occupantType]);
 
+  console.log({occupantType})
+
   useEffect(() => {
+    console.log(propertyUnits?.[unitFormKey]?.occupants[0]?.occupantType);
     if (propertyUnits?.[unitFormKey]?.propertyTypeId) {
       setPropertyTypeAtrribute();
     }
   }, [propertyUnits?.length]);
+
+  
 
   return (
     <div className="w-full bg-white p-3">
