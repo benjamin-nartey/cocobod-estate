@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useState, useContext } from 'react';
+import React, { Fragment, useEffect, useState, useContext } from "react";
 // import { propertyReferenceCategoriesContext } from '../../context/propertyReferenceCategories.context';
-import Accordion from '../Accordion/Accordion';
+import Accordion from "../Accordion/Accordion";
 
 import {
   Button,
@@ -11,27 +11,27 @@ import {
   message,
   Space,
   Divider,
-} from 'antd';
-import Upload from 'antd/es/upload/Upload';
+} from "antd";
+import Upload from "antd/es/upload/Upload";
 
-import { PlusOutlined, UserOutlined } from '@ant-design/icons';
-import { MdOutlineEmail } from 'react-icons/md';
+import { PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { MdOutlineEmail } from "react-icons/md";
 
-import CustomSelect from '../../components/CustomSelect/CustomSelect';
-import PhotosUploader from '../../components/PhotosUploader/PhotosUploader';
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
+import PhotosUploader from "../../components/PhotosUploader/PhotosUploader";
 
-import { axiosInstance } from '../../axios/axiosInstance';
-import { useAddPropertyData } from '../../Hooks/useAddFetch';
+import { axiosInstance } from "../../axios/axiosInstance";
+import { useAddPropertyData } from "../../Hooks/useAddFetch";
 
-import { useIndexedDB } from 'react-indexed-db-hook';
-import Loader from '../Loader/Loader';
-import { useNavigate, useLocation } from 'react-router-dom';
-import Dragger from 'antd/es/upload/Dragger';
-import { capitalize } from '../../utils/typography';
+import { useIndexedDB } from "react-indexed-db-hook";
+import Loader from "../Loader/Loader";
+import { useNavigate, useLocation } from "react-router-dom";
+import Dragger from "antd/es/upload/Dragger";
+import { capitalize } from "../../utils/typography";
 
 const PropertyForm = (id) => {
   const [propertyUnitReference, setPropertyUnitRefernce] = useState(null);
-  const [politicalRegionId, setPoliticalRegionId] = useState('');
+  const [politicalRegionId, setPoliticalRegionId] = useState("");
   const [optionsPropertyType, setOptionsPropertyType] = useState([]);
   const [optionsDistrict, setOptionsDistrict] = useState([]);
   const [optionsPoliticalRegions, setOptionsPoliticalRegions] = useState([]);
@@ -41,7 +41,7 @@ const PropertyForm = (id) => {
     []
   );
   const [optionsLocation, setOptionsLocation] = useState([]);
-  const [districtId, setDistrictId] = useState('');
+  const [districtId, setDistrictId] = useState("");
   // const [propertyUnits, setPropertyUnits] = useState([]);
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
@@ -50,12 +50,12 @@ const PropertyForm = (id) => {
   const [loading, setLoading] = useState(false);
   const [optionsOccupant, setOptionsOccupant] = useState([
     {
-      label: 'LBC',
-      value: 'LBC',
+      label: "LBC",
+      value: "LBC",
     },
     {
-      label: 'NON LBC',
-      value: 'NON LBC',
+      label: "NON LBC",
+      value: "NON LBC",
     },
   ]);
 
@@ -63,34 +63,33 @@ const PropertyForm = (id) => {
   const pathLocation = useLocation();
   const pathName = pathLocation.pathname;
 
-  const { getAll: getAllPropertyTypes } = useIndexedDB('propertyTypes');
-  const { getAll: getAllDistricts } = useIndexedDB('districts');
-  const { getAll: getAllPoliticalRegions } = useIndexedDB('politcalRegions');
+  const { getAll: getAllPropertyTypes } = useIndexedDB("propertyTypes");
+  const { getAll: getAllDistricts } = useIndexedDB("districts");
+  const { getAll: getAllPoliticalRegions } = useIndexedDB("politcalRegions");
   const { getAll: getAllPoliticalDistricts } =
-    useIndexedDB('politcalDistricts');
+    useIndexedDB("politcalDistricts");
 
-  const { getAll: getAllLocations } = useIndexedDB('locations');
+  const { getAll: getAllLocations } = useIndexedDB("locations");
   // const { getAll: getAllpropertyReferences } =
   //   useIndexedDB('propertyReferences');
 
   const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
-    'propertyReferenceCategories'
+    "propertyReferenceCategories"
   );
-  const { getAll: getAllProperty } = useIndexedDB('property');
+
+  const { deleteRecord: deletePropertyReferenceCategory } = useIndexedDB(
+    "propertyReferenceCategories"
+  );
+
+  const { getAll: getAllProperty } = useIndexedDB("property");
 
   // const { getAll: getAllpropertyReferences } =
   //   useIndexedDB("propertyReferences");
 
   // console.log({ propertyReferenceCategories });
 
-  const isValidUUID = (uuid) => {
-    const uuidRegex =
-      /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
-    return uuidRegex.test(uuid);
-  };
-
   useEffect(() => {
-    if (id && pathName.includes('property-capture')) {
+    if (id && pathName.includes("property-capture")) {
       getAllPropertyReferenceCategories().then(
         (allPropertyReferenceCategory) => {
           // console.log({ allPropertyReferenceCategory });
@@ -102,7 +101,7 @@ const PropertyForm = (id) => {
           setPropertyReferenceCategories(referencesCategories[0]);
         }
       );
-    } else if (id && pathName.includes('property-upload')) {
+    } else if (id && pathName.includes("property-upload")) {
       getAllProperty().then((properties) => {
         const property = properties?.filter(
           (property) => `${property?.id}` === `${id?.id}`
@@ -115,8 +114,8 @@ const PropertyForm = (id) => {
 
   // console.log({ propertyReferenceCategories });
 
-  const { add: addProperty } = useIndexedDB('property');
-  const { update: updateProperty } = useIndexedDB('property');
+  const { add: addProperty } = useIndexedDB("property");
+  const { update: updateProperty } = useIndexedDB("property");
 
   // const getAllPropertyUnits = (id) => {
   //   getAllpropertyReferences().then((propertyReferences) => {
@@ -235,19 +234,19 @@ const PropertyForm = (id) => {
         (position) => {
           const { latitude, longitude } = position.coords;
           setLocation({ latitude, longitude });
-          form.setFieldValue('lat', latitude);
-          form.setFieldValue('long', longitude);
+          form.setFieldValue("lat", latitude);
+          form.setFieldValue("long", longitude);
           // console.log(longitude, latitude);
           setLoading(false);
         },
         (error) => {
           setLoading(false);
-          message.error('Error getting location', error.message);
+          message.error("Error getting location", error.message);
         }
       );
     } else {
       setLoading(false);
-      message.error('Geolocation is not supported by this browser');
+      message.error("Geolocation is not supported by this browser");
     }
     // setLoading(false);
   };
@@ -264,11 +263,11 @@ const PropertyForm = (id) => {
 
     beforeUpload: (file) => {
       const isJpgOrPng =
-        file.type === 'image/jpeg' ||
-        file.type === 'image/jpg' ||
-        file.type === 'image/png';
+        file.type === "image/jpeg" ||
+        file.type === "image/jpg" ||
+        file.type === "image/png";
       if (!isJpgOrPng) {
-        message.error('You can only upload JPG/PNG file!');
+        message.error("You can only upload JPG/PNG file!");
         return Upload.LIST_IGNORE;
       }
 
@@ -314,7 +313,7 @@ const PropertyForm = (id) => {
               propertyReferenceId: propertyUnit?.id,
               propertyOccupancy: propertyUnit.occupants?.length
                 ? propertyUnit.occupants?.map((occupant) => ({
-                    [occupant?.occupantName ? 'name' : 'clientOccupantId']:
+                    [occupant?.occupantName ? "name" : "clientOccupantId"]:
                       occupant.occupantName
                         ? occupant.occupantName
                         : occupant.occupantId,
@@ -331,11 +330,11 @@ const PropertyForm = (id) => {
             };
 
             if (propertyUnit.plotSize === null) {
-              data.plotSize = '0';
+              data.plotSize = "0";
             } else if (propertyUnit.plotSize) {
               data.plotSize = propertyUnit.plotSize;
             } else if (propertyUnit.floorArea === null) {
-              data.floorArea = '0';
+              data.floorArea = "0";
             } else if (propertyUnit.floorArea) {
               data.floorArea = propertyUnit.floorArea;
             }
@@ -345,14 +344,15 @@ const PropertyForm = (id) => {
         : [],
     };
 
-    if (id && pathName.includes('property-capture')) {
+    if (id && pathName.includes("property-capture")) {
       addProperty(data).then(
         () => {
           message.success(`${values.name} saved successfully`);
           form.resetFields();
-          navigate('/property-upload');
 
-          // setpropertyReferenceCategories(null);
+          deletePropertyReferenceCategory(propertyReferenceCategories.id).then(
+            () => navigate("/property-upload")
+          );
         },
         (error) => {
           message.error(error.message);
@@ -363,7 +363,7 @@ const PropertyForm = (id) => {
         () => {
           message.success(`${values.name} edited successfully`);
           form.resetFields();
-          navigate('/property-upload');
+          navigate("/property-upload");
 
           // setpropertyReferenceCategories(null);
         },
@@ -472,7 +472,7 @@ const PropertyForm = (id) => {
                 placeholder="Select category"
                 options={optionsPropertyType}
                 style={{
-                  width: '100%',
+                  width: "100%",
                 }}
               />
             </Form.Item>
@@ -512,7 +512,7 @@ const PropertyForm = (id) => {
                 placeholder="Select District"
                 options={optionsDistrict}
                 style={{
-                  width: '100%',
+                  width: "100%",
                 }}
                 onChange={(e) => setDistrictId(e)}
               />
@@ -532,7 +532,7 @@ const PropertyForm = (id) => {
                 placeholder="Select political region"
                 options={optionsPoliticalRegions}
                 style={{
-                  width: '100%',
+                  width: "100%",
                 }}
                 onChange={(e) => setPoliticalRegionId(e)}
               />
@@ -551,7 +551,7 @@ const PropertyForm = (id) => {
                 placeholder="Select political district"
                 options={optionsPoliticalDistricts}
                 style={{
-                  width: '100%',
+                  width: "100%",
                 }}
                 // onChange={(e) => setDistrictId(e)}
               />
@@ -572,7 +572,7 @@ const PropertyForm = (id) => {
                 placeholder="Select Town"
                 options={optionsLocation}
                 style={{
-                  width: '100%',
+                  width: "100%",
                 }}
               />
             </Form.Item>
@@ -619,7 +619,7 @@ const PropertyForm = (id) => {
                   className=""
                   type="primary"
                   htmlType="button"
-                  style={{ backgroundColor: '#6E431D', color: '#fff' }}
+                  style={{ backgroundColor: "#6E431D", color: "#fff" }}
                   onClick={handleLocation}
                 >
                   {loading ? (
@@ -629,7 +629,7 @@ const PropertyForm = (id) => {
                       fillColor="fill-[#6E431D]"
                     />
                   ) : (
-                    'Generate'
+                    "Generate"
                   )}
                 </Button>
               </Form.Item>
@@ -657,7 +657,7 @@ const PropertyForm = (id) => {
             <Form.Item label="photos" name="photos">
               <Dragger
                 multiple
-                accept={'image/png, image/jpeg, image/jpg'}
+                accept={"image/png, image/jpeg, image/jpg"}
                 listType="picture"
                 {...props}
                 // onChange={handleChange}
@@ -683,7 +683,7 @@ const PropertyForm = (id) => {
               className="w-full"
               type="primary"
               htmlType="submit"
-              style={{ backgroundColor: '#6E431D', color: '#fff' }}
+              style={{ backgroundColor: "#6E431D", color: "#fff" }}
             >
               Save
             </Button>
