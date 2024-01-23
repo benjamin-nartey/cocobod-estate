@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { Button, Modal, Form, Input, message, Popconfirm, Table } from "antd";
+import { Button, Modal, Form, Input, message, Popconfirm, Table } from 'antd';
 
-import { DeleteOutlined, UserOutlined } from "@ant-design/icons";
-import { BiEdit } from "react-icons/bi";
+import { DeleteOutlined, UserOutlined } from '@ant-design/icons';
+import { BiEdit } from 'react-icons/bi';
 
-import CustomSelect from "../CustomSelect/CustomSelect";
+import CustomSelect from '../CustomSelect/CustomSelect';
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 
-import { axiosInstance } from "../../axios/axiosInstance";
+import { axiosInstance } from '../../axios/axiosInstance';
 
 const DivisionsTable = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -18,19 +18,19 @@ const DivisionsTable = () => {
   const [open, setOpen] = useState(false);
   const [recordsPerPage, setRecordsPerPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [formFields, setformFields] = useState({
-    name: "",
+    name: '',
     divisionIds: [],
-    id: "",
+    id: '',
   });
 
   const confirm = (e) => {
-    message.success("Click on Yes");
+    message.success('Click on Yes');
   };
   const cancel = (e) => {};
 
@@ -47,14 +47,14 @@ const DivisionsTable = () => {
 
   const success = (content) => {
     messageApi.open({
-      type: "success",
+      type: 'success',
       content: content,
     });
   };
 
   const errorMessage = (content) => {
     messageApi.open({
-      type: "error",
+      type: 'error',
       content: content,
     });
   };
@@ -66,7 +66,7 @@ const DivisionsTable = () => {
   const fetchDivisions = async (pageNum) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get("/divisions", {
+      const response = await axiosInstance.get('/divisions', {
         params: {
           pageNum: pageNum,
         },
@@ -84,18 +84,18 @@ const DivisionsTable = () => {
     }
   };
 
-  const { data, status, error } = useQuery(["divisions"], () =>
+  const { data, status, error } = useQuery(['divisions'], () =>
     fetchDivisions(1)
   );
 
   console.log(data);
 
-  if (status === "error") {
+  if (status === 'error') {
     console.log(error);
   }
 
   async function fetchDivisionsForPatch(pageNum) {
-    const response = await axiosInstance.get("/divisions", {
+    const response = await axiosInstance.get('/divisions', {
       params: {
         pageNum: pageNum,
       },
@@ -109,9 +109,7 @@ const DivisionsTable = () => {
         value: record.id,
       };
     });
-    setOptions( dataRcord);
-
-    
+    setOptions(dataRcord);
   }
 
   useEffect(() => {
@@ -130,27 +128,27 @@ const DivisionsTable = () => {
       });
 
       if (response) {
-        success("division updated successfuly");
+        success('division updated successfuly');
 
         clearInput();
         handleCancel();
       }
     } catch (error) {
-      errorMessage("Error updating division");
+      errorMessage('Error updating division');
       throw new Error(`Error updating division ${error}`);
     }
   };
 
   function clearInput() {
-    setformFields({ name: "", divisionIds: [] });
+    setformFields({ name: '', divisionIds: [] });
     form.resetFields();
   }
 
   const columns = [
     {
-      title: "Division Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Division Name',
+      dataIndex: 'name',
+      key: 'name',
       filteredValue: [searchText],
       onFilter: (value, record) => {
         return (
@@ -163,52 +161,52 @@ const DivisionsTable = () => {
       },
     },
     {
-      title: " Status",
-      dataIndex: "status",
-      key: "status",
+      title: ' Status',
+      dataIndex: 'status',
+      key: 'status',
     },
-    {
-      title: "Action",
-      dataIndex: "",
-      key: "action",
-      render: (value) => {
-        return (
-          <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={(e) => {
-                setformFields({
-                  ...formFields,
-                  name: value?.name,
-                  id: value?.id,
-                });
-                console.log(value);
-                showModal();
-              }}
-            >
-              <BiEdit size={22} className="cursor-pointer text-gray-600" />
-            </button>
-            <Popconfirm
-              title="Delete the task"
-              description="Are you sure to delete this task?"
-              onConfirm={confirm}
-              onCancel={cancel}
-              okText="Yes"
-              cancelText="No"
-            >
-              <span className="grid place-items-center">
-                <DeleteOutlined
-                  style={{
-                    fontSize: "18px",
-                    color: " #FF6A74",
-                    cursor: "pointer",
-                  }}
-                />
-              </span>
-            </Popconfirm>
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: "Action",
+    //   dataIndex: "",
+    //   key: "action",
+    //   render: (value) => {
+    //     return (
+    //       <div className="flex items-center justify-center gap-4">
+    //         <button
+    //           onClick={(e) => {
+    //             setformFields({
+    //               ...formFields,
+    //               name: value?.name,
+    //               id: value?.id,
+    //             });
+    //             console.log(value);
+    //             showModal();
+    //           }}
+    //         >
+    //           <BiEdit size={22} className="cursor-pointer text-gray-600" />
+    //         </button>
+    //         <Popconfirm
+    //           title="Delete the task"
+    //           description="Are you sure to delete this task?"
+    //           onConfirm={confirm}
+    //           onCancel={cancel}
+    //           okText="Yes"
+    //           cancelText="No"
+    //         >
+    //           <span className="grid place-items-center">
+    //             <DeleteOutlined
+    //               style={{
+    //                 fontSize: "18px",
+    //                 color: " #FF6A74",
+    //                 cursor: "pointer",
+    //               }}
+    //             />
+    //           </span>
+    //         </Popconfirm>
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
 
   console.log(formFields);
@@ -284,17 +282,17 @@ const DivisionsTable = () => {
               options={options}
               onChange={(e) => setformFields({ ...formFields, divisionIds: e })}
               style={{
-                width: "100%",
+                width: '100%',
               }}
             />
           </Form.Item>
 
           <Form.Item label=" ">
             <Button
-             className="w-full"
+              className="w-full"
               type="primary"
               htmlType="submit"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
+              style={{ backgroundColor: '#6E431D', color: '#fff' }}
             >
               Submit
             </Button>
@@ -309,7 +307,7 @@ const DivisionsTable = () => {
       />
       <Table
         dataSource={data?.records}
-        loading={status === "loading" || loading}
+        loading={status === 'loading' || loading}
         pagination={{
           pageSize: recordsPerPage,
           total: totalPages,
@@ -317,7 +315,7 @@ const DivisionsTable = () => {
             fetchDivisions(pageNum);
           },
         }}
-        style={{ width: "100%" }}
+        style={{ width: '100%' }}
         rowKey="id"
         columns={columns}
       ></Table>

@@ -334,10 +334,10 @@ const PropertyForm = (id) => {
               data.plotSize = '0';
             } else if (propertyUnit.plotSize) {
               data.plotSize = propertyUnit.plotSize;
-            } else if (propertyUnit.floorSize === null) {
-              data.floorSize = '0';
-            } else if (propertyUnit.floorSize) {
-              data.floorSize = propertyUnit.floorSize;
+            } else if (propertyUnit.floorArea === null) {
+              data.floorArea = '0';
+            } else if (propertyUnit.floorArea) {
+              data.floorArea = propertyUnit.floorArea;
             }
 
             return data;
@@ -384,7 +384,7 @@ const PropertyForm = (id) => {
         propertyReferenceCategories?.location?.district?.id ||
         propertyReferenceCategories?.cocoaDistrictId,
       locationId:
-        propertyReferenceCategories?.location?.name ||
+        propertyReferenceCategories?.location?.id ||
         propertyReferenceCategories?.locationId,
       long: propertyReferenceCategories?.long,
       lat: propertyReferenceCategories?.lat,
