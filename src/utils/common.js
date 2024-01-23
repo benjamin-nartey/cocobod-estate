@@ -154,4 +154,5 @@ export const PERMISSIONS = {
   CREATE_STATION: 'create.station',
   UPDATE_STATION: 'update.station',
   DELETE_STATION: 'delete.station',
+  MODERATE_PROPERTY_UNIT: 'moderate.property-unit',
 };

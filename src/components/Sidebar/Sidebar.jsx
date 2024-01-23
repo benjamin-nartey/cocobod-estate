@@ -320,7 +320,7 @@ function Sidebar({ closeToggle }) {
             )}
 
             {hasAllowedPermission(currentUser, [
-              PERMISSIONS.CREATE_PROPERTY,
+              PERMISSIONS.MODERATE_PROPERTY_UNIT,
             ]) && (
               <NavLink
                 to="/moderation"
