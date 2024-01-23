@@ -99,7 +99,7 @@ function Sidebar({ closeToggle }) {
           )}
 
           <>
-            {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_PROPERTY]) && (
+            {hasAllowedPermission(currentUser, []) && (
               <NavLink
                 to="/dashboard"
                 className={({ isActive }) =>
@@ -319,18 +319,23 @@ function Sidebar({ closeToggle }) {
               </NavLink>
             )}
 
-            <NavLink
-              to="/moderation"
-              className={({ isActive }) =>
-                isActive ? isActiveStyle : isNotActiveStyle
-              }
-              onClick={handleCloseSidebar}
-            >
-              <HiLightningBolt size={25} />
-              Moderation
-            </NavLink>
             {hasAllowedPermission(currentUser, [
-              PERMISSIONS.CREATE_PROPERTY_REFERENCE,
+              PERMISSIONS.CREATE_PROPERTY,
+            ]) && (
+              <NavLink
+                to="/moderation"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <HiLightningBolt size={25} />
+                Moderation
+              </NavLink>
+            )}
+
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.CREATE_PROPERTY_REFERENCE_BATCH,
             ]) && (
               <NavLink
                 to="property-references"

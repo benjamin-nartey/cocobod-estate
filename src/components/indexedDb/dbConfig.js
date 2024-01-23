@@ -51,8 +51,8 @@ export const objectStoresMeta = [
         options: { unique: false },
       },
       {
-        name: 'floorSize',
-        keypath: 'floorSize',
+        name: 'floorArea',
+        keypath: 'floorArea',
         options: { unique: false },
       },
       {

@@ -166,7 +166,7 @@ const PropertyCreateForm = ({ move }) => {
             loading={isLoadingTowns}
             placeholder={'Select Location/Town'}
             options={towns?.data.map((town) => ({
-              label: town.name,
+              label: town && capitalize(town?.name.toLowerCase()),
               value: town.id,
             }))}
           />
