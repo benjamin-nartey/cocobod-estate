@@ -7,6 +7,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnapshot } from 'valtio';
 import { uploadData } from '../../../http/uploads';
 
+import { capitalize } from '../../../utils/typography';
+
 const UploadCSV = ({ uploadUrl, fieldName, queryKey }) => {
   const snap = useSnapshot(state);
   const { showUploadModal } = snap.modalSlice;
@@ -19,7 +21,9 @@ const UploadCSV = ({ uploadUrl, fieldName, queryKey }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
       state.modalSlice.toggleshowUploadModal();
-      message.success('Properties uploaded successfully');
+      message.success(
+        ` ${capitalize(queryKey.toLowerCase())} uploaded successfully`
+      );
     },
     onError: (e) => {
       message.error(e?.response?.data?.message);
