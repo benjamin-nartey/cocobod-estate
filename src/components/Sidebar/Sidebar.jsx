@@ -99,7 +99,7 @@ function Sidebar({ closeToggle }) {
           )}
 
           <>
-            {hasAllowedPermission(currentUser, []) && (
+            {
               <NavLink
                 to="/dashboard"
                 className={({ isActive }) =>
@@ -110,7 +110,7 @@ function Sidebar({ closeToggle }) {
                 <MdDashboard size={18} />
                 Dashboard
               </NavLink>
-            )}
+            }
 
             {hasAllowedPermission(currentUser, [
               PERMISSIONS.LIST_PROPERTY_UNIT,
