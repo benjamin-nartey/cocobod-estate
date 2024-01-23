@@ -71,6 +71,7 @@ const Dashboard = () => {
     useIndexedDB('propertyTypes');
   const { add: addClientOccupants, clear: clearClientOccupants } =
     useIndexedDB('clientOccupants');
+  const { clear: clearProperties } = useIndexedDB('property');
 
   const { getAll: getAllProperty } = useIndexedDB('property');
 
@@ -161,6 +162,7 @@ const Dashboard = () => {
         clearPropertyReferenceCategories(),
         clearPoliticalRegions(),
         clearPropertyTypes(),
+        clearProperties(),
       ]);
 
       message.success('Successfully cleared all data');
@@ -190,7 +192,7 @@ const Dashboard = () => {
               descriptionPerFixedAssetReport:
                 references?.descriptionPerFixedAssetReport,
               plotSize: references?.plotSize || null,
-              floorSize: references?.floorSize || null,
+              floorArea: references?.floorArea || null,
               division: references?.division,
               propertyReferenceCategory: references?.propertyReferenceCategory,
               region: references?.region,

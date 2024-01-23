@@ -104,7 +104,7 @@ const ModerationDetails = () => {
       <Spin size="large" />
     </div>
   ) : (
-    <div className=" w-[40%] mx-auto m-9 mb-9 bg-white py-8 px-11">
+    <div className=" w-[60%] mx-auto m-9 mb-9 bg-white py-8 px-11">
       <Form
         name="propertyUnitForm"
         form={form}

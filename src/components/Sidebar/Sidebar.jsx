@@ -99,7 +99,7 @@ function Sidebar({ closeToggle }) {
           )}
 
           <>
-            {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_PROPERTY]) && (
+            {hasAllowedPermission(currentUser, []) && (
               <NavLink
                 to="/dashboard"
                 className={({ isActive }) =>
