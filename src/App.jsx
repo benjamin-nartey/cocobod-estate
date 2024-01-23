@@ -129,8 +129,13 @@ function App() {
       <Route path="*" element={<NotExistPage />} />
 
       <Route element={<Navigation />}>
+        <Route path="/dashboard" element={<Dashboard />} />
         {/********* Home Routes **********/}
-        <Route element={<RequireAuth allowedPermissions={['view.property']} />}>
+        <Route
+          element={
+            <RequireAuth allowedPermissions={[PERMISSIONS.VIEW_PROPERTY]} />
+          }
+        >
           <Route element={<Home />}>
             <Route path="/home" element={<Properties />} />
             <Route path="/home/*" element={<NotExistPage />} />
@@ -166,7 +171,6 @@ function App() {
             />
           }
         >
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/capture" element={<Capture />} />
           <Route path="/property-capture">
             <Route index element={<Capture />} />
