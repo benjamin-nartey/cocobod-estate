@@ -359,7 +359,12 @@ const PropertyForm = (id) => {
         }
       );
     } else {
-      updateProperty({ ...data, id: Number(id?.id) }).then(
+      updateProperty({
+        ...data,
+        propertyReferenceCategoryId:
+          propertyReferenceCategories?.propertyReferenceCategoryId,
+        id: Number(id?.id),
+      }).then(
         () => {
           message.success(`${values.name} edited successfully`);
           form.resetFields();

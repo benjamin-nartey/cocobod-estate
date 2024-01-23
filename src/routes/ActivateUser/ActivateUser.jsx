@@ -20,8 +20,6 @@ const ActivateUser = () => {
     setToken(token);
   }, [location.search]);
 
-  console.log(token);
-
   const handleSubmit = async (values) => {
     try {
       const response = await axiosInstance.post("/auth/activate-user", values, {
@@ -29,11 +27,11 @@ const ActivateUser = () => {
       });
 
       if (response) {
-        message.success("Account activated successfully");
+        message.success(response?.data.message);
         navigate("/login");
       }
     } catch (error) {
-      message.error(error.response.data.message);
+      message.error(error?.response?.data.message);
     }
   };
 
