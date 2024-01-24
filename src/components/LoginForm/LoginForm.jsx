@@ -20,10 +20,10 @@ const defaultFormFields = {
   password: '',
 };
 
-const defaultPassword = import.meta.env.VITE_APP_DEFAULT_PASSWORD;
+// const defaultPassword = import.meta.env.VITE_APP_DEFAULT_PASSWORD;
 
 const hashedDefaultPassword = bcrypt.hashSync(
-  defaultPassword,
+  'Estate@pass911',
   bcrypt.genSaltSync()
 );
 
