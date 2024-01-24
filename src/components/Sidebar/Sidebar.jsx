@@ -99,18 +99,16 @@ function Sidebar({ closeToggle }) {
           )}
 
           <>
-            {
-              <NavLink
-                to="/dashboard"
-                className={({ isActive }) =>
-                  isActive ? isActiveStyle : isNotActiveStyle
-                }
-                onClick={handleCloseSidebar}
-              >
-                <MdDashboard size={18} />
-                Dashboard
-              </NavLink>
-            }
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) =>
+                isActive ? isActiveStyle : isNotActiveStyle
+              }
+              onClick={handleCloseSidebar}
+            >
+              <MdDashboard size={18} />
+              Dashboard
+            </NavLink>
 
             {hasAllowedPermission(currentUser, [
               PERMISSIONS.LIST_PROPERTY_UNIT,

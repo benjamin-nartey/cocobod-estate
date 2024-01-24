@@ -1,4 +1,4 @@
-import { Button, Input, Popconfirm, Table, message } from "antd";
+import { Button, Input, Popconfirm, Spin, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { BiEdit } from "react-icons/bi";
 // import { useGetPaginatedData } from "../../Hooks/query/generics";
@@ -18,6 +18,7 @@ import {
   useAddPropertyPhotos,
   useAddPropertyUploadData,
 } from "../../Hooks/useAddFetch";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const PropertyUpload = () => {
   const { getAll: getAllProperty } = useIndexedDB("property");
@@ -27,7 +28,7 @@ const PropertyUpload = () => {
   const [result, setResult] = useState([]);
   const [location, setLocation] = useState("");
   const [propertyType, setPropertyType] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [spinning, setSpinning] = useState(false);
   const { regionId } = useParams();
   const [pageNum, setPageNum] = useState(1);
   const [data, setData] = useState(null);
@@ -82,80 +83,76 @@ const PropertyUpload = () => {
   const queryClient = useQueryClient();
 
   const handleUploadAll = () => {
-    try {
-      setLoading(true);
+    setSpinning(true);
 
-      Promise.allSettled([
-        property.map(async (property) => {
-          const propertyData = {
-            name: property?.name,
-            description: property?.description,
-            propertyCode: property?.propertyCode,
-            digitalAddress: property?.digitalAddress,
-            propertyTypeId: property?.propertyTypeId,
-            locationId: property?.locationId,
-            propertyReferenceCategoryId: property?.propertyReferenceCategoryId,
-            lat: property?.lat,
-            long: property?.long,
-            landmark: property?.landmark,
-            politicalDistrictId: property?.politicalDistrictId,
-            propertyUnits: property?.propertyUnits,
-          };
-          mutate(propertyData, {
-            onSuccess: (result) => {
-              console.log("Result", result?.data?.id);
-              data.map((property) => {
-                if (property?.photos?.fileList.length > 0) {
-                  const formData = new FormData();
-                  console.log(property.photos);
+    Promise.allSettled([
+      property.map(async (property) => {
+        const propertyData = {
+          name: property?.name,
+          description: property?.description,
+          propertyCode: property?.propertyCode,
+          digitalAddress: property?.digitalAddress,
+          propertyTypeId: property?.propertyTypeId,
+          locationId: property?.locationId,
+          propertyReferenceCategoryId: property?.propertyReferenceCategoryId,
+          lat: property?.lat,
+          long: property?.long,
+          landmark: property?.landmark,
+          politicalDistrictId: property?.politicalDistrictId,
+          propertyUnits: property?.propertyUnits,
+        };
+        mutate(propertyData, {
+          onSuccess: (result) => {
+            console.log("Result", result?.data?.id);
+            data.map((property) => {
+              if (property?.photos?.fileList.length > 0) {
+                const formData = new FormData();
+                console.log(property.photos);
 
-                  property.photos.fileList.forEach((photo) => {
-                    formData.append("photos", photo.originFileObj);
+                property.photos.fileList.forEach((photo) => {
+                  formData.append("photos", photo.originFileObj);
+                });
+
+                console.log(formData);
+
+                axiosInstance
+                  .post(`/properties/${result?.data?.id}/photos`, formData)
+                  .then((response) => {
+                    message.success("Photos added successfully");
+                  })
+                  .catch((error) => {
+                    message.error(error?.response?.data?.message);
                   });
 
-                  console.log(formData);
+                // uploadPhotos(
+                //   { id: result.data.id, data: formData },
+                //   {
+                //     onSuccess: () => {
+                //       message.success('Photos added successfully');
+                //     },
 
-                  axiosInstance
-                    .post(`/properties/${result?.data?.id}/photos`, formData)
-                    .then((response) => {
-                      message.success("Photos added successfully");
-                    })
-                    .catch((error) => {
-                      message.error(error?.response?.data?.message);
-                    });
+                //     onError: () => {
+                //       message.error('Error adding photos');
+                //     },
+                //   }
+                // );
+              }
 
-                  // uploadPhotos(
-                  //   { id: result.data.id, data: formData },
-                  //   {
-                  //     onSuccess: () => {
-                  //       message.success('Photos added successfully');
-                  //     },
-
-                  //     onError: () => {
-                  //       message.error('Error adding photos');
-                  //     },
-                  //   }
-                  // );
-                }
-
-                deletePropertyRecord(property.id)
-                  .then(() => message.success("Property uploaded successfully"))
-                  .then(() => queryClient.invalidateQueries("property-upload"))
-                  .then(() => setLoading(false));
-              });
-            },
-            onError: (err) => {
-              data.map((property) => console.log(property.photos));
-              message.error(err.response?.data?.message);
-            },
-          });
-        }),
-      ]);
-    } catch (error) {
-      message.error(error);
-    } finally {
-      setLoading(false);
-    }
+              deletePropertyRecord(property.id)
+                .then(() => message.success("Property uploaded successfully"))
+                .then(() => queryClient.invalidateQueries("property-upload"))
+                .then(() => setSpinning(false));
+            });
+            setSpinning(false);
+          },
+          onError: (err) => {
+            data.map((property) => console.log(property.photos));
+            message.error(err.response?.data?.message);
+            setSpinning(false);
+          },
+        });
+      }),
+    ]);
   };
 
   const snap = useSnapshot(state);
@@ -204,17 +201,25 @@ const PropertyUpload = () => {
   ];
   return (
     <div className="w-[90%] mx-auto mt-8 flex flex-col  gap-3">
+      {spinning && (
+        <div className="w-screen h-screen fixed left-0 top-0 z-[99999] bg-[rgba(0,0,0,0.4)] grid place-items-center">
+          <Spin
+            indicator={
+              <LoadingOutlined style={{ fontSize: 48, color: "#6E431D" }} />
+            }
+            size="large"
+            spinning={spinning}
+            fullscreen
+          />
+        </div>
+      )}
       <div className="flex justify-between">
         <h3 className="font-semibold text-slate-500">PROPERTIES</h3>
         <button
           onClick={handleUploadAll}
           className="px-3 py-1 max-md:bg-white max-md:text-[#6E431D] max-md:hover:bg-white outline-none bg-[#6E431D] text-white rounded mb-2 hover:bg-[#B67F4E] hover:font-black hover:translate-y-[-2px] active:translate-y-[3px] transition-all hover:shadow-md active:shadow-sm"
         >
-          {loading ? (
-            <Loader width="w-5" height="h-5" fillColor="fill-[#6E431D]" />
-          ) : (
-            "Upload"
-          )}
+          Upload
         </button>
       </div>
       <div className="flex flex-col">

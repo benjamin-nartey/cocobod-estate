@@ -16,6 +16,7 @@ import { axiosInstance } from './axios/axiosInstance';
 import state from './store/store';
 
 import Deployment from './routes/Deployment/Deployment';
+import ActivateUser from './routes/ActivateUser/ActivateUser';
 
 import Capture from './routes/Capture/Capture';
 import Home from './routes/Home/Home';
@@ -128,14 +129,13 @@ function App() {
 
       <Route path="*" element={<NotExistPage />} />
 
+      <Route path="/user-activation" element={<ActivateUser />} />
+
       <Route element={<Navigation />}>
+        {/********* Public **********/}
         <Route path="/dashboard" element={<Dashboard />} />
-        {/********* Home Routes **********/}
-        <Route
-          element={
-            <RequireAuth allowedPermissions={[PERMISSIONS.VIEW_PROPERTY]} />
-          }
-        >
+
+        <Route element={<RequireAuth allowedPermissions={['view.property']} />}>
           <Route element={<Home />}>
             <Route path="/home" element={<Properties />} />
             <Route path="/home/*" element={<NotExistPage />} />

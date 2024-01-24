@@ -6,8 +6,6 @@ export const hasAllowedPermission = (user, allowedPermissions) => {
   );
 };
 
-[];
-
 export const PERMISSIONS = {
   LIST_ROLE: 'list.role',
   VIEW_ROLE: 'view.role',
