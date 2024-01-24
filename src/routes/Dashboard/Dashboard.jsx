@@ -1,32 +1,31 @@
-import { useEffect, useState } from 'react';
-import FloatButtonComponent from '../../components/FloatButtonComponent/FloatButtonComponent';
-import { axiosInstance } from '../../axios/axiosInstance';
-import { initDB, useIndexedDB } from 'react-indexed-db-hook';
-import { BsBuildingFillCheck } from 'react-icons/bs';
-import { Modal, Spin, message } from 'antd';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import FloatButtonComponent from "../../components/FloatButtonComponent/FloatButtonComponent";
+import { axiosInstance } from "../../axios/axiosInstance";
+import { initDB, useIndexedDB } from "react-indexed-db-hook";
+import { BsBuildingFillCheck } from "react-icons/bs";
+import { Modal, Spin, message } from "antd";
+import { NavLink } from "react-router-dom";
 
-import { useGetDashboard } from '../../Hooks/query/dashboard';
+import { useGetDashboard } from "../../Hooks/query/dashboard";
 
-import ReportLineChart from '../../components/charts/LineChart/ReportLineChart';
-import ReportPieChart from '../../components/charts/PieChart/ReportPieChart';
-import nodata from '../../assets/nodata.json';
-import Lottie from 'lottie-react';
-import { useSnapshot } from 'valtio';
-import state from '../../store/store';
-import loadingAnimation from '../../assets/loading.json';
-import { PERMISSIONS, hasAllowedPermission } from '../../utils/common';
+import ReportLineChart from "../../components/charts/LineChart/ReportLineChart";
+import ReportPieChart from "../../components/charts/PieChart/ReportPieChart";
+import nodata from "../../assets/nodata.json";
+import Lottie from "lottie-react";
+import { useSnapshot } from "valtio";
+import state from "../../store/store";
+import loadingAnimation from "../../assets/loading.json";
+import { PERMISSIONS, hasAllowedPermission } from "../../utils/common";
+import { MdOutlineAddAPhoto } from "react-icons/md";
 
-const Card = ({ allProperty }) => {
+const Card = ({ allProperty, name, icon }) => {
   return (
-    <div className="p-6 bg-white rounded-sm cursor-pointer ">
+    <div className="p-6 bg-white rounded-sm cursor-pointer min-h-[130px] ">
       <div className="flex items-center gap-4">
-        <div className="rounded-full p-4 border">
-          <BsBuildingFillCheck size={20} />
-        </div>
+        <div className="rounded-full p-4 border">{icon}</div>
         <div className="flex flex-col">
           <span className="text-4xl">{allProperty?.length}</span>
-          <p className="text-sm">Properties</p>
+          <p className="text-sm">{name}</p>
         </div>
       </div>
     </div>
@@ -45,7 +44,7 @@ const Dashboard = () => {
   const {
     add: addPropertyReferenceCategories,
     clear: clearPropertyReferenceCategories,
-  } = useIndexedDB('propertyReferenceCategories');
+  } = useIndexedDB("propertyReferenceCategories");
 
   const { data: dashboard, isLoading } = useGetDashboard();
 
@@ -58,22 +57,22 @@ const Dashboard = () => {
   }
 
   const { add: addPropertyReferences, clear: clearPropertyReference } =
-    useIndexedDB('propertyReferences');
+    useIndexedDB("propertyReferences");
   const { add: addDistricts, clear: clearDistricts } =
-    useIndexedDB('districts');
+    useIndexedDB("districts");
   const { add: addPolitcalDistricts, clear: clearPoliticalDistricts } =
-    useIndexedDB('politcalDistricts');
+    useIndexedDB("politcalDistricts");
   const { add: addPolitcalRegions, clear: clearPoliticalRegions } =
-    useIndexedDB('politcalRegions');
+    useIndexedDB("politcalRegions");
   const { add: addLocations, clear: clearLocations } =
-    useIndexedDB('locations');
+    useIndexedDB("locations");
   const { add: addPropertyTypes, clear: clearPropertyTypes } =
-    useIndexedDB('propertyTypes');
+    useIndexedDB("propertyTypes");
   const { add: addClientOccupants, clear: clearClientOccupants } =
-    useIndexedDB('clientOccupants');
-  const { clear: clearProperties } = useIndexedDB('property');
+    useIndexedDB("clientOccupants");
+  const { clear: clearProperties } = useIndexedDB("property");
 
-  const { getAll: getAllProperty } = useIndexedDB('property');
+  const { getAll: getAllProperty } = useIndexedDB("property");
 
   useEffect(() => {
     getAllProperty().then((data) => setAllProperty(data));
@@ -81,7 +80,7 @@ const Dashboard = () => {
 
   const fetchUserAlocation = async () => {
     try {
-      const response = await axiosInstance.get('/allocation/me');
+      const response = await axiosInstance.get("/allocation/me");
 
       if (response.status === 200) {
         setAllocationData(response.data.region);
@@ -113,44 +112,44 @@ const Dashboard = () => {
         politicalDistrictResponse,
         PoliticalRegionResponse,
       ] = await Promise.all([
-        axiosInstance.get('/property-reference-categories/all', {
+        axiosInstance.get("/property-reference-categories/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/property-references/all', {
+        axiosInstance.get("/property-references/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/district/all', {
+        axiosInstance.get("/district/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/location/all', {
+        axiosInstance.get("/location/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/property-types/all', {
+        axiosInstance.get("/property-types/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/client-occupants/all', {
+        axiosInstance.get("/client-occupants/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
           },
         }),
 
-        axiosInstance.get('/political-district/all'),
-        axiosInstance.get('/political-region/all'),
+        axiosInstance.get("/political-district/all"),
+        axiosInstance.get("/political-region/all"),
       ]);
 
       await Promise.all([
@@ -165,7 +164,7 @@ const Dashboard = () => {
         clearProperties(),
       ]);
 
-      message.success('Successfully cleared all data');
+      message.success("Successfully cleared all data");
 
       await Promise.all([
         Promise.all(
@@ -259,7 +258,7 @@ const Dashboard = () => {
           })
         ),
       ]);
-      message.success('All data downloaded and persisted successfully');
+      message.success("All data downloaded and persisted successfully");
       setLoading(false);
       setShowModal(false);
     } catch (err) {
@@ -283,10 +282,16 @@ const Dashboard = () => {
         )}
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-auto">
           <NavLink to="/property-upload">
-            <Card allProperty={allProperty} />
+            <Card
+              allProperty={allProperty}
+              icon={<BsBuildingFillCheck size={20} />}
+              name="Properties"
+            />
           </NavLink>
-          {/* <Card allProperty={allProperty} />
-        <Card allProperty={allProperty} /> */}
+
+          <NavLink to="/property-capture">
+            <Card icon={<MdOutlineAddAPhoto />} name="Capture"  />
+          </NavLink>
         </div>
 
         {hasAllowedPermission(auth.currentUser, [
