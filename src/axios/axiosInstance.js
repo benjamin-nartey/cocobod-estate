@@ -2,7 +2,7 @@ import axios from 'axios';
 import { memoizedRefreshToken } from '../utils/refreshToken';
 
 // axios.defaults.baseURL = 'https://estate-api-2.onrender.com/api/v1/';
-axios.defaults.baseURL = 'http://estate.cocobod.net/api/v1/';
+axios.defaults.baseURL = 'https://estate.cocobod.net/api/v1/';
 
 axios.interceptors.request.use(
   async (config) => {
