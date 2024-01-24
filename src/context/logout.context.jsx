@@ -27,7 +27,7 @@ export const LogoutProvider = ({ children }) => {
     const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
     const api = axios.create({
       // baseURL: 'https://estate-api-2.onrender.com/api/v1',
-      baseURL: 'http://nest-app:3000/api/v1',
+      baseURL: 'http://estate.cocobod.net/api/v1',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${refreshToken}`,
