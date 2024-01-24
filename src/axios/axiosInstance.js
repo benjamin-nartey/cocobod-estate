@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { memoizedRefreshToken } from '../utils/refreshToken';
 
-// axios.defaults.baseURL = 'https://estate-api-2.onrender.com/api/v1/';
-axios.defaults.baseURL = 'http://localhost:3000/api/v1/';
+axios.defaults.baseURL = 'https://estate-api-2.onrender.com/api/v1/';
+// axios.defaults.baseURL = 'http://localhost:3000/api/v1/';
 
 axios.interceptors.request.use(
   async (config) => {

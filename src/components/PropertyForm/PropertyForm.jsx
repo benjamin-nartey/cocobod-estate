@@ -76,18 +76,17 @@ const PropertyForm = (id) => {
   const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
     'propertyReferenceCategories'
   );
+
+  const { deleteRecord: deletePropertyReferenceCategory } = useIndexedDB(
+    'propertyReferenceCategories'
+  );
+
   const { getAll: getAllProperty } = useIndexedDB('property');
 
   // const { getAll: getAllpropertyReferences } =
   //   useIndexedDB("propertyReferences");
 
   // console.log({ propertyReferenceCategories });
-
-  const isValidUUID = (uuid) => {
-    const uuidRegex =
-      /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
-    return uuidRegex.test(uuid);
-  };
 
   useEffect(() => {
     if (id && pathName.includes('property-capture')) {
@@ -350,16 +349,22 @@ const PropertyForm = (id) => {
         () => {
           message.success(`${values.name} saved successfully`);
           form.resetFields();
-          navigate('/property-upload');
 
-          // setpropertyReferenceCategories(null);
+          deletePropertyReferenceCategory(propertyReferenceCategories.id).then(
+            () => navigate('/property-capture')
+          );
         },
         (error) => {
           message.error(error.message);
         }
       );
     } else {
-      updateProperty({ ...data, id: Number(id?.id) }).then(
+      updateProperty({
+        ...data,
+        propertyReferenceCategoryId:
+          propertyReferenceCategories?.propertyReferenceCategoryId,
+        id: Number(id?.id),
+      }).then(
         () => {
           message.success(`${values.name} edited successfully`);
           form.resetFields();
