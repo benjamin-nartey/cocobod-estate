@@ -316,7 +316,8 @@ function PropertyDetail() {
             0302661877 . 0302667416 Email Us: civilworks@cocobod.gh
           </p>
           <div className="w-[18rem] h-[6rem] hover:shadow-lg border-solid border-2 border-white rounded-2xl">
-            {property?.data?.long && property?.data.lat ? (
+            {property?.data?.long !== 'undefined' &&
+            property?.data.lat !== 'undefined' ? (
               <NavLink
                 onClick={() => {
                   state.mapSlice.selectedProperty = [property?.data];

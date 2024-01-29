@@ -134,6 +134,8 @@ const PropertyCreateForm = ({ move }) => {
           rules={[{ required: true }]}
         >
           <Select
+            showSearch
+            optionFilterProp="label"
             placeholder={'Select Region'}
             onChange={(value) => setSelectedRegionId(value)}
             options={regions?.data.map((reg) => ({
@@ -148,6 +150,8 @@ const PropertyCreateForm = ({ move }) => {
           rules={[{ required: true }]}
         >
           <Select
+            showSearch
+            optionFilterProp="label"
             loading={DistrictLoading}
             onChange={(value) => setSelectedDistrictId(value)}
             placeholder={'Select District'}
@@ -163,6 +167,8 @@ const PropertyCreateForm = ({ move }) => {
           rules={[{ required: true }]}
         >
           <Select
+            showSearch
+            optionFilterProp="label"
             loading={isLoadingTowns}
             placeholder={'Select Location/Town'}
             options={towns?.data.map((town) => ({

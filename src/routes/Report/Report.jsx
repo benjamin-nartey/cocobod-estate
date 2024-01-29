@@ -7,6 +7,7 @@ import state from '../../store/store';
 import { useGetReport } from '../../Hooks/query/report';
 import { CONDITIONS } from '../../utils/categories';
 import { AiOutlineFileExcel } from 'react-icons/ai';
+import { exportToExcel } from '../../utils/helper';
 
 const Report = () => {
   const snap = useSnapshot(state);
@@ -90,52 +91,45 @@ const Report = () => {
     {
       title: 'Market Value(Previous)',
       dataIndex: ['property', 'propertyValue'],
-      render: (value) => (
-        <p>
-          {value.length
-            ? Number(value[0]?.currentValue).toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'GHC',
-              })
-            : ''}
-        </p>
-      ),
+      render: (propertyValue) => {
+        return propertyValue.length > 0
+          ? Number(propertyValue[0]?.currentValue).toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'GHC',
+            })
+          : '';
+      },
     },
     {
       title: 'Market Value(Current)',
       dataIndex: ['property', 'propertyValue'],
-      render: (value) => (
-        <p>
-          {value.length
-            ? Number(value[1]?.currentValue).toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'GHC',
-              })
-            : ''}
-        </p>
-      ),
+      render: (propertyValue) => {
+        return propertyValue.length > 0
+          ? Number(propertyValue[1]?.currentValue).toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'GHC',
+            })
+          : '';
+      },
     },
     {
       title: 'Variance(Market Value)',
       dataIndex: ['property', 'propertyValue'],
-      render: (value) => {
-        value.length ? (
-          <p>
-            {Number(
-              value[1]?.currentValue - value[0]?.currentValue
-            ).toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'GHC',
-            })}
-          </p>
-        ) : (
-          ''
-        );
+      render: (propertyValue) => {
+        if (propertyValue.length > 0) {
+          const variance =
+            propertyValue[1]?.currentValue - propertyValue[0]?.currentValue;
+          return Number(variance).toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'GHC',
+          });
+        }
+        return '';
       },
     },
-    {
-      title: 'Images',
-    },
+    // {
+    //   title: 'Images',
+    // },
     {
       title: 'Category/Class Asset',
       dataIndex: ['propertyType', 'name'],
@@ -152,8 +146,22 @@ const Report = () => {
     },
   ];
 
+  // const handleExport = () => {
+  //   const data = report?.data.records?.map((record) => ({
+  //   ...record,
+  //   propertyStates :
+
+  //   }));
+
+  //   exportToExcel(
+  //     report?.data.records,
+  //     columns,
+  //     `Report_${new Date().toDateString()}`
+  //   );
+  // };
+
   useEffect(() => {
-    if (pageNum && reportFilters) {
+    if (pageNum || reportFilters) {
       refetch();
     }
   }, [pageNum, reportFilters]);
@@ -169,6 +177,13 @@ const Report = () => {
             <AiOutlineFileExcel
               size={30}
               className="text-green-600 cursor-pointer"
+              onClick={() => {
+                exportToExcel(
+                  report?.data.records,
+                  columns,
+                  `Report_${new Date().toDateString()}`
+                );
+              }}
             />
           </Tooltip>
           <Tooltip title={'Filter'}>
