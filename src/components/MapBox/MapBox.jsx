@@ -53,7 +53,7 @@ function MapBox({}) {
 
       setCenter(getCenter(coordinates));
     }
-  }, [data.length]);
+  }, [data?.length]);
 
   const [viewState, setViewState] = useState({
     latitude: center && center?.latitude,
@@ -65,7 +65,7 @@ function MapBox({}) {
     setViewState({
       latitude: center && center?.latitude,
       longitude: center && center?.longitude,
-      zoom: data.length > 1 ? 6 : 12,
+      zoom: data?.length > 1 ? 6 : 12,
     });
   }, [center]);
 

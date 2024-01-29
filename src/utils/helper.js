@@ -1,13 +1,15 @@
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-import { objectStoresMeta } from "../components/indexedDb/dbConfig";
+import { objectStoresMeta } from '../components/indexedDb/dbConfig';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 export const reinitializeIndexedDB = (version) => {
-  const dbName = "ESTATEDB";
+  const dbName = 'ESTATEDB';
   const dbVersion = version; // Increment the version to trigger an upgrade
 
   const request = indexedDB.open(dbName, dbVersion);
@@ -40,11 +42,41 @@ export const reinitializeIndexedDB = (version) => {
   request.onsuccess = (event) => {
     const db = event.target.result;
     db.close();
-    console.log("IndexedDB reinitialized successfully.");
+    console.log('IndexedDB reinitialized successfully.');
     callback();
   };
 
   request.onerror = (event) => {
-    console.error("Error reinitializing IndexedDB:", event.target.error);
+    console.error('Error reinitializing IndexedDB:', event.target.error);
   };
+};
+
+const extractNestedValue = (record, dataIndex) => {
+  if (dataIndex instanceof Array) {
+    return dataIndex.reduce((acc, key) => acc[key], record);
+  }
+  return record[dataIndex];
+};
+
+export const exportToExcel = (dataSource, columns, fileName) => {
+  const data = dataSource.map((record) =>
+    columns.map((column) => {
+      const rawValue = extractNestedValue(record, column.dataIndex);
+      // Handle special rendering logic for specific columns
+      if (column.render) {
+        return column.render(rawValue, record);
+      }
+      return rawValue;
+    })
+  );
+
+  const ws = XLSX.utils.aoa_to_sheet([
+    columns.map((column) => column.title),
+    ...data,
+  ]);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(blob, `${fileName}.xlsx`);
 };

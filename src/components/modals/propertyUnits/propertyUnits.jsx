@@ -71,7 +71,7 @@ const PropertyUnitModal = () => {
         footer={false}
         onCancel={() => state.modalSlice.toggleshowPropertyUnitModal()}
       >
-        <div className="max-h-[80vh] overflow-y-auto">
+        <div className="max-h-[80vh] overflow-y-auto mt-10">
           <Form name="propertyUnitForm" form={form} layout="vertical">
             <Divider>
               <span className="text-[#af5c13]">Property Info</span>

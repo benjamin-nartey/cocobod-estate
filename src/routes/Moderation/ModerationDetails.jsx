@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetPropertyUnitsForProperty } from '../../Hooks/query/properties';
 import {
@@ -7,24 +7,26 @@ import {
   Divider,
   Form,
   Input,
+  Modal,
   Select,
   Space,
   Spin,
+  Table,
   Tooltip,
   message,
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { useSnapshot } from 'valtio';
-import state from '../../store/store';
+
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
+
 import { useMutation } from '@tanstack/react-query';
 import { approveModeration } from '../../http/moderation';
-import { HiQuestionMarkCircle } from 'react-icons/hi';
+import { HiOutlineQuestionMarkCircle } from 'react-icons/hi';
 
 const ModerationDetails = () => {
   const { propertyUnitId } = useParams();
   const [form] = Form.useForm();
+  const [openModal, setOpenModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -49,10 +51,82 @@ const ModerationDetails = () => {
       form.setFieldValue('condition', data?.data?.propertyStates[0]?.condition);
       form.setFieldValue('remarks', data?.data?.propertyStates[0]?.remarks);
       form.setFieldValue('propertyOccupancies', initValues);
+      console.log(data?.data?.propertyStates[0]?.condition);
     }
   }, [data?.data, isLoading]);
 
-  console.log({ data: data?.data });
+  const colums = [
+    {
+      title: 'RATINGS',
+      dataIndex: 'ratings',
+    },
+    {
+      title: 'PHYSICAL OBSERVATIONS',
+      dataIndex: 'physical_observations',
+    },
+  ];
+
+  const dataSource = [
+    {
+      ratings: 'New',
+      physical_observations:
+        'Recently constructed buildings (1-2 years ago) with no visible physical deterioration',
+      key: 1,
+    },
+    {
+      ratings: 'Very Good',
+      physical_observations:
+        'Well maintained buildings/recently renovated buildings with no physical deterioration and does not require any redecoration or immediate repairs',
+      key: 2,
+    },
+    {
+      ratings: 'Good',
+      physical_observations:
+        'Buildings having a good physical condition with minor physical deterioration. Requires periodic maintenance to prevent any major defect.',
+      key: 3,
+    },
+    {
+      ratings: 'Fairly Good',
+      physical_observations:
+        'Buildings that are somehow in good condition or average (faded paints, minor fittings and fixtures defects etc.)',
+      key: 4,
+    },
+    {
+      ratings: 'Fair',
+      physical_observations:
+        'Buildings slightly below the average in terms of their conditions. Example here may be broken aprons, gutters, defaced walls, rotten wooden fascia',
+      key: 5,
+    },
+    {
+      ratings: 'Fairly Poor',
+      physical_observations:
+        'Buildings below the average in terms of their condition (corroded roof and reinforcement, damaged ceiling and fascia etc.)',
+      key: 6,
+    },
+    {
+      ratings: 'Poor',
+      physical_observations:
+        'Buildings having low/poor physical condition (Roof leakage, spalling in concrete and masonry walls, damaged fittings & fixtures)',
+      key: 7,
+    },
+    {
+      ratings: 'Very Poor',
+      physical_observations:
+        'Visible defects such as spalling in concrete and masonry walls, worn-out and removed fittings and fixtures, poor drainage/sewage system, roof leakage, broken walls among others.',
+      key: 8,
+    },
+    {
+      ratings: 'Dilapidated',
+      physical_observations:
+        'Buildings with serious visible structural defects create serious health, safety and environmental situation to the extent that makes the property dangerous for rehabilitation.',
+      key: 9,
+    },
+    {
+      ratings: 'Residual/Dangerous',
+      physical_observations: 'Buildings beyond repairs/ruined',
+      key: 10,
+    },
+  ];
 
   const { mutate, isLoading: submitLoading } = useMutation({
     mutationKey: 'approveModeration',
@@ -95,7 +169,6 @@ const ModerationDetails = () => {
       },
     };
 
-    // console.log({ mutationValues });
     mutate(mutationValues);
   };
 
@@ -149,52 +222,61 @@ const ModerationDetails = () => {
         <Form.Item
           name={'condition'}
           label={'Condition'}
-          // initialValue={data?.data?.propertyStates[0]?.condition}
+          initialValue={data?.data?.propertyStates[0]?.condition}
         >
-          <Select
-            options={[
-              {
-                label: 'NEW',
-                value: 'NEW',
-              },
-              {
-                label: 'VERY GOOD',
-                value: 'VERY_GOOD',
-              },
-              {
-                label: 'GOOD',
-                value: 'GOOD',
-              },
-              {
-                label: 'FAIRLY GOOD',
-                value: 'FAIRLY_GOOD',
-              },
-              {
-                label: 'FAIR',
-                value: 'FAIR',
-              },
-              {
-                label: 'FAIRLY POOR',
-                value: 'FAIRLY_POOR',
-              },
-              {
-                label: 'POOR',
-                value: 'POOR',
-              },
-              {
-                label: 'VERY POOR',
-                value: 'VERY_POOR',
-              },
-              {
-                label: 'DILAPIDATED',
-                value: 'DILAPIDATED',
-              },
-              {
-                label: 'RESIDUAL/DANGEROUS',
-                value: 'RESIDUAL_DANGEROUS',
-              },
-            ]}
-          />
+          <div className="flex items-center gap-2">
+            <Select
+              showSearch
+              optionFilterProp="label"
+              options={[
+                {
+                  label: 'New',
+                  value: 'NEW',
+                },
+                {
+                  label: 'Very Good',
+                  value: 'VERY_GOOD',
+                },
+                {
+                  label: 'Good',
+                  value: 'GOOD',
+                },
+                {
+                  label: 'Fairly Good',
+                  value: 'FAIRLY_GOOD',
+                },
+                {
+                  label: 'Fair',
+                  value: 'FAIR',
+                },
+                {
+                  label: 'Fairly Poor',
+                  value: 'FAIRLY_POOR',
+                },
+                {
+                  label: 'Poor',
+                  value: 'POOR',
+                },
+                {
+                  label: 'Very Poor',
+                  value: 'VERY_POOR',
+                },
+                {
+                  label: 'Dilapidated',
+                  value: 'DILAPIDATED',
+                },
+                {
+                  label: 'Residual/Dangerous',
+                  value: 'RESIDUAL_DANGEROUS',
+                },
+              ]}
+            />
+            <HiOutlineQuestionMarkCircle
+              onClick={() => setOpenModal(true)}
+              size={22}
+              className=" cursor-pointer"
+            />
+          </div>
         </Form.Item>
 
         <Form.Item
@@ -296,6 +378,22 @@ const ModerationDetails = () => {
           Approve
         </Button>
       </Form>
+
+      {openModal && (
+        <Modal
+          open={openModal}
+          footer={false}
+          onCancel={() => setOpenModal(false)}
+        >
+          <div className="mt-10">
+            <Table
+              columns={colums}
+              dataSource={dataSource}
+              pagination={false}
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
