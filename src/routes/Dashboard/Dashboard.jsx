@@ -116,12 +116,14 @@ const Dashboard = () => {
         axiosInstance.get('/property-reference-categories/all', {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
+            propertyRelationStatusFilter: 'unlinked',
           },
         }),
 
         axiosInstance.get('/property-references/all', {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
+            propertyRelationStatusFilter: 'unlinked',
           },
         }),
 
@@ -137,17 +139,9 @@ const Dashboard = () => {
           },
         }),
 
-        axiosInstance.get('/property-types/all', {
-          params: {
-            regionFilter: auth.currentUser?.deployedRegion?.id,
-          },
-        }),
+        axiosInstance.get('/property-types/all', {}),
 
-        axiosInstance.get('/client-occupants/all', {
-          params: {
-            regionFilter: auth.currentUser?.deployedRegion?.id,
-          },
-        }),
+        axiosInstance.get('/client-occupants/all', {}),
 
         axiosInstance.get('/political-district/all'),
         axiosInstance.get('/political-region/all'),

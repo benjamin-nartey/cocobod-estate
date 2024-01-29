@@ -14,6 +14,7 @@ import { useGetPaginatedData } from '../../../Hooks/query/generics';
 import { getReport } from '../../../http/report';
 import { useGetReport } from '../../../Hooks/query/report';
 import { useGetTownByDistrictId } from '../../../Hooks/query/district';
+import { capitalize } from '../../../utils/typography';
 
 const ReportFilter = () => {
   const [form] = Form.useForm();
@@ -74,15 +75,17 @@ const ReportFilter = () => {
                   // fetchDistricts();
                 }}
                 options={regions?.data?.map((reg) => ({
-                  label: reg?.name,
+                  label: reg && capitalize(reg?.name.toLowerCase()),
                   value: reg?.id,
                 }))}
               />
             </Form.Item>
             <Form.Item name={'districtFilter'} label={'District'}>
               <Select
+                optionFilterProp="label"
+                showSearch
                 options={district?.data?.map((dis) => ({
-                  label: dis?.name,
+                  label: dis && capitalize(dis?.name.toLowerCase()),
                   value: dis?.id,
                 }))}
                 onChange={(value) => {
@@ -93,8 +96,10 @@ const ReportFilter = () => {
             </Form.Item>
             <Form.Item name={'locationFilter'} label={'Town'}>
               <Select
+                optionFilterProp="label"
+                showSearch
                 options={towns?.data?.map((town) => ({
-                  label: town?.name,
+                  label: town && capitalize(town?.name.toLowerCase()),
                   value: town?.id,
                 }))}
               />
@@ -104,6 +109,8 @@ const ReportFilter = () => {
               label={'Property Condition'}
             >
               <Select
+                optionFilterProp="label"
+                showSearch
                 options={[
                   {
                     label: 'New',
@@ -153,8 +160,10 @@ const ReportFilter = () => {
               label={'Category/Class Asset'}
             >
               <Select
+                optionFilterProp="label"
+                showSearch
                 options={propertyTypes?.data?.map((pt) => ({
-                  label: pt.name,
+                  label: pt && capitalize(pt.name.toLowerCase()),
                   value: pt?.id,
                 }))}
               />

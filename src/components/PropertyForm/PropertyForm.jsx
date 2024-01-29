@@ -11,6 +11,7 @@ import {
   message,
   Space,
   Divider,
+  Select,
 } from 'antd';
 import Upload from 'antd/es/upload/Upload';
 
@@ -288,9 +289,9 @@ const PropertyForm = (id) => {
       propertyTypeId: values?.propertyTypeId,
       locationId: values?.locationId,
       propertyReferenceCategoryId: propertyReferenceCategories?.id,
-      lat: `${values?.lat?.length > 10 ? values.lat.toFixed(10) : values.lat}`,
+      lat: `${values?.lat?.length > 10 ? values.lat.toFixed(10) : values?.lat}`,
       long: `${
-        values?.long?.length > 10 ? values.long.toFixed(10) : values.long
+        values?.long?.length > 10 ? values.long.toFixed(10) : values?.long
       }`,
       landmark: values?.landmark,
       politicalDistrictId: values?.politicalDistrict,
@@ -511,7 +512,9 @@ const PropertyForm = (id) => {
               //   },
               // ]}
             >
-              <CustomSelect
+              <Select
+                showSearch
+                optionFilterProp="label"
                 disabled={true}
                 mode="single"
                 placeholder="Select District"
@@ -532,8 +535,9 @@ const PropertyForm = (id) => {
                 },
               ]}
             >
-              <CustomSelect
-                mode="single"
+              <Select
+                optionFilterProp="label"
+                showSearch
                 placeholder="Select political region"
                 options={optionsPoliticalRegions}
                 style={{
@@ -551,7 +555,9 @@ const PropertyForm = (id) => {
                 },
               ]}
             >
-              <CustomSelect
+              <Select
+                optionFilterProp="label"
+                showSearch
                 mode="single"
                 placeholder="Select political district"
                 options={optionsPoliticalDistricts}
@@ -571,7 +577,7 @@ const PropertyForm = (id) => {
               //   },
               // ]}
             >
-              <CustomSelect
+              <Select
                 disabled={true}
                 mode="single"
                 placeholder="Select Town"
@@ -586,11 +592,11 @@ const PropertyForm = (id) => {
               <Form.Item
                 label="Latitude"
                 name="lat"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
+                // rules={[
+                //   {
+                //     required: true,
+                //   },
+                // ]}
               >
                 <Input
                   name="lat"
@@ -604,11 +610,11 @@ const PropertyForm = (id) => {
               <Form.Item
                 label="Longitude"
                 name="long"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
+                // rules={[
+                //   {
+                //     required: true,
+                //   },
+                // ]}
               >
                 <Input
                   name="long"
