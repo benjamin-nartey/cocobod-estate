@@ -7,9 +7,10 @@ import { BiEdit } from "react-icons/bi";
 
 import CustomSelect from "../CustomSelect/CustomSelect";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { axiosInstance } from "../../axios/axiosInstance";
+import { useDeleteDivision } from "../../Hooks/useAddFetch";
 
 const DivisionsTable = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -29,8 +30,13 @@ const DivisionsTable = () => {
     id: "",
   });
 
-  const confirm = (e) => {
-    message.success("Click on Yes");
+  const queryClient = useQueryClient();
+
+  const confirm = (id, name) => {
+    deleteDivision(id, {
+      onSuccess: () => message.success(`${name} deleted successfully`),
+      onError: () => message.error(error?.message),
+    });
   };
   const cancel = (e) => {};
 
@@ -39,6 +45,8 @@ const DivisionsTable = () => {
   const showModal = () => {
     setOpen(true);
   };
+
+  const { mutate: deleteDivision } = useDeleteDivision();
 
   const handleCancel = () => {
     setOpen(false);
@@ -94,44 +102,38 @@ const DivisionsTable = () => {
     console.log(error);
   }
 
-  async function fetchDivisionsForPatch(pageNum) {
-    const response = await axiosInstance.get("/divisions", {
-      params: {
-        pageNum: pageNum,
-      },
-    });
+  // async function fetchDivisionsForPatch(pageNum) {
+  //   const response = await axiosInstance.get("/divisions", {
+  //     params: {
+  //       pageNum: pageNum,
+  //     },
+  //   });
 
-    const data = await response.data;
+  //   const data = await response.data;
 
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptions( dataRcord);
+  //   const dataRcord = await data.records.map((record) => {
+  //     return {
+  //       label: `${record.name}`,
+  //       value: record.id,
+  //     };
+  //   });
+  //   setOptions(dataRcord);
+  // }
 
-    
-  }
+  // useEffect(() => {
+  //   fetchDivisionsForPatch(pageNum);
+  // }, []);
 
-  useEffect(() => {
-    fetchDivisionsForPatch(pageNum);
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const divisions = divisionIds.map((division) => division.value);
-
+  const handleSubmit = async (values) => {
     try {
       const response = await axiosInstance.patch(`/divisions/${id}`, {
-        name,
-        divisionIds: divisions,
+        name: values?.name,
       });
 
       if (response) {
         success("division updated successfuly");
 
+        queryClient.invalidateQueries("divisions");
         clearInput();
         handleCancel();
       }
@@ -142,7 +144,6 @@ const DivisionsTable = () => {
   };
 
   function clearInput() {
-    setformFields({ name: "", divisionIds: [] });
     form.resetFields();
   }
 
@@ -175,7 +176,10 @@ const DivisionsTable = () => {
         return (
           <div className="flex items-center justify-center gap-4">
             <button
-              onClick={(e) => {
+              onClick={() => {
+                form.setFieldsValue({
+                  name: value?.name,
+                });
                 setformFields({
                   ...formFields,
                   name: value?.name,
@@ -187,10 +191,10 @@ const DivisionsTable = () => {
             >
               <BiEdit size={22} className="cursor-pointer text-gray-600" />
             </button>
-            <Popconfirm
-              title="Delete the task"
-              description="Are you sure to delete this task?"
-              onConfirm={confirm}
+            {/* <Popconfirm
+              title="Delete Division"
+              description="Are you sure to delete this Division?"
+              onConfirm={() => confirm(value?.id, value?.name)}
               onCancel={cancel}
               okText="Yes"
               cancelText="No"
@@ -204,7 +208,7 @@ const DivisionsTable = () => {
                   }}
                 />
               </span>
-            </Popconfirm>
+            </Popconfirm> */}
           </div>
         );
       },
@@ -231,8 +235,8 @@ const DivisionsTable = () => {
       >
         <Form
           form={form}
-          onSubmitCapture={handleSubmit}
-          name="useredit"
+          onFinish={(values) => handleSubmit(values)}
+          name="divisionEdit"
           layout="vertical"
           // labelCol={{
           //   flex: "110px",
@@ -258,40 +262,14 @@ const DivisionsTable = () => {
           >
             <Input
               name="name"
-              value={name}
-              defaultValue={name}
-              onChange={(e) =>
-                setformFields({ ...formFields, name: e.target.value })
-              }
               placeholder="Enter name"
               prefix={<UserOutlined />}
             />
           </Form.Item>
 
-          <Form.Item
-            label="Divisions"
-            name="divisionIds"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <CustomSelect
-              mode="multiple"
-              value={divisionIds}
-              placeholder="Select divisions"
-              options={options}
-              onChange={(e) => setformFields({ ...formFields, divisionIds: e })}
-              style={{
-                width: "100%",
-              }}
-            />
-          </Form.Item>
-
           <Form.Item label=" ">
             <Button
-             className="w-full"
+              className="w-full"
               type="primary"
               htmlType="submit"
               style={{ backgroundColor: "#6E431D", color: "#fff" }}

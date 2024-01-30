@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Form, Input, Table, message, Popconfirm, Tag } from "antd";
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  Table,
+  message,
+  Popconfirm,
+  Tag,
+} from "antd";
 
 import { DeleteOutlined } from "@ant-design/icons";
 import { BiEdit } from "react-icons/bi";
@@ -70,7 +79,7 @@ const RolesTable = () => {
 
   const { data, status, error } = useQuery(["roles"], () => fetchRoles(1));
 
-  console.log(data);
+  console.log({ data });
 
   if (status === "error") {
     console.log(error);
@@ -98,13 +107,13 @@ const RolesTable = () => {
     fetchPermissions(pageNum);
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values) => {
+    console.log({ values });
 
     try {
       const response = await axiosInstance.patch(`/roles/${roleId}`, {
-        name,
-        permissionIds,
+        name: values?.name,
+        permissionIds: values.permissions,
       });
 
       if (response) {
@@ -164,6 +173,12 @@ const RolesTable = () => {
           <div className="flex items-center justify-center gap-4">
             <button
               onClick={(e) => {
+                form.setFieldsValue({
+                  name: value?.name,
+                  permissions: value?.permissions?.map(
+                    (permission) => permission?.id
+                  ),
+                });
                 setformFields({
                   ...formFields,
                   name: value?.name,
@@ -219,7 +234,7 @@ const RolesTable = () => {
       >
         <Form
           form={form}
-          onSubmitCapture={handleSubmit}
+          onFinish={(values) => handleSubmit(values)}
           name="roleedit"
           layout="vertical"
           // labelCol={{
@@ -246,11 +261,6 @@ const RolesTable = () => {
           >
             <Input
               name="name"
-              value={name}
-              defaultValue={name}
-              onChange={(e) =>
-                setformFields({ ...formFields, name: e.target.value })
-              }
               placeholder="Enter role name"
               prefix={<UserOutlined />}
             />
@@ -267,12 +277,8 @@ const RolesTable = () => {
           >
             <CustomSelect
               mode="multiple"
-              value={permissionIds}
               placeholder="Select permissions"
               options={options}
-              onChange={(e) =>
-                setformFields({ ...formFields, permissionIds: e })
-              }
               style={{
                 width: "100%",
               }}

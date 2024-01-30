@@ -5,11 +5,11 @@ import LoginForm from "../../components/LoginForm/LoginForm";
 
 function Authentication() {
   return (
-    <div className="w-screen h-screen bg-[#6E431D] max-md:overflow-hidden">
+    <div className="w-screen h-screen bg-[#6E431D] max-md:bg-[#462a14] max-md:overflow-hidden">
       <div className="w-full flex justify-center items-center max-md:flex-col">
         <div
           style={{
-            backgroundImage: `url(${bgImage})`,
+            backgroundImage: `linear-gradient(to right, rgba(0,0,0,.5), rgba(0,0,0,.5)), url(${bgImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",

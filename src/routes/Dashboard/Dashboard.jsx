@@ -115,12 +115,14 @@ const Dashboard = () => {
         axiosInstance.get("/property-reference-categories/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
+            propertyRelationStatusFilter: "unlinked",
           },
         }),
 
         axiosInstance.get("/property-references/all", {
           params: {
             regionFilter: auth.currentUser?.deployedRegion?.id,
+            propertyRelationStatusFilter: "unlinked",
           },
         }),
 
@@ -290,7 +292,7 @@ const Dashboard = () => {
           </NavLink>
 
           <NavLink to="/property-capture">
-            <Card icon={<MdOutlineAddAPhoto />} name="Capture"  />
+            <Card icon={<MdOutlineAddAPhoto />} name="Capture" />
           </NavLink>
         </div>
 
