@@ -175,7 +175,7 @@ const PropertyUpload = () => {
     },
     {
       title: "Town",
-      dataIndex: ["locationId"],
+      dataIndex: ["name"],
     },
     {
       title: "Digital Address",

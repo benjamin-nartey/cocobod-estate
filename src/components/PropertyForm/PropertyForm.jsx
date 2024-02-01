@@ -319,6 +319,7 @@ const PropertyForm = (id) => {
                         : occupant.occupantId,
 
                     category: occupant?.occupantType,
+                    phoneNumber: occupant?.phoneNumber,
                   }))
                 : [],
               propertyUnitStates: [

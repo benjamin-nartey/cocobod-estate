@@ -5,16 +5,18 @@ import LoginForm from "../../components/LoginForm/LoginForm";
 
 function Authentication() {
   return (
-    <div className="w-screen h-screen bg-[#6E431D] max-md:bg-[#462a14] max-md:overflow-hidden">
+    <div className="w-screen h-screen bg-[#6E431D] max-md:bg-[#2e1c0e] max-md:overflow-hidden">
       <div className="w-full flex justify-center items-center max-md:flex-col">
         <div
           style={{
-            backgroundImage: `linear-gradient(to right, rgba(0,0,0,.5), rgba(0,0,0,.5)), url(${bgImage})`,
+            // backgroundImage: `linearurl(${bgImage})`,
+            background:`linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${bgImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
+            // backgroundColor: `rgba(0,0,0,0.8)`
           }}
-          className="w-[80%] h-screen bg-[#6E431D] grid place-items-center max-md:w-screen max-md:rounded-r-none max-md:h-[85vh] rounded-r-3xl"
+          className="w-[80%] h-screen grid place-items-center max-md:w-screen max-md:rounded-r-none max-md:h-[85vh] rounded-r-3xl"
         >
           <div className="min-w-[80%] h-4/5 flex justify-between items-center">
             <div className="w-[40rem] h-[25rem] bg-[#F4EDE7] bg-opacity-40 backdrop-blur rounded-xl drop-shadow-lg grid place-items-center translate-y-[-40px] max-md:w-full max-md:bg-transparent max-md:backdrop-blur-0">
@@ -64,7 +66,7 @@ function Authentication() {
             </div>
           </div>
         </div>
-        <div className="w-[20%] h-screen bg-[#6E431D] max-md:hidden"></div>
+        <div className="w-[20%] h-screen bg-[#2e1c0e] max-md:hidden"></div>
       </div>
     </div>
   );
