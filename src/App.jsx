@@ -158,16 +158,7 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedPermissions={[
-                PERMISSIONS.VIEW_ALLOCATION,
-                PERMISSIONS.LIST_DISTRICT,
-                PERMISSIONS.LIST_LOCATION,
-                PERMISSIONS.LIST_PROPERTY_TYPE,
-                PERMISSIONS.CREATE_PROPERTY_CAPTURE,
-                PERMISSIONS.LIST_PROPERTY_REFERENCE,
-                PERMISSIONS.LIST_PROPERTY_REFERENCE_CATEGORY,
-                PERMISSIONS.LIST_CLIENT_OCCUPANT,
-              ]}
+              allowedPermissions={[PERMISSIONS.CREATE_PROPERTY_CAPTURE]}
             />
           }
         >

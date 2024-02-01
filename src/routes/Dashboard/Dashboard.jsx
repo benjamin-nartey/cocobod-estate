@@ -24,7 +24,9 @@ const Card = ({ allProperty, name, icon }) => {
       <div className="flex items-center gap-4">
         <div className="rounded-full p-4 border">{icon}</div>
         <div className="flex flex-col">
-          <span className="text-4xl">{allProperty?.length}</span>
+          <span className="text-4xl">
+            {allProperty?.length ? allProperty.length : allProperty}
+          </span>
           <p className="text-sm">{name}</p>
         </div>
       </div>
@@ -40,6 +42,27 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
+
+  const [propData, setPropData] = useState([]);
+
+  const getProperties = async () => {
+    try {
+      const response = await axiosInstance.get("/properties/", {
+        params: {
+          pageNum: 1,
+        },
+      });
+      setPropData(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getProperties();
+  }, []);
+
+  console.log({ propData });
 
   const {
     add: addPropertyReferenceCategories,
@@ -84,7 +107,7 @@ const Dashboard = () => {
 
       if (response.status === 200) {
         setAllocationData(response.data.region);
-        state.auth.currentUser.deployedRegion = response.data.region;
+        state.auth.currentUser.deployedRegion = response?.data?.region;
       }
     } catch (error) {
       console.log(error);
@@ -283,17 +306,34 @@ const Dashboard = () => {
           <FloatButtonComponent handleClick={() => setShowModal(!showModal)} />
         )}
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-auto">
-          <NavLink to="/property-upload">
+          <NavLink
+            to={
+              hasAllowedPermission(auth.currentUser, [
+                PERMISSIONS.LIST_PROPERTY,
+              ])
+                ? "/properties-main"
+                : "/property-upload"
+            }
+          >
             <Card
-              allProperty={allProperty}
+              allProperty={
+                hasAllowedPermission(auth.currentUser, [
+                  PERMISSIONS.LIST_PROPERTY,
+                ])
+                  ? propData?.meta?.totalRecords
+                  : allProperty
+              }
               icon={<BsBuildingFillCheck size={20} />}
               name="Properties"
             />
           </NavLink>
-
-          <NavLink to="/property-capture">
-            <Card icon={<MdOutlineAddAPhoto />} name="Capture" />
-          </NavLink>
+          {hasAllowedPermission(auth.currentUser, [
+            PERMISSIONS.CREATE_PROPERTY_CAPTURE,
+          ]) && (
+            <NavLink to="/property-capture">
+              <Card icon={<MdOutlineAddAPhoto />} name="Capture" />
+            </NavLink>
+          )}
         </div>
 
         {hasAllowedPermission(auth.currentUser, [
