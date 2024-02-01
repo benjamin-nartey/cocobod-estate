@@ -56,6 +56,7 @@ const RolesModal = () => {
   });
 
   const onSubmit = (values) => {
+    console.log(crudType);
     crudType === CRUDTYPES.ADD ? mutate(values) : updateRolesFn(values);
   };
 

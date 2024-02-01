@@ -46,10 +46,16 @@ function MapBox({}) {
 
   useEffect(() => {
     if (data?.length) {
-      const coordinates = data?.map((result) => ({
-        latitude: parseFloat(result?.lat),
-        longitude: parseFloat(result?.long),
-      }));
+      const coordinates = data
+        ?.map((result) => {
+          if (result?.lat !== 'undefined' && result?.lng !== 'undefined') {
+            return {
+              latitude: parseFloat(result?.lat),
+              longitude: parseFloat(result?.long),
+            };
+          }
+        })
+        .filter((result) => result !== undefined);
 
       setCenter(getCenter(coordinates));
     }
@@ -60,6 +66,8 @@ function MapBox({}) {
     longitude: center && center?.longitude,
     zoom: 6,
   });
+
+  // console.log(center);
 
   useEffect(() => {
     setViewState({
@@ -85,71 +93,76 @@ function MapBox({}) {
       mapboxAccessToken={import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN}
     >
       {data &&
-        data.map((result, idx) => (
-          <div key={result?.long}>
-            <Marker
-              longitude={Number(result?.long)}
-              latitude={Number(result?.lat)}
-              offsetLeft={-20}
-              offsetRight={-10}
-              onClick={() => setAnimateBounce(idx)}
-            >
-              <p
-                ref={markerRef}
-                role="image"
-                onClick={() => {
-                  setSelectedLocation(result);
-                }}
-                className={`${
-                  animateBounce === idx && 'animate-bounce'
-                } text-xl cursor-pointer`}
-              >
-                <MdLocationPin color="red" size={25} />
-              </p>
-            </Marker>
+        data.map((result, idx) => {
+          return (
+            result?.long !== 'undefined' &&
+            result?.long !== 'undefined' && (
+              <div key={result?.long}>
+                <Marker
+                  longitude={Number(result?.long)}
+                  latitude={Number(result?.lat)}
+                  offsetLeft={-20}
+                  offsetRight={-10}
+                  onClick={() => setAnimateBounce(idx)}
+                >
+                  <p
+                    ref={markerRef}
+                    role="image"
+                    onClick={() => {
+                      setSelectedLocation(result);
+                    }}
+                    className={`${
+                      animateBounce === idx && 'animate-bounce'
+                    } text-xl cursor-pointer`}
+                  >
+                    <MdLocationPin color="red" size={25} />
+                  </p>
+                </Marker>
 
-            {sl ? (
-              <Popup
-                offset={20}
-                onClose={() => {
-                  setSelectedLocation({});
-                  setSl(false);
-                }}
-                closeOnClick={true}
-                latitude={Number(selectedLocation?.lat) || 0}
-                longitude={Number(selectedLocation?.long) || 0}
-              >
-                <div className="min-w-[200px]">
-                  <div className="flex justify-between items-center">
-                    <div className="inline-block">
-                      <span className="font-semibold">Long:</span>
-                      {` ${parseFloat(selectedLocation?.long)?.toFixed(4)}`}
+                {sl ? (
+                  <Popup
+                    offset={20}
+                    onClose={() => {
+                      setSelectedLocation({});
+                      setSl(false);
+                    }}
+                    closeOnClick={true}
+                    latitude={Number(selectedLocation?.lat) || 0}
+                    longitude={Number(selectedLocation?.long) || 0}
+                  >
+                    <div className="min-w-[200px]">
+                      <div className="flex justify-between items-center">
+                        <div className="inline-block">
+                          <span className="font-semibold">Long:</span>
+                          {` ${parseFloat(selectedLocation?.long)?.toFixed(4)}`}
+                        </div>
+                        <div className="inline-block">
+                          <span className="font-semibold">Lat:</span>
+                          {` ${parseFloat(selectedLocation?.lat)?.toFixed(4)}`}
+                        </div>
+                      </div>
+                      <h4 className="capitalize font-semibold text-base">
+                        {selectedLocation?.name}
+                      </h4>
+                      <div className="flex justify-between items-center">
+                        <h5 className="capitalize text-sm">{`(${selectedLocation.location.name})`}</h5>
+                        <NavLink
+                          className="outline-none text-blue-400 hover:underline"
+                          to={`/property-detail/${selectedLocation?.id}`}
+                          // onClick={() => setPropertyData(selectedLocation)}
+                        >
+                          View Property
+                        </NavLink>
+                      </div>
                     </div>
-                    <div className="inline-block">
-                      <span className="font-semibold">Lat:</span>
-                      {` ${parseFloat(selectedLocation?.lat)?.toFixed(4)}`}
-                    </div>
-                  </div>
-                  <h4 className="capitalize font-semibold text-base">
-                    {selectedLocation?.name}
-                  </h4>
-                  <div className="flex justify-between items-center">
-                    <h5 className="capitalize text-sm">{`(${selectedLocation.location.name})`}</h5>
-                    <NavLink
-                      className="outline-none text-blue-400 hover:underline"
-                      to={`/property-detail/${selectedLocation?.id}`}
-                      // onClick={() => setPropertyData(selectedLocation)}
-                    >
-                      View Property
-                    </NavLink>
-                  </div>
-                </div>
-              </Popup>
-            ) : (
-              false
-            )}
-          </div>
-        ))}
+                  </Popup>
+                ) : (
+                  false
+                )}
+              </div>
+            )
+          );
+        })}
     </Map>
   );
 }

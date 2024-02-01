@@ -50,3 +50,10 @@ export const useGetReferences = (queryParams) => {
     keepPreviousData: true,
   });
 };
+
+export const useGetUnMergedReferences = (queryParams) => {
+  return useQuery({
+    queryKey: ['property-references'],
+    queryFn: () => getPUnitsReferences(queryParams),
+  });
+};
