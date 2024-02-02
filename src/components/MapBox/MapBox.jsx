@@ -90,7 +90,7 @@ function MapBox({}) {
       onMove={(evt) => setViewState(evt.viewState)}
       className="w-full h-full"
       mapStyle="mapbox://styles/brightarhin/clje8v5tp005d01qsaa1ya2u8"
-      mapboxAccessToken={import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN}
+      mapboxAccessToken={`pk.eyJ1IjoiYnJpZ2h0YXJoaW4iLCJhIjoiY2w4OHM3Z3dlMDA0YTNubjFjcWZoYjNnOSJ9.mYzqF1JVp18gZ9-ZUqMXZw`}
     >
       {data &&
         data.map((result, idx) => {
