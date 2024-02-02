@@ -1,7 +1,9 @@
 import { axiosInstance } from '../axios/axiosInstance';
 
-export const getAllProperties = () => {
-  return axiosInstance.get('properties/all');
+export const getAllProperties = (queryParams) => {
+  return axiosInstance.get('properties/all', {
+    params: queryParams,
+  });
 };
 
 export const mergePropertyToPropertyUnit = (data) => {

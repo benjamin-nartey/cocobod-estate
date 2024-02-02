@@ -40,7 +40,6 @@ import { useSnapshot } from 'valtio';
 
 import state from '../../store/store';
 import { PERMISSIONS, hasAllowedPermission } from '../../utils/common';
-import { current } from '@reduxjs/toolkit';
 
 function Sidebar({ closeToggle }) {
   const snap = useSnapshot(state);
@@ -151,8 +150,6 @@ function Sidebar({ closeToggle }) {
 
             {hasAllowedPermission(currentUser, [
               PERMISSIONS.CREATE_PROPERTY_CAPTURE,
-              PERMISSIONS.LIST_PROPERTY_REFERENCE,
-              PERMISSIONS.LIST_PROPERTY_REFERENCE_CATEGORY,
             ]) && (
               <NavLink
                 to="/property-capture"

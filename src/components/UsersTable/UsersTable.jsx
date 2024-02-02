@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 import {
   Button,
@@ -9,47 +9,47 @@ import {
   Popconfirm,
   Table,
   Tag,
-} from 'antd';
+} from "antd";
 
-import { DeleteOutlined, UserOutlined } from '@ant-design/icons';
-import { BiEdit } from 'react-icons/bi';
-import { MdOutlineEmail } from 'react-icons/md';
+import { DeleteOutlined, UserOutlined } from "@ant-design/icons";
+import { BiEdit } from "react-icons/bi";
+import { MdOutlineEmail } from "react-icons/md";
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
-import { axiosInstance } from '../../axios/axiosInstance';
+import { axiosInstance } from "../../axios/axiosInstance";
 
-import CustomSelect from '../CustomSelect/CustomSelect';
-import { useGetPaginatedData } from '../../Hooks/query/generics';
-import { getAllUsers } from '../../http/users';
-import state from '../../store/store';
-import { CRUDTYPES } from '../../store/modalSlice';
+import CustomSelect from "../CustomSelect/CustomSelect";
+import { useGetPaginatedData } from "../../Hooks/query/generics";
+import { getAllUsers } from "../../http/users";
+import state from "../../store/store";
+import { CRUDTYPES } from "../../store/modalSlice";
 
 const UsersTable = () => {
   const [open, setOpen] = useState(false);
 
   const [page, setPage] = useState(1);
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
 
   const [form] = Form.useForm();
 
   const [messageApi, contextHolder] = message.useMessage();
   const [formFields, setformFields] = useState({
-    name: '',
-    email: '',
+    name: "",
+    email: "",
     roleIds: [],
-    id: '',
+    id: "",
   });
 
   const confirm = (e) => {
-    message.success('Click on Yes');
+    message.success("Click on Yes");
   };
   const cancel = (e) => {};
 
   const [paginatedData, props] = useGetPaginatedData(
-    'users',
-    '',
+    "users",
+    "",
     { pageNum: page },
     getAllUsers
   );
@@ -61,57 +61,57 @@ const UsersTable = () => {
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       filteredValue: [searchText],
       onFilter: (value, record) => {
         return (
-          String(record.name).toLowerCase().includes(value.toLowerCase()) ||
-          String(record.status).toLowerCase().includes(value.toLowerCase()) ||
-          String(record.staff.department.name)
+          String(record?.name).toLowerCase().includes(value.toLowerCase()) ||
+          String(record?.status).toLowerCase().includes(value.toLowerCase()) ||
+          String(record?.staff?.department?.name)
             .toLowerCase()
             .includes(value.toLowerCase()) ||
-          String(record.staff.department.division.name)
+          String(record?.staff?.department?.division.name)
             .toLowerCase()
             .includes(value.toLowerCase()) ||
-          String(record.staff.station.region.name)
+          String(record?.staff?.station?.name)
             .toLowerCase()
             .includes(value.toLowerCase())
         );
       },
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
-      title: 'Department',
-      dataIndex: ['staff', 'department', 'name'],
-      key: 'department',
+      title: "Department",
+      dataIndex: ["staff", "department", "name"],
+      key: "department",
       filteredValue: [searchText],
     },
     {
-      title: 'Division',
-      dataIndex: ['staff', 'department', 'division', 'name'],
-      key: 'division',
+      title: "Division",
+      dataIndex: ["staff", "department", "division", "name"],
+      key: "division",
     },
     {
-      title: ' Station',
-      dataIndex: ['staff', 'station', 'region', 'name'],
-      key: 'region',
+      title: " Station",
+      dataIndex: ["staff", "station", "name"],
+      key: "station",
     },
     {
-      title: 'Roles',
-      dataIndex: 'roles',
-      key: 'roles',
+      title: "Roles",
+      dataIndex: "roles",
+      key: "roles",
       render: (_, { roles }) => (
         <>
           {roles?.map((role, i) => (
             <Tag
               color={`${
-                role?.name === 'Super Administrator' ? 'green' : 'blue'
+                role?.name === "Super Administrator" ? "green" : "blue"
               }`}
               key={i}
             >
@@ -122,14 +122,14 @@ const UsersTable = () => {
       ),
     },
     {
-      title: ' Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: " Status",
+      dataIndex: "status",
+      key: "status",
     },
     {
-      title: 'Action',
-      dataIndex: '',
-      key: 'action',
+      title: "Action",
+      dataIndex: "",
+      key: "action",
       render: (value, record) => {
         return (
           <div className="flex items-center justify-center gap-4">
@@ -154,9 +154,9 @@ const UsersTable = () => {
               <span className="grid place-items-center">
                 <DeleteOutlined
                   style={{
-                    fontSize: '18px',
-                    color: ' #FF6A74',
-                    cursor: 'pointer',
+                    fontSize: "18px",
+                    color: " #FF6A74",
+                    cursor: "pointer",
                   }}
                 />
               </span>
@@ -189,7 +189,7 @@ const UsersTable = () => {
         onChange={(pagination) => {
           setPage(pagination.current);
         }}
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         rowKey="id"
         columns={columns}
       ></Table>

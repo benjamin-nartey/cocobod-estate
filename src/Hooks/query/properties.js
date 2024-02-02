@@ -9,11 +9,11 @@ import {
 import { getPropertyReferenceUnits } from '../../http/propertyUnits';
 import { getAllProperties } from '../../http/properties';
 
-export const useGetAllProperties = () => {
+export const useGetAllProperties = (queryParams = {}) => {
   return useQuery({
     queryKey: ['getAllProperties'],
     queryFn: () => {
-      return getAllProperties();
+      return getAllProperties(queryParams);
     },
   });
 };

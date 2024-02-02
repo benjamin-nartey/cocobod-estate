@@ -1,44 +1,43 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { Button, Modal, Form, Input, Table, message, Popconfirm } from 'antd';
+import { Button, Modal, Form, Input, Table, message, Popconfirm } from "antd";
 
-import { UserOutlined } from '@ant-design/icons';
-import { DeleteOutlined } from '@ant-design/icons';
-import { BiEdit } from 'react-icons/bi';
+import { UserOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
+import { BiEdit } from "react-icons/bi";
 
-import CustomSelect from '../CustomSelect/CustomSelect';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { axiosInstance } from '../../axios/axiosInstance';
-import { useGetPaginatedDistricts } from '../../Hooks/query/district';
-import { deleteRegion } from '../../http/regions';
+import { axiosInstance } from "../../axios/axiosInstance";
+import { useGetPaginatedDistricts } from "../../Hooks/query/district";
+import { deleteRegion } from "../../http/regions";
 
 const AreasTable = () => {
   const [pageNum, setPageNum] = useState(1);
   const [open, setOpen] = useState(false);
   const [recordsPerPage, setRecordsPerPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [formFields, setformFields] = useState({
-    name: '',
-    category: '',
-    areaId: '',
+    name: "",
+    category: "",
+    areaId: "",
   });
 
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationKey: 'deleteRegion',
+    mutationKey: "deleteRegion",
     mutationFn: (id) => {
       return deleteRegion(id);
     },
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: 'district' });
-      message.success('Region deleted successfully');
+      queryClient.invalidateQueries({ queryKey: "district" });
+      message.success("Region deleted successfully");
     },
 
     onError: (error) => {
@@ -62,19 +61,7 @@ const AreasTable = () => {
     form.resetFields();
   };
 
-  const success = (content) => {
-    messageApi.open({
-      type: 'success',
-      content: content,
-    });
-  };
 
-  const errorMessage = (content) => {
-    messageApi.open({
-      type: 'error',
-      content: content,
-    });
-  };
 
   const handleOk = () => {
     //an empty function to keep the modal working
@@ -82,7 +69,7 @@ const AreasTable = () => {
 
   const fetchRegions = async (pageNum) => {
     try {
-      const response = await axiosInstance.get('/region', {
+      const response = await axiosInstance.get("/region", {
         params: {
           pageNum: pageNum,
         },
@@ -100,44 +87,42 @@ const AreasTable = () => {
   };
 
   const { data, status, error, isLoading, isFetching } = useQuery(
-    ['regions', pageNum],
+    ["regions", pageNum],
     () => fetchRegions(pageNum)
   );
 
-  if (status === 'error') {
+  if (status === "error") {
     console.log(error);
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values) => {
+    console.log(values)
+    // try {
+    //   const response = await axiosInstance.patch(`/regions/${areaId}`, {
+    //     name: values?.name,
+    //   });
 
-    try {
-      const response = await axiosInstance.patch(`/regions/${areaId}`, {
-        name,
-      });
+    //   if (response) {
+    //     success("Region updated successfully");
 
-      if (response) {
-        success('Region updated successfully');
-
-        clearInput();
-        handleCancel();
-      }
-    } catch (error) {
-      errorMessage('Error updating region');
-      throw new Error(`Error updating region ${error}`);
-    }
+    //     clearInput();
+    //     handleCancel();
+    //   }
+    // } catch (error) {
+    //   errorMessage("Error updating region");
+    //   throw new Error(`Error updating region ${error}`);
+    // }
   };
 
   function clearInput() {
-    setformFields({ name: '', category: '', areaId: '' });
     form.resetFields();
   }
 
   const columns = [
     {
-      title: 'Area Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Area Name",
+      dataIndex: "name",
+      key: "name",
       filteredValue: [searchText],
       onFilter: (value, record) => {
         return (
@@ -149,14 +134,17 @@ const AreasTable = () => {
     },
 
     {
-      title: 'Action',
-      dataIndex: 'id',
-      key: 'action',
+      title: "Action",
+      dataIndex: "id",
+      key: "action",
       render: (value) => {
         return (
           <div className="flex items-center  gap-4">
             <button
-              onClick={(e) => {
+              onClick={() => {
+                form.setFieldsValue({
+                  name: value?.name,
+                });
                 setformFields({
                   ...formFields,
                   name: value?.name,
@@ -168,7 +156,7 @@ const AreasTable = () => {
             >
               <BiEdit size={22} className="cursor-pointer text-gray-600" />
             </button>
-            <Popconfirm
+            {/* <Popconfirm
               title="Delete the task"
               description="Are you sure to delete this task?"
               onConfirm={() => confirm(value)}
@@ -179,13 +167,13 @@ const AreasTable = () => {
               <span className="grid place-items-center">
                 <DeleteOutlined
                   style={{
-                    fontSize: '18px',
-                    color: ' #FF6A74',
-                    cursor: 'pointer',
+                    fontSize: "18px",
+                    color: " #FF6A74",
+                    cursor: "pointer",
                   }}
                 />
               </span>
-            </Popconfirm>
+            </Popconfirm> */}
           </div>
         );
       },
@@ -210,10 +198,10 @@ const AreasTable = () => {
       >
         <Form
           form={form}
-          onSubmitCapture={handleSubmit}
-          name="wrap"
+          onFinish={(values) => handleSubmit(values)}
+          name="region"
           labelCol={{
-            flex: '110px',
+            flex: "110px",
           }}
           labelAlign="left"
           labelWrap
@@ -236,11 +224,6 @@ const AreasTable = () => {
           >
             <Input
               name="name"
-              value={name}
-              defaultValue={name}
-              onChange={(e) =>
-                setformFields({ ...formFields, name: e.target.value })
-              }
               placeholder="Enter Area name"
               prefix={<UserOutlined />}
             />
@@ -251,7 +234,7 @@ const AreasTable = () => {
               className="w-full"
               type="primary"
               htmlType="submit"
-              style={{ backgroundColor: '#6E431D', color: '#fff' }}
+              style={{ backgroundColor: "#6E431D", color: "#fff" }}
             >
               Submit
             </Button>
@@ -271,7 +254,7 @@ const AreasTable = () => {
           pageSize: recordsPerPage,
           total: totalPages,
         }}
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         rowKey="id"
         onChange={(pagination) => {
           setPageNum(pagination.current);
