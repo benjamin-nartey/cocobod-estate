@@ -26,8 +26,8 @@ export const LogoutProvider = ({ children }) => {
   const logout = async () => {
     const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
     const api = axios.create({
-      // baseURL: 'https://estate-api-2.onrender.com/api/v1',
-      baseURL: 'https://estate.cocobod.net/api/v1',
+      baseURL: 'https://estate-api-2.onrender.com/api/v1',
+      // baseURL: 'http://localhost:3000/api/v1',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${refreshToken}`,
@@ -36,7 +36,7 @@ export const LogoutProvider = ({ children }) => {
 
     if (online) {
       try {
-        state.loadingState = true;
+        state.auth.loadingState = true;
         const response = await api.delete('/auth', {
           headers: {
             'Content-Type': 'application/json',
@@ -60,12 +60,13 @@ export const LogoutProvider = ({ children }) => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         navigate(from, { replace: true });
-        state.loadingState = false;
+        state.auth.loadingState = false;
       }
     } else {
       setIsOffLineLogout(true);
       state.auth.currentUserr = {};
       navigate(from, { replace: true });
+      state.auth.loadingState = false;
     }
   };
 

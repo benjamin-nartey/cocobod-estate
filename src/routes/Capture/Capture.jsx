@@ -122,7 +122,7 @@ const Capture = () => {
         <h3 className="font-semibold text-slate-500">PROPERTIES</h3>
       </div>
 
-      <div className="flex flex-col">
+      <div className="flex flex-col no-scrollbar">
         <Select
           showSearch
           optionFilterProp="label"
@@ -134,6 +134,7 @@ const Capture = () => {
           onChange={(e) => handleChange(e)}
         />
         <Table
+        className="no-scrollbar"
           rowKey={"id"}
           // loading={props?.isLoading}
           columns={columns}

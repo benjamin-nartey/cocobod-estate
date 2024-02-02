@@ -84,6 +84,10 @@ const PropertyUpload = () => {
 
   const handleUploadAll = () => {
     setSpinning(true);
+    if (property.length === 0) {
+      setSpinning(false);
+      return;
+    }
 
     Promise.allSettled([
       property.map(async (property) => {
@@ -171,7 +175,7 @@ const PropertyUpload = () => {
     },
     {
       title: "Town",
-      dataIndex: ["locationId"],
+      dataIndex: ["name"],
     },
     {
       title: "Digital Address",

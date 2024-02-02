@@ -1,7 +1,9 @@
 import { axiosInstance } from '../axios/axiosInstance';
 
-export const getAllProperties = () => {
-  return axiosInstance.get('properties/all');
+export const getAllProperties = (queryParams) => {
+  return axiosInstance.get('properties/all', {
+    params: queryParams,
+  });
 };
 
 export const mergePropertyToPropertyUnit = (data) => {
@@ -38,7 +40,6 @@ export const updateProperty = (id, data) => {
 };
 
 export const getPUnitsReferences = (queryParams = {}) => {
-  console.log('running...');
   return axiosInstance.get('/property-references/all', {
     params: { ...queryParams },
   });

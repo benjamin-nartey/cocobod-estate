@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: 'Quicksand', sans-serif;
+  font-family: "Quicksand", sans-serif;
 }
 html {
   scroll-behavior: smooth;
@@ -22,6 +22,14 @@ html {
       scrollbar-width: none; /* Firefox */
     }
   }
+}
+.ant-table-container::-webkit-scrollbar {
+  display: none;
+}
+
+.ant-table-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .ant-btn-primary {
@@ -82,7 +90,7 @@ html {
   max-height: 9999px;
   max-height: 9999px;
 }
-.delete-btn.show{
+.delete-btn.show {
   height: auto;
 }
 /* transition: all 0.5s, cubic-bezier(0, 1, 0, 1); */
@@ -92,27 +100,26 @@ html {
 }
 
 .ant-form-vertical .ant-form-item-label > label {
-  font-family: 'Quicksand', sans-serif;
+  font-family: "Quicksand", sans-serif;
   font-weight: 500;
 }
 
 .ant-table-wrapper .ant-table-container table > thead > tr {
-  font-family: 'Quicksand', sans-serif;
+  font-family: "Quicksand", sans-serif;
   font-weight: 800;
 }
 
 .ant-table-wrapper .ant-table-tbody > tr > td {
-  font-family: 'Quicksand', sans-serif;
+  font-family: "Quicksand", sans-serif;
   font-weight: 500;
 }
 
 .ant-tag {
-  font-family: 'Quicksand', sans-serif;
+  font-family: "Quicksand", sans-serif;
   font-weight: 500;
 }
 
 .ant-divider .ant-divider-inner-text {
-  font-family: 'Quicksand', sans-serif;
+  font-family: "Quicksand", sans-serif;
   font-weight: 700;
 }
-

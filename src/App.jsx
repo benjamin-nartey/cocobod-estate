@@ -74,6 +74,7 @@ import PoliticalRegion from './routes/Political Region/PoliticalRegion';
 import PropertyMergeDetail from './routes/PropertyMerge/PropertyMergeDetail';
 import { initDB, useIndexedDB } from 'react-indexed-db-hook';
 import { PERMISSIONS } from './utils/common';
+import Unmerged from './routes/Unmerged/Unmerged';
 
 function App() {
   // const [offlineUser, setOfflineUser] = useState(null);
@@ -135,7 +136,11 @@ function App() {
         {/********* Public **********/}
         <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route element={<RequireAuth allowedPermissions={['view.property']} />}>
+        <Route
+          element={
+            <RequireAuth allowedPermissions={[PERMISSIONS.VIEW_PROPERTY]} />
+          }
+        >
           <Route element={<Home />}>
             <Route path="/home" element={<Properties />} />
             <Route path="/home/*" element={<NotExistPage />} />
@@ -158,16 +163,7 @@ function App() {
         <Route
           element={
             <RequireAuth
-              allowedPermissions={[
-                PERMISSIONS.VIEW_ALLOCATION,
-                PERMISSIONS.LIST_DISTRICT,
-                PERMISSIONS.LIST_LOCATION,
-                PERMISSIONS.LIST_PROPERTY_TYPE,
-                PERMISSIONS.CREATE_PROPERTY_CAPTURE,
-                PERMISSIONS.LIST_PROPERTY_REFERENCE,
-                PERMISSIONS.LIST_PROPERTY_REFERENCE_CATEGORY,
-                PERMISSIONS.LIST_CLIENT_OCCUPANT,
-              ]}
+              allowedPermissions={[PERMISSIONS.CREATE_PROPERTY_CAPTURE]}
             />
           }
         >
@@ -439,6 +435,7 @@ function App() {
         >
           <Route path="/merge">
             <Route index element={<PropertyMergeIndex />} />
+            <Route path="unmerged" element={<Unmerged />} />
             <Route path="create" element={<PropertyMerge />} />
             <Route path=":id" element={<PropertyMergeDetail />} />
           </Route>

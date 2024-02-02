@@ -1,133 +1,56 @@
-import React, { useEffect, useState } from "react";
-import { Button, Modal, Form, Input, Table, message, Popconfirm, Tag } from "antd";
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  Table,
+  message,
+  Popconfirm,
+  Tag,
+} from 'antd';
 
-import { DeleteOutlined } from "@ant-design/icons";
-import { BiEdit } from "react-icons/bi";
-import { UserOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from '@ant-design/icons';
+import { BiEdit } from 'react-icons/bi';
 
-import { useQuery } from "@tanstack/react-query";
-
-import { axiosInstance } from "../../axios/axiosInstance";
-import CustomSelect from "../CustomSelect/CustomSelect";
+import { useGetPaginatedData } from '../../Hooks/query/generics';
+import { deleteRole, getPaginatedRoles, getRoles } from '../../http/roles';
+import state from '../../store/store';
+import { CRUDTYPES } from '../../store/modalSlice';
+import { useSnapshot } from 'valtio';
+import RolesModal from '../modals/roles/roles';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const RolesTable = () => {
   const [pageNum, setPageNum] = useState(1);
-  const [options, setOptions] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [recordsPerPage, setRecordsPerPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [searchText, setSearchText] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
-  const [formFields, setformFields] = useState({
-    name: "",
-    roleId: "",
-    permissionIds: [],
+
+  const [searchText, setSearchText] = useState('');
+
+  const snap = useSnapshot(state);
+  const { showRolesModal, selectedRecord } = snap.modalSlice;
+
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationKey: 'deleteRole',
+    mutationFn: (value) => {
+      return deleteRole(value);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: 'roles',
+      });
+      message.success('Role deleted successfully');
+    },
+    onError: (err) => {
+      message.error(err?.response?.data?.message);
+    },
   });
-
-  const confirm = (e) => {
-    message.success("Click on Yes");
-  };
-  const cancel = (e) => {};
-
-  const { name, roleId, permissionIds } = formFields;
-
-  const showModal = () => {
-    setOpen(true);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-    form.resetFields();
-  };
-
-  const handleOk = () => {
-    //an empty function to keep the modal working
-  };
-
-  const fetchRoles = async (pageNum) => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get("/roles", {
-        params: {
-          pageNum: pageNum,
-        },
-      });
-      if (response) {
-        setTotalPages(response.data.meta.totalPages);
-        setRecordsPerPage(response.data.meta.recordsPerPage);
-        console.log({ totalPages });
-        return response.data;
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const { data, status, error } = useQuery(["roles"], () => fetchRoles(1));
-
-  console.log(data);
-
-  if (status === "error") {
-    console.log(error);
-  }
-
-  async function fetchPermissions(pageNum) {
-    const response = await axiosInstance.get("/permissions", {
-      params: {
-        pageNum: pageNum,
-      },
-    });
-
-    const data = await response.data;
-
-    const dataRcord = await data.records.map((record) => {
-      return {
-        label: `${record.name}`,
-        value: record.id,
-      };
-    });
-    setOptions(dataRcord);
-  }
-
-  useEffect(() => {
-    fetchPermissions(pageNum);
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await axiosInstance.patch(`/roles/${roleId}`, {
-        name,
-        permissionIds,
-      });
-
-      if (response) {
-        message.success("Role updated successfully");
-        clearInput();
-        handleCancel();
-      }
-    } catch (error) {
-      message.error("Error updating role");
-      throw new Error(`Error adding user edits ${error}`);
-    }
-  };
-
-  function clearInput() {
-    setformFields({ name: "", roleId: "" });
-    form.resetFields();
-  }
 
   const columns = [
     {
-      title: "Role Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Role Name',
+      dataIndex: 'name',
+      key: 'name',
       filteredValue: [searchText],
       onFilter: (value, record) => {
         return (
@@ -138,9 +61,9 @@ const RolesTable = () => {
     },
 
     {
-      title: "Permissions",
-      dataIndex: "permissions",
-      key: "permissions",
+      title: 'Permissions',
+      dataIndex: 'permissions',
+      key: 'permissions',
       render: (_, { permissions }) => (
         <>
           {permissions?.map((permission, i) => (
@@ -151,44 +74,37 @@ const RolesTable = () => {
     },
 
     {
-      title: " Status",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: "Action",
-      dataIndex: "",
-      key: "action",
-      render: (value) => {
+      title: 'Action',
+      dataIndex: 'id',
+      key: 'action',
+      render: (value, record) => {
         return (
           <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={(e) => {
-                setformFields({
-                  ...formFields,
-                  name: value?.name,
-                  roleId: value?.id,
-                });
-                console.log(value);
-                showModal();
+            <BiEdit
+              size={22}
+              className="cursor-pointer text-gray-600"
+              onClick={() => {
+                state.modalSlice.toggleshowRolesModal();
+                state.modalSlice.crudType = CRUDTYPES.EDIT;
+                state.modalSlice.selectedRecord = record;
               }}
-            >
-              <BiEdit size={22} className="cursor-pointer text-gray-600" />
-            </button>
+            />
+
             <Popconfirm
               title="Delete the task"
-              description="Are you sure to delete this task?"
-              onConfirm={confirm}
-              onCancel={cancel}
+              description="Are you sure to delete this role?"
+              onConfirm={() => {
+                mutate(value);
+              }}
               okText="Yes"
               cancelText="No"
             >
               <span className="grid place-items-center">
                 <DeleteOutlined
                   style={{
-                    fontSize: "18px",
-                    color: " #FF6A74",
-                    cursor: "pointer",
+                    fontSize: '18px',
+                    color: ' #FF6A74',
+                    cursor: 'pointer',
                   }}
                 />
               </span>
@@ -199,118 +115,50 @@ const RolesTable = () => {
     },
   ];
 
-  console.log(formFields);
+  const [paginatedData, props] = useGetPaginatedData(
+    'roles',
+    '',
+    { pageNum },
+    getPaginatedRoles
+  );
+
+  const _data = props.data?.data?.records?.map((rec) => ({
+    ...rec,
+    key: rec?.id,
+  }));
 
   return (
     <>
-      {contextHolder}
-      <Modal
-        title="EDIT ROLE"
-        open={open}
-        onOk={handleOk}
-        okButtonProps={{
-          hidden: true,
-        }}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-        cancelButtonProps={{
-          hidden: true,
-        }}
-      >
-        <Form
-          form={form}
-          onSubmitCapture={handleSubmit}
-          name="roleedit"
-          layout="vertical"
-          // labelCol={{
-          //   flex: "110px",
-          // }}
-          labelAlign="left"
-          labelWrap
-          // wrapperCol={{
-          //   flex: 1,
-          // }}
-          colon={false}
-          style={{
-            maxWidth: 600,
+      <div className="flex justify-end mb-4">
+        <Button
+          onClick={() => {
+            state.modalSlice.toggleshowRolesModal();
+            state.modalSlice.selectedRecord = null;
+            state.modalSlice.crudType = CRUDTYPES.ADD;
           }}
         >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              name="name"
-              value={name}
-              defaultValue={name}
-              onChange={(e) =>
-                setformFields({ ...formFields, name: e.target.value })
-              }
-              placeholder="Enter role name"
-              prefix={<UserOutlined />}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Permissions"
-            name="permissions"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <CustomSelect
-              mode="multiple"
-              value={permissionIds}
-              placeholder="Select permissions"
-              options={options}
-              onChange={(e) =>
-                setformFields({ ...formFields, permissionIds: e })
-              }
-              style={{
-                width: "100%",
-              }}
-            />
-          </Form.Item>
-
-          <Form.Item label=" ">
-            <Button
-              className="w-full"
-              type="primary"
-              htmlType="submit"
-              style={{ backgroundColor: "#6E431D", color: "#fff" }}
-            >
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-
+          Add Role
+        </Button>
+      </div>
       <Input.Search
         placeholder="Search records..."
         onSearch={(value) => setSearchText(value)}
         onChange={(e) => setSearchText(e.target.value)}
       />
       <Table
-        dataSource={data?.records}
-        loading={status === "loading" || loading}
+        dataSource={_data}
+        loading={props?.isLoading || props?.isFetching}
         pagination={{
-          pageSize: recordsPerPage,
-          total: totalPages,
-          onChange: (pageNum) => {
-            fetchRoles(pageNum);
-          },
+          pageSize: paginatedData.pageSize,
+          total: paginatedData.total,
         }}
-        style={{ width: "100%" }}
-        rowKey="id"
         columns={columns}
+        onChange={(pagination) => {
+          setPageNum(pagination.current);
+        }}
       ></Table>
+
+      {showRolesModal && <RolesModal />}
     </>
   );
 };

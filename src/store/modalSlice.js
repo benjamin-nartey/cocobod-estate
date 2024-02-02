@@ -58,4 +58,8 @@ export const modalSlice = {
   toggleshowPropertyUnitModal() {
     this.showPropertyUnitModal = !this.showPropertyUnitModal;
   },
+  showRolesModal: false,
+  toggleshowRolesModal() {
+    this.showRolesModal = !this.showRolesModal;
+  },
 };

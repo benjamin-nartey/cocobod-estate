@@ -9,11 +9,11 @@ import {
 import { getPropertyReferenceUnits } from '../../http/propertyUnits';
 import { getAllProperties } from '../../http/properties';
 
-export const useGetAllProperties = () => {
+export const useGetAllProperties = (queryParams = {}) => {
   return useQuery({
     queryKey: ['getAllProperties'],
     queryFn: () => {
-      return getAllProperties();
+      return getAllProperties(queryParams);
     },
   });
 };
@@ -48,5 +48,12 @@ export const useGetReferences = (queryParams) => {
     queryKey: ['getPropertyUnitReferences', queryParams?.regionFilter],
     queryFn: () => getPropertyReferenceUnits(queryParams),
     keepPreviousData: true,
+  });
+};
+
+export const useGetUnMergedReferences = (queryParams) => {
+  return useQuery({
+    queryKey: ['property-references'],
+    queryFn: () => getPUnitsReferences(queryParams),
   });
 };
