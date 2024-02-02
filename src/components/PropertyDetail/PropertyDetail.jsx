@@ -331,9 +331,7 @@ function PropertyDetail() {
                     property?.data?.long
                   )},${Number(
                     property?.data?.lat
-                  )},6,0/300x200@2x?access_token=${
-                    import.meta.env.VITE_MAPBOX_API_ACCESS_TOKEN
-                  }`}
+                  )},6,0/300x200@2x?access_token=pk.eyJ1IjoiYnJpZ2h0YXJoaW4iLCJhIjoiY2w4OHM3Z3dlMDA0YTNubjFjcWZoYjNnOSJ9.mYzqF1JVp18gZ9-ZUqMXZw`}
                   alt=""
                 />
               </NavLink>
