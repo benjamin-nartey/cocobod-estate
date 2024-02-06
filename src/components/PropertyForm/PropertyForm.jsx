@@ -601,7 +601,7 @@ const PropertyForm = (id) => {
               >
                 <Input
                   name="lat"
-                  readOnly
+                  // readOnly
                   type="text"
                   placeholder="latitude"
                   // value={location?.latitude}
@@ -619,7 +619,7 @@ const PropertyForm = (id) => {
               >
                 <Input
                   name="long"
-                  readOnly
+                  // readOnly
                   type="text"
                   placeholder="longitude"
                   // value={location?.longitude}
