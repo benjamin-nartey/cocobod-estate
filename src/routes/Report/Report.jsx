@@ -139,7 +139,7 @@ const Report = () => {
     },
     {
       title: 'Current Useful Life',
-      dataIndex: 'propertyStates',
+      dataIndex: 'propertyUnitValue',
       render: (value) => {
         return value[0]?.currentUsefulLife;
       },
