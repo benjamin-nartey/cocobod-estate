@@ -75,6 +75,7 @@ import PropertyMergeDetail from './routes/PropertyMerge/PropertyMergeDetail';
 import { initDB, useIndexedDB } from 'react-indexed-db-hook';
 import { PERMISSIONS } from './utils/common';
 import Unmerged from './routes/Unmerged/Unmerged';
+import ProtectedLogin from './routes/protectedLogin/ProtectedLogin';
 
 function App() {
   // const [offlineUser, setOfflineUser] = useState(null);
@@ -121,9 +122,23 @@ function App() {
 
   return (
     <Routes>
-      <Route index element={<Authentication />} />
+      <Route
+        index
+        element={
+          <ProtectedLogin>
+            <Authentication />
+          </ProtectedLogin>
+        }
+      />
 
-      <Route path="login" element={<Authentication />} />
+      <Route
+        path="login"
+        element={
+          <ProtectedLogin>
+            <Authentication />
+          </ProtectedLogin>
+        }
+      />
       <Route path="unauthorized" element={<Unauthorized />} />
 
       <Route path="fetching" element={<FetchingPage />} />

@@ -166,7 +166,12 @@ const Report = () => {
     }
   }, [pageNum, reportFilters]);
 
-  console.log(report);
+  const _data =
+    report &&
+    report?.data?.records?.map((r) => ({
+      ...r,
+      key: r?.id,
+    }));
 
   return (
     <div className="flex flex-col gap-2 w-[90%] mx-auto mt-11">
@@ -199,7 +204,7 @@ const Report = () => {
 
       <Table
         columns={columns}
-        dataSource={report?.data.records}
+        dataSource={_data}
         pagination={{
           pageSize: report?.data?.meta?.recordsPerPage,
           total: report?.data?.meta?.totalRecords,

@@ -145,7 +145,7 @@ function MapBox({}) {
                         {selectedLocation?.name}
                       </h4>
                       <div className="flex justify-between items-center">
-                        <h5 className="capitalize text-sm">{`(${selectedLocation.location.name})`}</h5>
+                        <h5 className="capitalize text-sm">{`(${selectedLocation?.location?.name})`}</h5>
                         <NavLink
                           className="outline-none text-blue-400 hover:underline"
                           to={`/property-detail/${selectedLocation?.id}`}

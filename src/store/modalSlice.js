@@ -62,4 +62,8 @@ export const modalSlice = {
   toggleshowRolesModal() {
     this.showRolesModal = !this.showRolesModal;
   },
+  showConditionsModal: false,
+  toggleshowConditionsModal() {
+    this.showConditionsModal = !this.showConditionsModal;
+  },
 };

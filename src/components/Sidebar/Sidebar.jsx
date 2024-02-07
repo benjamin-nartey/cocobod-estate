@@ -218,7 +218,9 @@ function Sidebar({ closeToggle }) {
               </NavLink>
             )}
 
-            {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_DIVISION]) && (
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.CREATE_DIVISION,
+            ]) && (
               <NavLink
                 to="/divisions"
                 className={({ isActive }) =>

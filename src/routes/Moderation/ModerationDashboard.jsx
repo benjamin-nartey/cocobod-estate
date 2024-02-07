@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useGetRegionalPropertiesCount } from '../../Hooks/query/moderation';
 import waitingAnimation from '../../assets/waiting.json';
 import Lottie from 'lottie-react';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const ModerationDashboard = () => {
   const { data: regionalPropertyCount, isLoading } =
@@ -40,7 +42,17 @@ const ModerationDashboard = () => {
       <Lottie animationData={waitingAnimation} style={{ width: '20%' }} />
       <p className="text-slate-500 font-semibold">No Pending Approvals</p>
     </div>
-  ) : null;
+  ) : (
+    <div className="w-screen h-screen fixed left-0 top-0 z-[99999] bg-[rgba(0,0,0,0.4)] grid place-items-center">
+      <Spin
+        indicator={
+          <LoadingOutlined style={{ fontSize: '10rem', color: '#6E431D' }} />
+        }
+        size="large"
+        fullscreen
+      />
+    </div>
+  );
 };
 
 export default ModerationDashboard;

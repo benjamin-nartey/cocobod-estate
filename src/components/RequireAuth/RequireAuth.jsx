@@ -1,4 +1,4 @@
-import { useLocation, Navigate, Outlet } from 'react-router-dom';
+import { useLocation, Navigate, Outlet, useNavigate } from 'react-router-dom';
 
 import { useSnapshot } from 'valtio';
 
@@ -10,6 +10,7 @@ function RequireAuth({ allowedPermissions }) {
 
   const currentUser = snap.auth.currentUser;
   const loadingState = snap.auth.loadingState;
+  const navigate = useNavigate();
 
   const location = useLocation();
 
@@ -22,7 +23,8 @@ function RequireAuth({ allowedPermissions }) {
     !hasAllowedPermission(currentUser, allowedPermissions) &&
     loadingState === false
   ) {
-    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+    navigate(-1);
+    // return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   }
 }
 
