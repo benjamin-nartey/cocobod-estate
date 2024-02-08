@@ -110,20 +110,6 @@ function Sidebar({ closeToggle }) {
               Dashboard
             </NavLink>
 
-            {hasAllowedPermission(currentUser, [
-              PERMISSIONS.LIST_PROPERTY_UNIT,
-            ]) && (
-              <NavLink
-                to="/report"
-                className={({ isActive }) =>
-                  isActive ? isActiveStyle : isNotActiveStyle
-                }
-                onClick={handleCloseSidebar}
-              >
-                <MdPieChart size={18} />
-                Report
-              </NavLink>
-            )}
             {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_PROPERTY]) && (
               <NavLink
                 to="/properties-main"
@@ -175,6 +161,21 @@ function Sidebar({ closeToggle }) {
               >
                 <MdOutlineAddAPhoto size={18} />
                 Property Upload
+              </NavLink>
+            )}
+
+            {hasAllowedPermission(currentUser, [
+              PERMISSIONS.MODERATE_PROPERTY_UNIT,
+            ]) && (
+              <NavLink
+                to="/moderation"
+                className={({ isActive }) =>
+                  isActive ? isActiveStyle : isNotActiveStyle
+                }
+                onClick={handleCloseSidebar}
+              >
+                <HiLightningBolt size={25} />
+                Moderation
               </NavLink>
             )}
 
@@ -318,21 +319,6 @@ function Sidebar({ closeToggle }) {
             )}
 
             {hasAllowedPermission(currentUser, [
-              PERMISSIONS.MODERATE_PROPERTY_UNIT,
-            ]) && (
-              <NavLink
-                to="/moderation"
-                className={({ isActive }) =>
-                  isActive ? isActiveStyle : isNotActiveStyle
-                }
-                onClick={handleCloseSidebar}
-              >
-                <HiLightningBolt size={25} />
-                Moderation
-              </NavLink>
-            )}
-
-            {hasAllowedPermission(currentUser, [
               PERMISSIONS.CREATE_PROPERTY_REFERENCE_BATCH,
             ]) && (
               <NavLink
@@ -438,6 +424,21 @@ function Sidebar({ closeToggle }) {
             >
               <IoMdMap size={18} />
               Map
+            </NavLink>
+          )}
+
+          {hasAllowedPermission(currentUser, [
+            PERMISSIONS.LIST_PROPERTY_UNIT,
+          ]) && (
+            <NavLink
+              to="/report"
+              className={({ isActive }) =>
+                isActive ? isActiveStyle : isNotActiveStyle
+              }
+              onClick={handleCloseSidebar}
+            >
+              <MdPieChart size={18} />
+              Report
             </NavLink>
           )}
           <button

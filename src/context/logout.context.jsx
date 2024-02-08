@@ -48,10 +48,9 @@ export const LogoutProvider = ({ children }) => {
         } else {
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
-          // localStorage.removeItem("currentUser");
-          // localStorage.removeItem('currentUserState');
-          state.auth.currentUserr = {};
-          navigate(from, { replace: true });
+
+          state.auth.currentUser = null;
+          navigate('/', { replace: true });
           return response;
         }
       } catch (error) {
@@ -59,12 +58,13 @@ export const LogoutProvider = ({ children }) => {
       } finally {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        navigate(from, { replace: true });
+        state.auth.currentUser = null;
+        navigate('/', { replace: true });
         state.auth.loadingState = false;
       }
     } else {
       setIsOffLineLogout(true);
-      state.auth.currentUserr = {};
+      state.auth.currentUser = null;
       navigate(from, { replace: true });
       state.auth.loadingState = false;
     }

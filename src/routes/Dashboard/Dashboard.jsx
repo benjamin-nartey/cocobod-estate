@@ -291,7 +291,7 @@ const Dashboard = () => {
   };
   {
     return loading ? (
-      <div className="w-[10rem] h-[10rem] absolute top-[50%] left-[40%] mx-auto flex flex-col gap-6">
+      <div className="w-[10rem] h-[10rem] absolute top-[40%] left-[50%] mx-auto flex flex-col gap-6">
         <span className="text-slate-500 text-xl mb-5 font-semibold">
           Hang tight ....
         </span>

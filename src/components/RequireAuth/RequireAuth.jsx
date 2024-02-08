@@ -23,8 +23,10 @@ function RequireAuth({ allowedPermissions }) {
     !hasAllowedPermission(currentUser, allowedPermissions) &&
     loadingState === false
   ) {
-    navigate(-1);
+    navigate('/login', { replace: true });
     // return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+  } else if (!currentUser) {
+    return <Navigate to="/" />;
   }
 }
 
