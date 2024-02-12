@@ -145,7 +145,7 @@ function App() {
 
       <Route path="*" element={<NotExistPage />} />
 
-      <Route path="/user-activation" element={<ActivateUser />} />
+      <Route path="/account-activation" element={<ActivateUser />} />
 
       <Route element={<Navigation />}>
         {/********* Public **********/}
