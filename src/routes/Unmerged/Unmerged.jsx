@@ -39,7 +39,9 @@ const PropertyReferences = () => {
           String(record.locationOrTown)
             .toLowerCase()
             .includes(value.toLowerCase()) ||
-          String(record.region).toLowerCase().includes(value.toLowerCase()) ||
+          String(record.region.name)
+            .toLowerCase()
+            .includes(value.toLowerCase()) ||
           String(record.description)
             .toLowerCase()
             .includes(value.toLowerCase()) ||
