@@ -234,7 +234,7 @@ function Sidebar({ closeToggle }) {
               </NavLink>
             )}
 
-            {hasAllowedPermission(currentUser, [PERMISSIONS.LIST_ROLE]) && (
+            {hasAllowedPermission(currentUser, [PERMISSIONS.CREATE_ROLE]) && (
               <NavLink
                 to="/roles"
                 className={({ isActive }) =>
