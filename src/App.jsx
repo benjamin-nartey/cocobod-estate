@@ -448,9 +448,9 @@ function App() {
             />
           }
         >
+          <Route path="unmerged" element={<Unmerged />} />
           <Route path="/merge">
             <Route index element={<PropertyMergeIndex />} />
-            <Route path="unmerged" element={<Unmerged />} />
             <Route path="create" element={<PropertyMerge />} />
             <Route path=":id" element={<PropertyMergeDetail />} />
           </Route>

@@ -400,7 +400,7 @@ function Sidebar({ closeToggle }) {
             PERMISSIONS.CREATE_PROPERTY_REFERENCE_CATEGORY,
           ]) && (
             <NavLink
-              to="/merge/unmerged"
+              to="/unmerged"
               className={({ isActive }) =>
                 isActive ? isActiveStyle : isNotActiveStyle
               }
