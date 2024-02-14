@@ -1,23 +1,23 @@
-import { Fragment, useEffect, useState } from "react";
-import PropertyUnitForm from "../PropertyUnitForm/PropertyUnitForm";
-import { Button, Form } from "antd";
-import { useIndexedDB } from "react-indexed-db-hook";
-import { useLocation } from "react-router-dom";
-import { MdAddCircleOutline } from "react-icons/md";
-import { BiMinusCircle } from "react-icons/bi";
+import { Fragment, useEffect, useState } from 'react';
+import PropertyUnitForm from '../PropertyUnitForm/PropertyUnitForm';
+import { Button, Form } from 'antd';
+import { useIndexedDB } from 'react-indexed-db-hook';
+import { useLocation } from 'react-router-dom';
+import { MdAddCircleOutline } from 'react-icons/md';
+import { BiMinusCircle } from 'react-icons/bi';
 
 const Accordion = ({ id, form }) => {
   const [selected, setSelected] = useState(null);
-  const [selectedPropType, setSelectedPropType] = useState("");
+  const [selectedPropType, setSelectedPropType] = useState('');
   const [propertyUnits, setPropertyUnits] = useState([]);
   const location = useLocation();
   const pathName = location.pathname;
 
   // const form = Form.useFormInstance();
   const { getAll: getAllpropertyReferences } =
-    useIndexedDB("propertyReferences");
+    useIndexedDB('propertyReferences');
 
-  const { getAll: getAllProperty } = useIndexedDB("property");
+  const { getAll: getAllProperty } = useIndexedDB('property');
 
   const toggle = (idx) => {
     if (selected === idx) {
@@ -27,23 +27,22 @@ const Accordion = ({ id, form }) => {
   };
 
   const getAllPropertyUnits = () => {
-    if (id && pathName.includes("property-capture")) {
+    if (id && pathName.includes('property-capture')) {
       getAllpropertyReferences().then((propertyReferences) => {
         const getPropertyUnitsByPropPseudoId = propertyReferences.filter(
           (references) => references?.propertyReferenceCategory?.id === id
         );
 
         const data = getPropertyUnitsByPropPseudoId.map((propertyUnit) => {
-          console.log(propertyUnit.propertyType.attributes[0]);
           return {
             id: propertyUnit?.id,
             description: propertyUnit?.description,
             descriptionPerFixedAssetReport:
               propertyUnit?.descriptionPerFixedAssetReport,
-            [propertyUnit.propertyType.attributes[0] === "floorArea"
-              ? "floorArea"
-              : "plotSize"]:
-              propertyUnit.propertyType.attributes[0] === "floorArea"
+            [propertyUnit.propertyType.attributes[0] === 'floorArea'
+              ? 'floorArea'
+              : 'plotSize']:
+              propertyUnit.propertyType.attributes[0] === 'floorArea'
                 ? propertyUnit.floorArea
                 : propertyUnit.plotSize,
 
@@ -75,7 +74,7 @@ const Accordion = ({ id, form }) => {
               description: unit?.description,
               descriptionPerFixedAssetReport:
                 unit?.descriptionPerFixedAssetReport,
-              [unit?.floorArea ? "floorArea" : "plotSize"]: unit?.floorArea
+              [unit?.floorArea ? 'floorArea' : 'plotSize']: unit?.floorArea
                 ? unit.floorArea
                 : unit.plotSize,
 
@@ -83,7 +82,7 @@ const Accordion = ({ id, form }) => {
               occupants: unit?.propertyOccupancy.map((occupancy) => {
                 return {
                   occupantType: occupancy?.category,
-                  [occupancy?.clientOccupantId ? "occupantId" : "occupantName"]:
+                  [occupancy?.clientOccupantId ? 'occupantId' : 'occupantName']:
                     occupancy?.clientOccupantId
                       ? occupancy?.clientOccupantId
                       : occupancy?.name,
@@ -139,14 +138,14 @@ const Accordion = ({ id, form }) => {
                             key + 1
                           }`}</h2>
                           <span className="text-lg font-semibold">
-                            {selected === key ? "-" : "+"}
+                            {selected === key ? '-' : '+'}
                           </span>
                         </div>
                         <div
                           className={
                             selected === key
-                              ? "accordion-content show max-h-0 ease-in duration-300 overflow-hidden"
-                              : "accordion-content max-h-0 overflow-hidden ease-out duration-300"
+                              ? 'accordion-content show max-h-0 ease-in duration-300 overflow-hidden'
+                              : 'accordion-content max-h-0 overflow-hidden ease-out duration-300'
                           }
                         >
                           <PropertyUnitForm name={name} unitFormKey={key} />
@@ -157,11 +156,11 @@ const Accordion = ({ id, form }) => {
                             onClick={() => remove(name)}
                             className={
                               selected === key
-                                ? "delete-btn show overflow-hidden text-center p-3 rounded-full translate-y-[-3.5rem] bg-[#f0Ebe1]"
-                                : "max-h-0 hidden"
+                                ? 'delete-btn show overflow-hidden text-center p-3 rounded-full translate-y-[-3.5rem] bg-[#f0Ebe1]'
+                                : 'max-h-0 hidden'
                             }
                           >
-                          <BiMinusCircle size={18} />
+                            <BiMinusCircle size={18} />
                           </button>
                         </div>
                       </div>

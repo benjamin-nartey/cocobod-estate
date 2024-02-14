@@ -269,7 +269,7 @@ const PropertyUnitForm = ({ name, unitFormKey }) => {
                 },
                 {
                   label: 'Poor/Dilapidated',
-                  value: 'DILAPIDATED',
+                  value: 'POOR',
                 },
                 {
                   label: 'Write Off',

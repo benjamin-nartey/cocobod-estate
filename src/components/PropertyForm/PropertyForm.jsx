@@ -243,6 +243,9 @@ const PropertyForm = (id) => {
         (error) => {
           setLoading(false);
           message.error('Error getting location', error.message);
+        },
+        {
+          enableHighAccuracy: true,
         }
       );
     } else {
