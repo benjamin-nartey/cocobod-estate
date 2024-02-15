@@ -1,34 +1,34 @@
-import { Button, Form, Input, message } from "antd";
-import logo from "../../assets/logo-cocobod.png";
-import Password from "antd/es/input/Password";
-import { MdOutlinePassword } from "react-icons/md";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { LockOutlined } from "@ant-design/icons";
-import { axiosInstance } from "../../axios/axiosInstance";
+import { Button, Form, Input, message } from 'antd';
+import logo from '../../assets/logo-cocobod.png';
+import Password from 'antd/es/input/Password';
+import { MdOutlinePassword } from 'react-icons/md';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { LockOutlined } from '@ant-design/icons';
+import { axiosInstance } from '../../axios/axiosInstance';
 
 const ActivateUser = () => {
   const [form] = Form.useForm();
   const location = useLocation();
   const navigate = useNavigate();
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState('');
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
 
-    const token = urlParams.get("token");
+    const token = urlParams.get('token');
     setToken(token);
   }, [location.search]);
 
   const handleSubmit = async (values) => {
     try {
-      const response = await axiosInstance.post("/auth/activate-user", values, {
+      const response = await axiosInstance.post('/auth/activate-user', values, {
         params: { token: token },
       });
 
       if (response) {
         message.success(response?.data.message);
-        navigate("/login");
+        navigate('/login');
       }
     } catch (error) {
       message.error(error?.response?.data.message);
@@ -83,6 +83,7 @@ const ActivateUser = () => {
             rules={[
               {
                 required: true,
+                min: 8,
               },
             ]}
           >
@@ -97,7 +98,7 @@ const ActivateUser = () => {
             className="w-full"
             type="primary"
             htmlType="submit"
-            style={{ backgroundColor: "#6E431D", color: "#fff" }}
+            style={{ backgroundColor: '#6E431D', color: '#fff' }}
           >
             Activate
           </Button>
