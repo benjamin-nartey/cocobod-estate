@@ -12,7 +12,7 @@ import state from '../../store/store';
 import { CRUDTYPES } from '../../store/modalSlice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AiOutlineEye } from 'react-icons/ai';
-import * as debounce from 'lodash.debounce';
+import _ from 'lodash';
 import { searchResource } from '../../http/search';
 
 const PropertyMergeIndex = () => {
@@ -55,7 +55,7 @@ const PropertyMergeIndex = () => {
   ]);
 
   const handleSearch = useCallback(
-    debounce(async (text) => {
+    _.debounce(async (text) => {
       console.log(text);
       const result = await searchResource(
         '/property-reference-categories',

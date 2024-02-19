@@ -9,7 +9,7 @@ import { capitalize } from '../../utils/typography';
 import state from '../../store/store';
 import { useSnapshot } from 'valtio';
 import EditModerationProperties from '../../components/modals/moderation/properties/edit';
-import * as debounce from 'lodash.debounce';
+import _ from 'lodash';
 
 const PropertiesMain = () => {
   const { regionId } = useParams();
@@ -51,7 +51,7 @@ const PropertiesMain = () => {
   ]);
 
   const handleSearch = useCallback(
-    debounce(async (text) => {
+    _.debounce(async (text) => {
       const result = await searchResource('/properties', text);
       setData(
         result?.data?.records?.map((rec) => ({

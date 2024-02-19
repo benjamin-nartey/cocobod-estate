@@ -15,7 +15,7 @@ import { MdOutlineUpload } from 'react-icons/md';
 import UploadCSV from '../../components/modals/uploads/uploadCsv';
 import { searchResource } from '../../http/search';
 
-import * as debounce from 'lodash.debounce';
+import _ from 'lodash';
 
 const District = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -69,7 +69,7 @@ const District = () => {
   ]);
 
   const handleSearch = useCallback(
-    debounce(async (text) => {
+    _.debounce(async (text) => {
       const result = await searchResource('/location', text);
       setData(
         result?.data?.records?.map((rec) => ({

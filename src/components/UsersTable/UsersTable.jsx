@@ -13,7 +13,7 @@ import {
 
 import { BiEdit } from 'react-icons/bi';
 
-import * as debounce from 'lodash.debounce';
+import _ from 'lodash';
 
 import { useGetPaginatedData } from '../../Hooks/query/generics';
 import { getAllUsers } from '../../http/users';
@@ -68,7 +68,7 @@ const UsersTable = () => {
   ]);
 
   const handleSearch = useCallback(
-    debounce(async (text) => {
+    _.debounce(async (text) => {
       const result = await searchResource('/users', text);
       setData(
         result?.data?.records?.map((rec) => ({

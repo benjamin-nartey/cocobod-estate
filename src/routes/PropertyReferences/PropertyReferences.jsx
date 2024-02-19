@@ -9,7 +9,7 @@ import { useSnapshot } from 'valtio';
 import { useGetReferences } from '../../Hooks/query/properties';
 import UploadCSV from '../../components/modals/uploads/uploadCsv';
 import { searchResource } from '../../http/search';
-import * as debounce from 'lodash.debounce';
+import _ from 'lodash';
 
 const PropertyReferences = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -51,7 +51,7 @@ const PropertyReferences = () => {
   ]);
 
   const handleSearch = useCallback(
-    debounce(async (text) => {
+    _.debounce(async (text) => {
       const result = await searchResource('/property-references', text);
       setData(
         result?.data?.records?.map((rec) => ({

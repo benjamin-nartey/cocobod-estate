@@ -18,7 +18,7 @@ import {
 import { useSnapshot } from 'valtio';
 import state from '../../store/store';
 import { CRUDTYPES } from '../../store/modalSlice';
-import * as debounce from 'lodash.debounce';
+import _ from 'lodash';
 import { searchResource } from '../../http/search';
 
 const DepartmentsTable = () => {
@@ -65,7 +65,7 @@ const DepartmentsTable = () => {
   ]);
 
   const handleSearch = useCallback(
-    debounce(async (text) => {
+    _.debounce(async (text) => {
       const result = await searchResource('/departments', text);
       setData(
         result?.data?.records?.map((rec) => ({

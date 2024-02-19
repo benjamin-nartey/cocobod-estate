@@ -18,7 +18,7 @@ import {
 import AddPoliticalDistrict from '../../components/modals/politicalDistrict/add';
 import { MdOutlineUpload } from 'react-icons/md';
 import UploadCSV from '../../components/modals/uploads/uploadCsv';
-import * as debounce from 'lodash.debounce';
+import _ from 'lodash';
 import { searchResource } from '../../http/search';
 
 const PoliticalDistrict = () => {
@@ -73,7 +73,7 @@ const PoliticalDistrict = () => {
   ]);
 
   const handleSearch = useCallback(
-    debounce(async (text) => {
+    _.debounce(async (text) => {
       const result = await searchResource('/political-district', text);
       setData(
         result?.data?.records?.map((rec) => ({

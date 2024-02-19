@@ -15,7 +15,7 @@ import { deleteTown, getPaginatedLocation } from '../../http/location';
 import AddLocation from '../../components/modals/Location/location';
 import UploadCSV from '../../components/modals/uploads/uploadCsv';
 import { MdOutlineUpload } from 'react-icons/md';
-import * as debounce from 'lodash.debounce';
+import _ from 'lodash';
 import { searchResource } from '../../http/search';
 
 const Town = () => {
@@ -70,7 +70,7 @@ const Town = () => {
   ]);
 
   const handleSearch = useCallback(
-    debounce(async (text) => {
+    _.debounce(async (text) => {
       const result = await searchResource('/location', text);
       setData(
         result?.data?.records?.map((rec) => ({
