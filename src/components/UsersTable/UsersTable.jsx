@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 
 import {
   Button,
@@ -9,109 +9,142 @@ import {
   Popconfirm,
   Table,
   Tag,
-} from "antd";
+} from 'antd';
 
-import { DeleteOutlined, UserOutlined } from "@ant-design/icons";
-import { BiEdit } from "react-icons/bi";
-import { MdOutlineEmail } from "react-icons/md";
+import { BiEdit } from 'react-icons/bi';
 
-import { useQuery } from "@tanstack/react-query";
+import * as debounce from 'lodash.debounce';
 
-import { axiosInstance } from "../../axios/axiosInstance";
-
-import CustomSelect from "../CustomSelect/CustomSelect";
-import { useGetPaginatedData } from "../../Hooks/query/generics";
-import { getAllUsers } from "../../http/users";
-import state from "../../store/store";
-import { CRUDTYPES } from "../../store/modalSlice";
+import { useGetPaginatedData } from '../../Hooks/query/generics';
+import { getAllUsers } from '../../http/users';
+import state from '../../store/store';
+import { CRUDTYPES } from '../../store/modalSlice';
+import { searchResource } from '../../http/search';
 
 const UsersTable = () => {
-  const [open, setOpen] = useState(false);
-
   const [page, setPage] = useState(1);
 
-  const [searchText, setSearchText] = useState("");
-
-  const [form] = Form.useForm();
+  const [searchText, setSearchText] = useState('');
 
   const [messageApi, contextHolder] = message.useMessage();
   const [formFields, setformFields] = useState({
-    name: "",
-    email: "",
+    name: '',
+    email: '',
     roleIds: [],
-    id: "",
+    id: '',
   });
 
-  const confirm = (e) => {
-    message.success("Click on Yes");
-  };
-  const cancel = (e) => {};
-
   const [paginatedData, props] = useGetPaginatedData(
-    "users",
-    "",
+    'users',
+    '',
     { pageNum: page },
     getAllUsers
   );
+  const [_data, setData] = useState(null);
+  const [pageInfo, setPageInfo] = useState({ pageSize: 0, total: 0 });
+  const [loading, setLoading] = useState(false);
 
-  const _data = props.data?.data?.records?.map((rec) => ({
-    ...rec,
-    key: rec?.id,
-  }));
+  useEffect(() => {
+    if (
+      props.data?.data?.records?.length ||
+      paginatedData?.pageSize ||
+      paginatedData?.total
+    ) {
+      setData(
+        props.data?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: paginatedData?.pageSize,
+        total: paginatedData?.total,
+      });
+    }
+  }, [
+    props.data?.data?.records?.length,
+    paginatedData?.pageSize,
+    paginatedData?.total,
+  ]);
+
+  const handleSearch = useCallback(
+    debounce(async (text) => {
+      const result = await searchResource('/users', text);
+      setData(
+        result?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: result?.data?.recordsPerPage,
+        total: result?.data?.totalRecords,
+      });
+      setLoading(false);
+    }, 1000),
+    []
+  );
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+
+    setLoading(true);
+    handleSearch(value);
+  };
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      // filteredValue: [searchText],
+      // onFilter: (value, record) => {
+      //   return (
+      //     String(record?.name).toLowerCase().includes(value.toLowerCase()) ||
+      //     String(record?.status).toLowerCase().includes(value.toLowerCase()) ||
+      //     String(record?.staff?.department?.name)
+      //       .toLowerCase()
+      //       .includes(value.toLowerCase()) ||
+      //     String(record?.staff?.department?.division.name)
+      //       .toLowerCase()
+      //       .includes(value.toLowerCase()) ||
+      //     String(record?.staff?.station?.name)
+      //       .toLowerCase()
+      //       .includes(value.toLowerCase())
+      //   );
+      // },
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+    {
+      title: 'Department',
+      dataIndex: ['staff', 'department', 'name'],
+      key: 'department',
       filteredValue: [searchText],
-      onFilter: (value, record) => {
-        return (
-          String(record?.name).toLowerCase().includes(value.toLowerCase()) ||
-          String(record?.status).toLowerCase().includes(value.toLowerCase()) ||
-          String(record?.staff?.department?.name)
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          String(record?.staff?.department?.division.name)
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          String(record?.staff?.station?.name)
-            .toLowerCase()
-            .includes(value.toLowerCase())
-        );
-      },
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: 'Division',
+      dataIndex: ['staff', 'department', 'division', 'name'],
+      key: 'division',
     },
     {
-      title: "Department",
-      dataIndex: ["staff", "department", "name"],
-      key: "department",
-      filteredValue: [searchText],
+      title: ' Station',
+      dataIndex: ['staff', 'station', 'name'],
+      key: 'station',
     },
     {
-      title: "Division",
-      dataIndex: ["staff", "department", "division", "name"],
-      key: "division",
-    },
-    {
-      title: " Station",
-      dataIndex: ["staff", "station", "name"],
-      key: "station",
-    },
-    {
-      title: "Roles",
-      dataIndex: "roles",
-      key: "roles",
+      title: 'Roles',
+      dataIndex: 'roles',
+      key: 'roles',
       render: (_, { roles }) => (
         <>
           {roles?.map((role, i) => (
             <Tag
               color={`${
-                role?.name === "Super Administrator" ? "green" : "blue"
+                role?.name === 'Super Administrator' ? 'green' : 'blue'
               }`}
               key={i}
             >
@@ -122,14 +155,14 @@ const UsersTable = () => {
       ),
     },
     {
-      title: " Status",
-      dataIndex: "status",
-      key: "status",
+      title: ' Status',
+      dataIndex: 'status',
+      key: 'status',
     },
     {
-      title: "Action",
-      dataIndex: "",
-      key: "action",
+      title: 'Action',
+      dataIndex: '',
+      key: 'action',
       render: (value, record) => {
         return (
           <div className="flex items-center justify-center gap-4">
@@ -142,25 +175,6 @@ const UsersTable = () => {
                 state.modalSlice.crudType = CRUDTYPES.EDIT;
               }}
             />
-
-            <Popconfirm
-              title="Delete the task"
-              description="Are you sure to delete this task?"
-              onConfirm={confirm}
-              onCancel={cancel}
-              okText="Yes"
-              cancelText="No"
-            >
-              <span className="grid place-items-center">
-                <DeleteOutlined
-                  style={{
-                    fontSize: "18px",
-                    color: " #FF6A74",
-                    cursor: "pointer",
-                  }}
-                />
-              </span>
-            </Popconfirm>
           </div>
         );
       },
@@ -173,23 +187,20 @@ const UsersTable = () => {
 
       <Input.Search
         placeholder="Search records..."
-        onSearch={(value) => setSearchText(value)}
-        onChange={(e) => setSearchText(e.target.value)}
+        // onSearch={(value) => setSearchText(value)}
+        onChange={handleChange}
       />
       <Table
         dataSource={_data}
-        loading={props?.isLoading || props?.isFetching}
+        loading={props?.isLoading || props?.isFetching || loading}
         pagination={{
-          pageSize: paginatedData?.pageSize,
-          total: paginatedData?.total,
-          // onChange: (pageNum) => {
-          //   fetchUsers(pageNum);
-          // },
+          pageSize: pageInfo?.pageSize,
+          total: pageInfo?.total,
         }}
         onChange={(pagination) => {
           setPage(pagination.current);
         }}
-        style={{ width: "100%" }}
+        style={{ width: '100%' }}
         rowKey="id"
         columns={columns}
       ></Table>

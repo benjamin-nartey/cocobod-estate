@@ -1,11 +1,11 @@
 import { Button, Input, Popconfirm, Table, Tooltip, message } from 'antd';
-import React, { useState } from 'react';
-import { useGetPaginatedDistricts } from '../../Hooks/query/district';
+import React, { useCallback, useEffect, useState } from 'react';
+
 import { useSnapshot } from 'valtio';
 import state from '../../store/store';
 import { CRUDTYPES, modalSlice } from '../../store/modalSlice';
 import AddDistrict from '../../components/modals/district/add';
-import { useGetRegions } from '../../Hooks/query/regions';
+
 import { BiEdit } from 'react-icons/bi';
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteDistrict, getPaginatedDistricts } from '../../http/district';
@@ -13,6 +13,9 @@ import { useGetPaginatedData } from '../../Hooks/query/generics';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MdOutlineUpload } from 'react-icons/md';
 import UploadCSV from '../../components/modals/uploads/uploadCsv';
+import { searchResource } from '../../http/search';
+
+import * as debounce from 'lodash.debounce';
 
 const District = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -38,10 +41,57 @@ const District = () => {
     },
   });
 
-  const _data = props.data?.data?.records?.map((rec) => ({
-    ...rec,
-    key: rec?.id,
-  }));
+  const [_data, setData] = useState(null);
+  const [pageInfo, setPageInfo] = useState({ pageSize: 0, total: 0 });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (
+      props.data?.data?.records?.length ||
+      paginatedData?.pageSize ||
+      paginatedData?.total
+    ) {
+      setData(
+        props.data?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: paginatedData?.pageSize,
+        total: paginatedData?.total,
+      });
+    }
+  }, [
+    props.data?.data?.records?.length,
+    paginatedData?.pageSize,
+    paginatedData?.total,
+  ]);
+
+  const handleSearch = useCallback(
+    debounce(async (text) => {
+      const result = await searchResource('/location', text);
+      setData(
+        result?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: result?.data?.recordsPerPage,
+        total: result?.data?.totalRecords,
+      });
+      setLoading(false);
+    }, 1000),
+    []
+  );
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+
+    setLoading(true);
+    handleSearch(value);
+  };
 
   const snap = useSnapshot(state);
 
@@ -125,15 +175,15 @@ const District = () => {
       <Input.Search
         placeholder="Search records..."
         // onSearch={(value) => setSearchText(value)}
-        // onChange={(e) => setSearchText(e.target.value)}
+        onChange={handleChange}
       />
       <Table
         dataSource={_data}
-        loading={props.isLoading || props?.isFetching}
+        loading={props.isLoading || props?.isFetching || loading}
         columns={columns}
         pagination={{
-          pageSize: paginatedData?.pageSize,
-          total: paginatedData?.total,
+          pageSize: pageInfo?.pageSize,
+          total: pageInfo?.total,
         }}
         onChange={(pagination) => {
           setPageNum(pagination.current);

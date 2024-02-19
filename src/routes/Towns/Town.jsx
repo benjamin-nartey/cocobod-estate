@@ -1,5 +1,5 @@
 import { Button, Input, Popconfirm, Table, Tooltip, message } from 'antd';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useGetPaginatedDistricts } from '../../Hooks/query/district';
 import { useSnapshot } from 'valtio';
 import state from '../../store/store';
@@ -15,6 +15,8 @@ import { deleteTown, getPaginatedLocation } from '../../http/location';
 import AddLocation from '../../components/modals/Location/location';
 import UploadCSV from '../../components/modals/uploads/uploadCsv';
 import { MdOutlineUpload } from 'react-icons/md';
+import * as debounce from 'lodash.debounce';
+import { searchResource } from '../../http/search';
 
 const Town = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -40,10 +42,57 @@ const Town = () => {
     },
   });
 
-  const _data = props.data?.data?.records?.map((rec) => ({
-    ...rec,
-    key: rec?.id,
-  }));
+  const [_data, setData] = useState(null);
+  const [pageInfo, setPageInfo] = useState({ pageSize: 0, total: 0 });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (
+      props.data?.data?.records?.length ||
+      paginatedData?.pageSize ||
+      paginatedData?.total
+    ) {
+      setData(
+        props.data?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: paginatedData?.pageSize,
+        total: paginatedData?.total,
+      });
+    }
+  }, [
+    props.data?.data?.records?.length,
+    paginatedData?.pageSize,
+    paginatedData?.total,
+  ]);
+
+  const handleSearch = useCallback(
+    debounce(async (text) => {
+      const result = await searchResource('/location', text);
+      setData(
+        result?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: result?.data?.recordsPerPage,
+        total: result?.data?.totalRecords,
+      });
+      setLoading(false);
+    }, 1000),
+    []
+  );
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+
+    setLoading(true);
+    handleSearch(value);
+  };
 
   const snap = useSnapshot(state);
 
@@ -125,18 +174,14 @@ const Town = () => {
           Add Town
         </Button>
       </div>
-      <Input.Search
-        placeholder="Search records..."
-        // onSearch={(value) => setSearchText(value)}
-        // onChange={(e) => setSearchText(e.target.value)}
-      />
+      <Input.Search placeholder="Search records..." onChange={handleChange} />
       <Table
         dataSource={_data}
-        loading={props.isLoading || props?.isFetching}
+        loading={props.isLoading || props?.isFetching || loading}
         columns={columns}
         pagination={{
-          pageSize: paginatedData?.pageSize,
-          total: paginatedData?.total,
+          pageSize: pageInfo?.pageSize,
+          total: pageInfo?.total,
         }}
         onChange={(pagination) => {
           setPageNum(pagination.current);

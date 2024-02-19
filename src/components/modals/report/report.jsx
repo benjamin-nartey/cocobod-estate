@@ -31,10 +31,12 @@ const ReportFilter = () => {
     useGetTownByDistrictId(selectedDistrictId);
 
   useEffect(() => {
+    form.setFieldValue('districtFilter', '');
     fetchDistricts();
   }, [selectedRegionId]);
 
   useEffect(() => {
+    form.setFieldValue('locationFilter', '');
     fetchTowns();
   }, [selectedDistrictId]);
 

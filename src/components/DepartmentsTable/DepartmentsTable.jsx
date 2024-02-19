@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Button, Modal, Form, Input, Table, message, Popconfirm } from 'antd';
 
@@ -18,6 +18,8 @@ import {
 import { useSnapshot } from 'valtio';
 import state from '../../store/store';
 import { CRUDTYPES } from '../../store/modalSlice';
+import * as debounce from 'lodash.debounce';
+import { searchResource } from '../../http/search';
 
 const DepartmentsTable = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -35,10 +37,57 @@ const DepartmentsTable = () => {
     getPaginatedDepartments
   );
 
-  const _data = props.data?.data?.records?.map((rec) => ({
-    ...rec,
-    key: rec?.id,
-  }));
+  const [_data, setData] = useState(null);
+  const [pageInfo, setPageInfo] = useState({ pageSize: 0, total: 0 });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (
+      props.data?.data?.records?.length ||
+      paginatedData?.pageSize ||
+      paginatedData?.total
+    ) {
+      setData(
+        props.data?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: paginatedData?.pageSize,
+        total: paginatedData?.total,
+      });
+    }
+  }, [
+    props.data?.data?.records?.length,
+    paginatedData?.pageSize,
+    paginatedData?.total,
+  ]);
+
+  const handleSearch = useCallback(
+    debounce(async (text) => {
+      const result = await searchResource('/departments', text);
+      setData(
+        result?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: result?.data?.recordsPerPage,
+        total: result?.data?.totalRecords,
+      });
+      setLoading(false);
+    }, 1000),
+    []
+  );
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+
+    setLoading(true);
+    handleSearch(value);
+  };
 
   const snap = useSnapshot(state);
 
@@ -132,14 +181,14 @@ const DepartmentsTable = () => {
       <Input.Search
         placeholder="Search records..."
         onSearch={(value) => setSearchText(value)}
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={handleChange}
       />
       <Table
         dataSource={_data}
-        loading={props.isLoading || props?.isFetching}
+        loading={props.isLoading || props?.isFetching || loading}
         pagination={{
-          pageSize: paginatedData?.pageSize,
-          total: paginatedData?.total,
+          pageSize: pageInfo?.pageSize,
+          total: pageInfo?.total,
         }}
         onChange={(pagination) => {
           setPageNum(pagination?.current);

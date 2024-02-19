@@ -19,6 +19,8 @@ const PropertyCreateForm = ({ move }) => {
   const [selectedRegionId, setSelectedRegionId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
 
+  const [form] = Form.useForm();
+
   const { mutate, isLoading } = useMutation({
     mutationKey: 'saveProperty',
     mutationFn: (data) => {
@@ -53,10 +55,12 @@ const PropertyCreateForm = ({ move }) => {
   } = useGetLocationByDisrictId(selectedDistrictId);
 
   useEffect(() => {
+    form.setFieldValue('locationId', '');
     fetchTownsByDistrictId();
   }, [selectedDistrictId]);
 
   useEffect(() => {
+    form.setFieldValue('districtId', '');
     fetchDistricts();
   }, [selectedRegionId]);
 
@@ -101,6 +105,7 @@ const PropertyCreateForm = ({ move }) => {
   return (
     <div>
       <Form
+        form={form}
         name="property-create-form"
         layout="vertical"
         onFinish={(values) => onSubmit(values)}
@@ -137,7 +142,9 @@ const PropertyCreateForm = ({ move }) => {
             showSearch
             optionFilterProp="label"
             placeholder={'Select Region'}
-            onChange={(value) => setSelectedRegionId(value)}
+            onChange={(value) => {
+              setSelectedRegionId(value);
+            }}
             options={regions?.data.map((reg) => ({
               label: reg.name,
               value: reg.id,

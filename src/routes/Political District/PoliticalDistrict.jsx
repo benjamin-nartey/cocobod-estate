@@ -1,5 +1,5 @@
 import { Button, Input, Popconfirm, Table, Tooltip, message } from 'antd';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useGetPaginatedDistricts } from '../../Hooks/query/district';
 import { useSnapshot } from 'valtio';
 import state from '../../store/store';
@@ -18,6 +18,8 @@ import {
 import AddPoliticalDistrict from '../../components/modals/politicalDistrict/add';
 import { MdOutlineUpload } from 'react-icons/md';
 import UploadCSV from '../../components/modals/uploads/uploadCsv';
+import * as debounce from 'lodash.debounce';
+import { searchResource } from '../../http/search';
 
 const PoliticalDistrict = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -43,10 +45,57 @@ const PoliticalDistrict = () => {
     },
   });
 
-  const _data = props.data?.data?.records?.map((rec) => ({
-    ...rec,
-    key: rec?.id,
-  }));
+  const [_data, setData] = useState(null);
+  const [pageInfo, setPageInfo] = useState({ pageSize: 0, total: 0 });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (
+      props.data?.data?.records?.length ||
+      paginatedData?.pageSize ||
+      paginatedData?.total
+    ) {
+      setData(
+        props.data?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: paginatedData?.pageSize,
+        total: paginatedData?.total,
+      });
+    }
+  }, [
+    props.data?.data?.records?.length,
+    paginatedData?.pageSize,
+    paginatedData?.total,
+  ]);
+
+  const handleSearch = useCallback(
+    debounce(async (text) => {
+      const result = await searchResource('/political-district', text);
+      setData(
+        result?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: result?.data?.recordsPerPage,
+        total: result?.data?.totalRecords,
+      });
+      setLoading(false);
+    }, 1000),
+    []
+  );
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+
+    setLoading(true);
+    handleSearch(value);
+  };
 
   const snap = useSnapshot(state);
 
@@ -128,18 +177,14 @@ const PoliticalDistrict = () => {
           Add Political District
         </Button>
       </div>
-      <Input.Search
-        placeholder="Search records..."
-        // onSearch={(value) => setSearchText(value)}
-        // onChange={(e) => setSearchText(e.target.value)}
-      />
+      <Input.Search placeholder="Search records..." onChange={handleChange} />
       <Table
         dataSource={_data}
-        loading={props.isLoading}
+        loading={props.isLoading || props?.isFetching || loading}
         columns={columns}
         pagination={{
-          pageSize: paginatedData?.pageSize,
-          total: paginatedData?.total,
+          pageSize: pageInfo?.pageSize,
+          total: pageInfo?.total,
         }}
         onChange={(pagination) => {
           setPageNum(pagination.current);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useGetPaginatedData } from '../../Hooks/query/generics';
 import { Button, Input, Popconfirm, Spin, Table, message } from 'antd';
 import {
@@ -12,9 +12,15 @@ import state from '../../store/store';
 import { CRUDTYPES } from '../../store/modalSlice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AiOutlineEye } from 'react-icons/ai';
+import * as debounce from 'lodash.debounce';
+import { searchResource } from '../../http/search';
 
 const PropertyMergeIndex = () => {
   const [pageNum, setPageNum] = useState(1);
+
+  const [_data, setData] = useState(null);
+  const [pageInfo, setPageInfo] = useState({ pageSize: 0, total: 0 });
+  const [loading, setLoading] = useState(false);
 
   const [paginatedData, props] = useGetPaginatedData(
     'propertyReferenceCategory',
@@ -22,11 +28,60 @@ const PropertyMergeIndex = () => {
     { pageNum },
     getPaginatedPropertyReferenceCategory
   );
+
   const navigate = useNavigate();
-  const _data = props.data?.data?.records?.map((rec) => ({
-    ...rec,
-    key: rec?.id,
-  }));
+
+  useEffect(() => {
+    if (
+      props.data?.data?.records?.length ||
+      paginatedData?.pageSize ||
+      paginatedData?.total
+    ) {
+      setData(
+        props.data?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: paginatedData?.pageSize,
+        total: paginatedData?.total,
+      });
+    }
+  }, [
+    props.data?.data?.records?.length,
+    paginatedData?.pageSize,
+    paginatedData?.total,
+  ]);
+
+  const handleSearch = useCallback(
+    debounce(async (text) => {
+      console.log(text);
+      const result = await searchResource(
+        '/property-reference-categories',
+        text
+      );
+      setData(
+        result?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: result?.data?.recordsPerPage,
+        total: result?.data?.totalRecords,
+      });
+      setLoading(false);
+    }, 1000),
+    []
+  );
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+
+    setLoading(true);
+    handleSearch(value);
+  };
 
   const queryClient = useQueryClient();
 
@@ -142,17 +197,17 @@ const PropertyMergeIndex = () => {
       <Input.Search
         placeholder="Search records..."
         // onSearch={(value) => setSearchText(value)}
-        // onChange={(e) => setSearchText(e.target.value)}
+        onChange={handleChange}
       />
       <Table
         dataSource={_data}
         columns={columns}
         pagination={{
-          pageSize: paginatedData?.pageSize,
-          total: paginatedData?.total,
+          pageSize: pageInfo?.pageSize,
+          total: pageInfo?.total,
         }}
         onChange={(pagination) => setPageNum(pagination.current)}
-        loading={props?.isLoading || props?.isFetching}
+        loading={props?.isLoading || props?.isFetching || loading}
       />
     </div>
   );

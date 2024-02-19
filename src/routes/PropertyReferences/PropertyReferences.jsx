@@ -1,5 +1,5 @@
 import { Button, Input, Table } from 'antd';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useGetPaginatedData } from '../../Hooks/query/generics';
 import { getPagionatedPropertyUnitReferenceList } from '../../http/propertiesMerge';
 import state from '../../store/store';
@@ -8,6 +8,8 @@ import { useSnapshot } from 'valtio';
 
 import { useGetReferences } from '../../Hooks/query/properties';
 import UploadCSV from '../../components/modals/uploads/uploadCsv';
+import { searchResource } from '../../http/search';
+import * as debounce from 'lodash.debounce';
 
 const PropertyReferences = () => {
   const [pageNum, setPageNum] = useState(1);
@@ -18,40 +20,66 @@ const PropertyReferences = () => {
     getPagionatedPropertyUnitReferenceList
   );
 
-  const [searchText, setSearchText] = useState('');
-
   const snap = useSnapshot(state);
   const { showUploadModal } = snap.modalSlice;
 
-  const data = props.data?.data?.records?.map((rec) => ({
-    ...rec,
-    key: rec?.id,
-  }));
+  const [_data, setData] = useState(null);
+  const [pageInfo, setPageInfo] = useState({ pageSize: 0, total: 0 });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (
+      props.data?.data?.records?.length ||
+      paginatedData?.pageSize ||
+      paginatedData?.total
+    ) {
+      setData(
+        props.data?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: paginatedData?.pageSize,
+        total: paginatedData?.total,
+      });
+    }
+  }, [
+    props.data?.data?.records?.length,
+    paginatedData?.pageSize,
+    paginatedData?.total,
+  ]);
+
+  const handleSearch = useCallback(
+    debounce(async (text) => {
+      const result = await searchResource('/property-references', text);
+      setData(
+        result?.data?.records?.map((rec) => ({
+          ...rec,
+          key: rec?.id,
+        }))
+      );
+      setPageInfo({
+        pageSize: result?.data?.recordsPerPage,
+        total: result?.data?.totalRecords,
+      });
+      setLoading(false);
+    }, 1000),
+    []
+  );
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+
+    setLoading(true);
+    handleSearch(value);
+  };
 
   const columns = [
     {
       title: 'lot',
       width: '7%',
       dataIndex: 'lot',
-      filteredValue: [searchText],
-      onFilter: (value, record) => {
-        return (
-          String(record.locationOrTown)
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          String(record.description)
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          String(record.lot).toLowerCase().includes(value.toLowerCase()) ||
-          String(record.plotSize).toLowerCase().includes(value.toLowerCase()) ||
-          String(record.floorArea)
-            .toLowerCase()
-            .includes(value.toLowerCase()) ||
-          String(record.propertyType.name)
-            .toLowerCase()
-            .includes(value.toLowerCase())
-        );
-      },
     },
     {
       title: 'Town',
@@ -111,18 +139,14 @@ const PropertyReferences = () => {
           Upload Properties
         </Button>
       </div>
-      <Input.Search
-        placeholder="Search records..."
-        onSearch={(value) => setSearchText(value)}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
+      <Input.Search placeholder="Search records..." onChange={handleChange} />
       <Table
         columns={columns}
-        loading={props?.isLoading || props?.isFetching}
-        dataSource={data}
+        loading={props?.isLoading || props?.isFetching || loading}
+        dataSource={_data}
         pagination={{
-          pageSize: paginatedData?.pageSize,
-          total: paginatedData?.total,
+          pageSize: pageInfo?.pageSize,
+          total: pageInfo?.total,
         }}
         onChange={(pagination) => {
           setPageNum(pagination.current);

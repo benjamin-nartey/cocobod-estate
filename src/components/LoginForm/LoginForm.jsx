@@ -92,7 +92,7 @@ function LoginForm() {
       if (isOnLine) {
         const response = await API.post(
           '/auth',
-          { email, password },
+          { email: email.trim(), password },
           {
             headers: {
               'Content-Type': 'application/json',
