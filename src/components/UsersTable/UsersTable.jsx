@@ -77,8 +77,8 @@ const UsersTable = () => {
         }))
       );
       setPageInfo({
-        pageSize: result?.data?.recordsPerPage,
-        total: result?.data?.totalRecords,
+        pageSize: result?.data?.meta?.recordsPerPage,
+        total: result?.data?.meta?.totalRecords,
       });
       setLoading(false);
     }, 1000),

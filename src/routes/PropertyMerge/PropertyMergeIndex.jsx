@@ -37,6 +37,7 @@ const PropertyMergeIndex = () => {
       paginatedData?.pageSize ||
       paginatedData?.total
     ) {
+      console.log('I have been called');
       setData(
         props.data?.data?.records?.map((rec) => ({
           ...rec,
@@ -54,6 +55,8 @@ const PropertyMergeIndex = () => {
     paginatedData?.total,
   ]);
 
+  console.log(pageInfo);
+
   const handleSearch = useCallback(
     _.debounce(async (text) => {
       console.log(text);
@@ -67,9 +70,11 @@ const PropertyMergeIndex = () => {
           key: rec?.id,
         }))
       );
+
+     
       setPageInfo({
-        pageSize: result?.data?.recordsPerPage,
-        total: result?.data?.totalRecords,
+        pageSize: result?.data?.meta?.recordsPerPage,
+        total: result?.data?.meta?.totalRecords,
       });
       setLoading(false);
     }, 1000),
