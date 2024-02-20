@@ -47,7 +47,7 @@ const District = () => {
 
   useEffect(() => {
     if (
-      props.data?.data?.records?.length ||
+      props.data?.data?.records ||
       paginatedData?.pageSize ||
       paginatedData?.total
     ) {
@@ -63,7 +63,7 @@ const District = () => {
       });
     }
   }, [
-    props.data?.data?.records?.length,
+    props.data?.data?.records,
     paginatedData?.pageSize,
     paginatedData?.total,
   ]);

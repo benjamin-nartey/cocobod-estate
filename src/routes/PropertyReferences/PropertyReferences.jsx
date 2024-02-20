@@ -29,7 +29,7 @@ const PropertyReferences = () => {
 
   useEffect(() => {
     if (
-      props.data?.data?.records?.length ||
+      props.data?.data?.records ||
       paginatedData?.pageSize ||
       paginatedData?.total
     ) {
@@ -45,7 +45,7 @@ const PropertyReferences = () => {
       });
     }
   }, [
-    props.data?.data?.records?.length,
+    props.data?.data?.records,
     paginatedData?.pageSize,
     paginatedData?.total,
   ]);
