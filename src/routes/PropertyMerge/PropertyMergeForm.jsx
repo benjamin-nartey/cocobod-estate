@@ -55,12 +55,10 @@ const PropertyCreateForm = ({ move }) => {
   } = useGetLocationByDisrictId(selectedDistrictId);
 
   useEffect(() => {
-    form.setFieldValue('locationId', '');
     fetchTownsByDistrictId();
   }, [selectedDistrictId]);
 
   useEffect(() => {
-    form.setFieldValue('districtId', '');
     fetchDistricts();
   }, [selectedRegionId]);
 
@@ -143,6 +141,8 @@ const PropertyCreateForm = ({ move }) => {
             optionFilterProp="label"
             placeholder={'Select Region'}
             onChange={(value) => {
+              form.setFieldValue('districtId', '');
+              form.setFieldValue('locationId', '');
               setSelectedRegionId(value);
             }}
             options={regions?.data.map((reg) => ({
@@ -155,12 +155,17 @@ const PropertyCreateForm = ({ move }) => {
           name={'districtId'}
           label={'District'}
           rules={[{ required: true }]}
+          initialValue={selectedRecord?.location?.district?.id || null}
         >
           <Select
             showSearch
             optionFilterProp="label"
             loading={DistrictLoading}
-            onChange={(value) => setSelectedDistrictId(value)}
+            onChange={(value) => {
+              form.setFieldValue('locationId', '');
+
+              setSelectedDistrictId(value);
+            }}
             placeholder={'Select District'}
             options={district?.data.map((dist) => ({
               label: dist && capitalize(dist?.name.toLowerCase()),
