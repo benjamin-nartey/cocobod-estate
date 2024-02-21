@@ -80,3 +80,21 @@ export const exportToExcel = (dataSource, columns, fileName) => {
   const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
   saveAs(blob, `${fileName}.xlsx`);
 };
+
+const usedStrings = new Set();
+
+export function generateUniqueString() {
+  const alphanumeric =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let randomString = '';
+
+  do {
+    for (let i = 0; i < 10; i++) {
+      const randomIndex = Math.floor(Math.random() * alphanumeric.length);
+      randomString += alphanumeric[randomIndex];
+    }
+  } while (usedStrings.has(randomString));
+
+  usedStrings.add(randomString);
+  return randomString;
+}

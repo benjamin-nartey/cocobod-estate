@@ -282,13 +282,13 @@ const PropertyForm = (id) => {
   };
 
   const handleSubmit = async (values) => {
-    // console.log(values);
-
     const data = {
       name: values?.name,
       description: values?.description,
-      propertyCode: values?.digitalAddress,
-      digitalAddress: values?.digitalAddress,
+      propertyCode:
+        values?.digitalAddress !== undefined ? values?.digitalAddress : '',
+      digitalAddress:
+        values?.digitalAddress !== undefined ? values?.digitalAddress : '',
       propertyTypeId: values?.propertyTypeId,
       locationId: values?.locationId,
       propertyReferenceCategoryId: propertyReferenceCategories?.id,
@@ -490,11 +490,11 @@ const PropertyForm = (id) => {
             <Form.Item
               label="Ghana Post Address"
               name="digitalAddress"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //   },
+              // ]}
             >
               <Input
                 name="digitalAddress"
