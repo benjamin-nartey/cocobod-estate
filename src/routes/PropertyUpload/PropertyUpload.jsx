@@ -13,7 +13,6 @@ import { axiosInstance } from '../../axios/axiosInstance';
 import Loader from '../../components/Loader/Loader';
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import _ from 'generate-password-browser';
 
 import {
   useAddPropertyPhotos,
@@ -98,12 +97,12 @@ const PropertyUpload = () => {
           description: property?.description,
           propertyCode:
             property?.digitalAddress !== undefined
-              ? `CCB-${generateUniqueString().toUpperCase()}`
-              : '',
+              ? property?.digitalAddress
+              : `CCB-${generateUniqueString().toUpperCase()}`,
           digitalAddress:
             property?.digitalAddress !== undefined
-              ? `CCB-${generateUniqueString().toUpperCase()}`
-              : '',
+              ? property?.digitalAddress
+              : `CCB-${generateUniqueString().toUpperCase()}`,
           propertyTypeId: property?.propertyTypeId,
           locationId: property?.locationId,
           propertyReferenceCategoryId: property?.propertyReferenceCategoryId,
