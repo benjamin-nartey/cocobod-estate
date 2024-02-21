@@ -112,6 +112,7 @@ const PropertyUpload = () => {
           politicalDistrictId: property?.politicalDistrictId,
           propertyUnits: property?.propertyUnits,
         };
+
         mutate(propertyData, {
           onSuccess: (result) => {
             console.log('Result', result?.data?.id);
