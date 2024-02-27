@@ -1,24 +1,24 @@
-import { Button, Input, Popconfirm, Select, Table } from "antd";
-import React, { useEffect, useState, useContext } from "react";
-import { PropertyPseudoContext } from "../../context/propertyPseudo.context";
+import { Button, Input, Popconfirm, Select, Table } from 'antd';
+import React, { useEffect, useState, useContext } from 'react';
+import { PropertyPseudoContext } from '../../context/propertyPseudo.context';
 
-import { BiEdit } from "react-icons/bi";
+import { BiEdit } from 'react-icons/bi';
 // import { useGetPaginatedData } from "../../Hooks/query/generics";
 // import { getPaginatedProperties } from "../../http/properties";
-import { HiEye } from "react-icons/hi";
-import { useNavigate, useParams } from "react-router-dom";
+import { HiEye } from 'react-icons/hi';
+import { useNavigate, useParams } from 'react-router-dom';
 // import { capitalize } from "../../utils/typography";
-import state from "../../store/store";
-import { useSnapshot } from "valtio";
-import { useIndexedDB } from "react-indexed-db-hook";
-import { axiosInstance } from "../../axios/axiosInstance";
-import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import { capitalize } from "../../utils/typography";
+import state from '../../store/store';
+import { useSnapshot } from 'valtio';
+import { useIndexedDB } from 'react-indexed-db-hook';
+import { axiosInstance } from '../../axios/axiosInstance';
+import CustomSelect from '../../components/CustomSelect/CustomSelect';
+import { capitalize } from '../../utils/typography';
 
 // import EditModerationProperties from "../../components/modals/moderation/properties/edit";
 
 const Capture = () => {
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
 
   const [data, setData] = useState([]);
   const [tempData, setTempData] = useState([]);
@@ -26,10 +26,10 @@ const Capture = () => {
   const navigate = useNavigate();
 
   const { getAll: getAllPropertyReferenceCategories } = useIndexedDB(
-    "propertyReferenceCategories"
+    'propertyReferenceCategories'
   );
 
-  const { getAll: getAllDistricts } = useIndexedDB("districts");
+  const { getAll: getAllDistricts } = useIndexedDB('districts');
 
   const handleChange = (districtType) => {
     let _data = tempData;
@@ -74,17 +74,20 @@ const Capture = () => {
   // const { showEditPropertyModal } = snap.modalSlice;
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: 'Name',
+      dataIndex: 'name',
       filteredValue: [searchText],
+      onFilter: (value, record) => {
+        return String(record.name).toLowerCase().includes(value.toLowerCase());
+      },
     },
     {
-      title: "Region",
-      dataIndex: ["location", "district", "region", "name"],
+      title: 'Region',
+      dataIndex: ['location', 'district', 'region', 'name'],
     },
     {
-      title: "District",
-      dataIndex: ["location", "district", "name"],
+      title: 'District',
+      dataIndex: ['location', 'district', 'name'],
       render: (value) => {
         return <span>{value && capitalize(value.toLowerCase())}</span>;
       },
@@ -93,13 +96,13 @@ const Capture = () => {
     },
 
     {
-      title: "Property Type",
-      dataIndex: ["propertyType", "name"],
+      title: 'Property Type',
+      dataIndex: ['propertyType', 'name'],
     },
 
     {
-      title: "Actions",
-      dataIndex: "id",
+      title: 'Actions',
+      dataIndex: 'id',
       render: (value, record) => {
         return (
           <div className="flex items-center gap-4">
@@ -122,20 +125,27 @@ const Capture = () => {
         <h3 className="font-semibold text-slate-500">PROPERTIES</h3>
       </div>
 
-      <div className="flex flex-col no-scrollbar">
-        <Select
-          showSearch
-          optionFilterProp="label"
-          placeholder="Select district"
-          options={districts}
-          style={{
-            width: "100%",
-          }}
-          onChange={(e) => handleChange(e)}
-        />
+      <div className="flex flex-col gap-y-3 no-scrollbar">
+        <div className="flex gap-x-2">
+          <Select
+            showSearch
+            optionFilterProp="label"
+            placeholder="Select district"
+            options={districts}
+            style={{
+              width: '100%',
+            }}
+            onChange={(e) => handleChange(e)}
+          />
+          <Input.Search
+            placeholder="Search records..."
+            onSearch={(value) => setSearchText(value)}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </div>
         <Table
-        className="no-scrollbar"
-          rowKey={"id"}
+          className="no-scrollbar"
+          rowKey={'id'}
           // loading={props?.isLoading}
           columns={columns}
           dataSource={data}
