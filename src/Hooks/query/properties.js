@@ -45,9 +45,9 @@ export const useGetProperty = (id) => {
 
 export const useGetReferences = (queryParams) => {
   return useQuery({
-    queryKey: ['getPropertyUnitReferences', queryParams?.regionFilter],
+    queryKey: ['getPropertyUnitReferences'],
     queryFn: () => getPropertyReferenceUnits(queryParams),
-    keepPreviousData: true,
+    // keepPreviousData: true,
   });
 };
 

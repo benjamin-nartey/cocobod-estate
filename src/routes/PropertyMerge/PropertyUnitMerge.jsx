@@ -106,13 +106,14 @@ const PropertyUnitMerge = () => {
         regionId: addedProperty?.region?.id,
         propertyReferenceIds: Array.from(new Set(selectedRowsInTable)),
         propertyTypeId: addedProperty?.propertyType?.id,
+        locationId: addedProperty?.location?.id,
       });
     },
     onSuccess: (result) => {
       message.success('Properties merged successfully');
       // state.mergeSlice.selectedRowsInTable = [];
 
-      setSelectedRowsInTable([]);
+      // setSelectedRowsInTable([]);
       queryClient.invalidateQueries({
         queryKey: ['getPropertyUnitReferences'],
       });
@@ -126,6 +127,7 @@ const PropertyUnitMerge = () => {
   });
 
   const submitData = () => {
+    // setSelectedRowsInTable([]);
     mutate();
   };
 
