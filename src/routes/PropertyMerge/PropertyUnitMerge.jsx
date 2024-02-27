@@ -22,7 +22,7 @@ const PropertyUnitMerge = () => {
 
   const { addedProperty } = snap.mergeSlice;
   const { data: references, isLoading: referenceLoading } = useGetReferences({
-    regionFilter: addedProperty?.location?.district.region?.id,
+    // regionFilter: addedProperty?.location?.district.region?.id,
   });
   const { crudType } = snap.modalSlice;
 
