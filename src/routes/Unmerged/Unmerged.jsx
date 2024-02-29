@@ -15,7 +15,7 @@ const PropertyReferences = () => {
     isLoading,
     isFetching,
   } = useGetUnMergedReferences({
-    propertyUnitRelationStatusFilter: 'unlinked',
+    propertyReferenceCategoryFilter: 'unlinked',
   });
 
   const [searchText, setSearchText] = useState('');
