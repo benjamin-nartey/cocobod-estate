@@ -121,6 +121,15 @@ const ResetPassword = () => {
             >
               Submit
             </Button>
+            <div className="flex justify-center flex-col items-center text-sm  font-light  text-left  text-[#B67F4E] mt-10">
+              <span className="mb-2">Password must satisfy atleast</span>
+              <ul>
+                <li>an UpperCase Letter</li>
+                <li>a lowerCase Letter</li>
+                <li>a Sepcial Character</li>
+                <li>8 Character</li>
+              </ul>
+            </div>
           </Form>
         ) : (
           <div className="grid place-items-center">
