@@ -76,6 +76,8 @@ import { initDB, useIndexedDB } from 'react-indexed-db-hook';
 import { PERMISSIONS } from './utils/common';
 import Unmerged from './routes/Unmerged/Unmerged';
 import ProtectedLogin from './routes/protectedLogin/ProtectedLogin';
+import ForgotPassword from './routes/ForgotPassword/ForgotPassword';
+import ResetPassword from './routes/ResetPassword/ResetPassword';
 
 function App() {
   // const [offlineUser, setOfflineUser] = useState(null);
@@ -146,6 +148,8 @@ function App() {
       <Route path="*" element={<NotExistPage />} />
 
       <Route path="/account-activation" element={<ActivateUser />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/auth/reset" element={<ResetPassword />} />
 
       <Route element={<Navigation />}>
         {/********* Public **********/}

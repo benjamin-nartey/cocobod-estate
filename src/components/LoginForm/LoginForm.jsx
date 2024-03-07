@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { useOnlineStatus } from '../../Hooks/useIsOnlineStatus';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 import { useLocalStorage } from '../../Hooks/useLocalStorage';
 import state from '../../store/store';
@@ -196,9 +196,12 @@ function LoginForm() {
         )}
       </button>
       <div className="w-full">
-        <span className=" max-md:text-white text-xs font-thin text-[#B67F4E] cursor-pointer hover:underline">
+        <Link
+          to={'/forgot-password'}
+          className="grid place-items-center max-md:text-white text-xs font-thin text-[#B67F4E] cursor-pointer hover:underline"
+        >
           Forgot password? Reset
-        </span>
+        </Link>
       </div>
     </form>
   );
