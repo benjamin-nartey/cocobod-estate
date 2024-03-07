@@ -127,7 +127,7 @@ const ResetPassword = () => {
                 <li>an UpperCase Letter</li>
                 <li>a lowerCase Letter</li>
                 <li>a Sepcial Character</li>
-                <li>8 Character</li>
+                <li>8 Characters</li>
               </ul>
             </div>
           </Form>
