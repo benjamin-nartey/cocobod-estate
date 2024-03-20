@@ -70,7 +70,7 @@ const District = () => {
 
   const handleSearch = useCallback(
     _.debounce(async (text) => {
-      const result = await searchResource('/location', text);
+      const result = await searchResource('/district', text);
       setData(
         result?.data?.records?.map((rec) => ({
           ...rec,
